@@ -1,4 +1,5 @@
 ---
+name: cc-advisor
 model: sonnet
 description: "Claude Code workflow advisor — best practices for skills, agents, hooks, and workflow"
 tools:

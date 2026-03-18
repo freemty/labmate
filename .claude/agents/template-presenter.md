@@ -1,4 +1,5 @@
 ---
+name: template-presenter
 model: sonnet
 description: "Template meta-presenter — reads project infrastructure, generates content outlines for overview slides, architecture docs, and onboarding materials"
 tools:

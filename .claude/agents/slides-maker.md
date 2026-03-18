@@ -1,6 +1,10 @@
 ---
+name: slides-maker
 model: sonnet
 description: "Generate HTML presentations — experiment analysis or project overview slides"
+background: true
+skills:
+  - project-skill
 tools:
   - Read
   - Write

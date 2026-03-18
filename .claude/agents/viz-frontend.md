@@ -1,4 +1,5 @@
 ---
+name: viz-frontend
 model: sonnet
 description: "Visualization frontend builder — Flask + HTML dashboards for experiment analysis"
 tools:

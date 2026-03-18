@@ -1,4 +1,5 @@
 ---
+name: project-advisor
 model: opus
 description: "Research project advisor — experiment history, research findings, domain knowledge, codebase navigation"
 tools:

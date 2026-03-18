@@ -1,5 +1,7 @@
 ---
+name: new-experiment
 description: "Scaffold a new experiment directory with standard structure"
+disable-model-invocation: true
 ---
 
 # New Experiment

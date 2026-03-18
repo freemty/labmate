@@ -1,15 +1,13 @@
 #!/bin/bash
 # Hook: PreToolUse(Write) — remind to brainstorm before big changes
-# Only triggers for new files (not edits), reduces noise
 
 INPUT=$(cat)
 
-# Only remind for new file creation, not edits to existing files
-# Check if the file path in the Write call already exists
-FILE_PATH=$(echo "$INPUT" | grep -o '"file_path"[[:space:]]*:[[:space:]]*"[^"]*"' | head -1 | sed 's/.*: *"//;s/"//')
+# Extract file path from Write tool input
+FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty' 2>/dev/null)
 
+# Only remind for new file creation, not edits
 if [ -n "$FILE_PATH" ] && [ -f "$FILE_PATH" ]; then
-  # Editing existing file — no reminder needed
   exit 0
 fi
 

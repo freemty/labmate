@@ -1,5 +1,7 @@
 ---
+name: weekly-progress
 description: "Write weekly progress summary from CHANGELOG and experiment history into docs/weekly/"
+disable-model-invocation: true
 ---
 
 # Weekly Progress

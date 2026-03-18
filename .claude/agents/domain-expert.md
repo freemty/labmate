@@ -1,6 +1,8 @@
 ---
+name: domain-expert
 model: opus
-description: "Domain research expert — reads papers and interprets experiment results"
+description: "Domain research expert — reads papers and interprets experiment results. Use proactively when analyzing experiment results or discussing research direction."
+memory: project
 tools:
   - Read
   - Grep

@@ -1,5 +1,7 @@
 ---
+name: update-project-skill
 description: "Regenerate project knowledge skill from current codebase state"
+disable-model-invocation: true
 ---
 
 # Update Project Skill

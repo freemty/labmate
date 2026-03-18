@@ -1,12 +1,11 @@
 #!/bin/bash
 # Hook: PostToolUse(Bash) — check CHANGELOG compliance after git commits
-# Only triggers when the Bash command was actually a git commit
 
-# Read the tool call info from stdin
 INPUT=$(cat)
 
 # Guard: only act if this was a git commit command
-if ! echo "$INPUT" | grep -q "git commit"; then exit 0; fi
+COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null)
+if ! echo "$COMMAND" | grep -q "git commit"; then exit 0; fi
 
 # Check what files changed in the most recent commit
 CHANGED=$(git diff --name-only HEAD~1 HEAD 2>/dev/null)
