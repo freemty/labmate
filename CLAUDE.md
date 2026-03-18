@@ -39,6 +39,7 @@
 | new-experiment | When starting a new experiment |
 | analyze-experiment | After experiment completes — runs analysis, domain interpretation, slides |
 | present-template | Generate template overview slides, onboarding docs, or demo scripts |
+| weekly-progress | Summarize week's CHANGELOG + experiments into docs/weekly/ (Friday hook reminder) |
 
 ## Workflow
 
