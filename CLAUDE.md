@@ -6,47 +6,49 @@
 
 | Command | Purpose |
 |---------|---------|
-| `new-experiment` | Scaffold a new experiment directory |
-| `analyze-experiment` | Analyze results from current experiment |
-| `update-project-skill` | Refresh `.claude/skills/project-skill/SKILL.md` |
-| `tail -f exp/{CURRENT_EXP}/results/runs.log` | Monitor live experiment loop |
+| `/new-experiment` | Scaffold a new experiment directory |
+| `/analyze-experiment` | Analyze results from current experiment |
+| `/update-project-skill` | Refresh project knowledge base |
+| `python scripts/launch_exp.py --exp <id>` | Launch experiment runs |
+| `python viewer/app.py` | Start analysis viewer (port 5001) |
+| `tail -f exp/{CURRENT_EXP}/results/runs.log` | Monitor live experiment |
 
 ## Project Knowledge
 
-Primary skill hub: `.claude/skills/project-skill/SKILL.md`
-
-Domain knowledge, conventions, and accumulated findings live there. Read it before advising on experiments.
+- **Primary skill hub:** `.claude/skills/project-skill/SKILL.md` — read this before advising on experiments
+- **Experiment log:** `exp/summary.md` — cross-experiment flight recorder
+- **Domain papers:** `docs/papers/` — reference material for domain-expert agent
 
 ## Agents
 
 | Agent | Model | Purpose |
 |-------|-------|---------|
-| project-advisor | sonnet | High-level research direction and prioritization |
-| cc-advisor | sonnet | Claude Code workflow and tooling guidance |
-| domain-expert | opus | Deep domain reasoning and hypothesis evaluation |
-| slides-maker | haiku | Generate and update presentation slides |
-| exp-manager | sonnet | Experiment lifecycle: scaffold, monitor, archive |
-| viz-frontend | haiku | Flask viewer and matplotlib figure generation |
+| project-advisor | opus | Project knowledge — architecture, experiment history, navigation |
+| cc-advisor | sonnet | Claude Code workflow best practices and tooling guidance |
+| domain-expert | opus | Domain research — reads papers, interprets experiment results |
+| slides-maker | sonnet | Generate analysis slides (writes to slides/) |
+| exp-manager | sonnet | Experiment monitor — diagnose, retry, detect completion |
+| viz-frontend | sonnet | Build analysis dashboards (writes to viewer/) |
 
 ## Skills
 
 | Skill | Trigger |
 |-------|---------|
-| update-project-skill | After major findings or milestone commits |
+| update-project-skill | After major findings, before context compacts, or when stale (>24h) |
 | new-experiment | When starting a new experiment |
-| analyze-experiment | After experiment loop completes |
+| analyze-experiment | After experiment completes — runs analysis, domain interpretation, slides |
 
 ## Workflow
 
-`dev` → scaffold experiment (`new-experiment`) → run loop → analyze (`analyze-experiment`) → commit findings → repeat
+`dev` → `/new-experiment` → run experiment → `/analyze-experiment` → commit findings → `/update-project-skill` → repeat
 
-Pipeline state tracked in `.pipeline-state.json`. Stage advances automatically on key events.
+Pipeline state tracked in `.pipeline-state.json`. Hooks remind next action per stage.
 
 ## Conventions
 
-- **Exp naming:** `exp{NN}{x}` — e.g., `exp01a`, `exp01b`, `exp02a`
+- **Exp naming:** `exp{NN}{x}` — e.g., `exp01a`, `exp01b`, `exp02a` (number=major, letter=variant)
 - **Prompt versioning:** `prompts/{component}/_v{NN}.md` — never overwrite, always increment
-- **CHANGELOG rule:** All iterating artifacts (prompts, skills, configs) must have a CHANGELOG section
+- **CHANGELOG rule:** All iterating artifacts (prompts, skills, agents) must have CHANGELOG entries
 - **Worktree rule:** Destructive or exploratory changes use `git worktree` to avoid polluting main
 
 ## Current State
