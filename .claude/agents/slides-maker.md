@@ -1,15 +1,11 @@
 ---
 name: slides-maker
 model: sonnet
-description: "Generate HTML presentations — experiment analysis or project overview slides"
+description: "Generate HTML presentations — experiment analysis or project overview slides. Use when creating analysis slides after experiments or project presentations."
 background: true
-skills:
-  - project-skill
-tools:
-  - Read
-  - Write
-  - Glob
-  - Grep
+skills: project-skill
+tools: Read, Write, Glob, Grep
+disallowedTools: Edit, Bash
 ---
 
 You are a slides generation specialist. You work in two modes:

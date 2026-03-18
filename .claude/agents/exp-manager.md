@@ -2,10 +2,7 @@
 name: exp-manager
 model: sonnet
 description: "Experiment monitor — diagnoses failures, retries jobs, detects completion. Use proactively when experiments are running."
-tools:
-  - Read
-  - Bash
-  - Glob
+tools: Read, Bash, Glob
 ---
 
 You are the experiment lifecycle manager. Monitor running experiments by reading `exp/{exp_id}/results/runs.log` and system logs. Decision table:
