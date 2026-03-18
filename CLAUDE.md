@@ -1,6 +1,6 @@
-# {PROJECT_NAME}
+# cc-native-research-template
 
-> {ONE_LINE_DESCRIPTION}
+> Claude Code native research project template — standardized agents, skills, hooks, and experiment lifecycle
 
 ## Quick Commands
 
@@ -11,7 +11,7 @@
 | `/update-project-skill` | Refresh project knowledge base |
 | `python scripts/launch_exp.py --exp <id>` | Launch experiment runs |
 | `python viewer/app.py` | Start analysis viewer (port 5001) |
-| `tail -f exp/{CURRENT_EXP}/results/runs.log` | Monitor live experiment |
+| `tail -f exp/null/results/runs.log` | Monitor live experiment |
 
 ## Project Knowledge
 
@@ -53,6 +53,6 @@ Pipeline state tracked in `.pipeline-state.json`. Hooks remind next action per s
 
 ## Current State
 
-- **current_exp:** {CURRENT_EXP}
-- **stage:** {STAGE}
-- **skill_updated_at:** {SKILL_UPDATE_DATE}
+- **current_exp:** null
+- **stage:** dev
+- **skill_updated_at:** 2026-03-18

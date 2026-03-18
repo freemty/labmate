@@ -27,7 +27,7 @@ When this skill is invoked:
 3. **Spawn domain-expert subagent** (Agent tool, model: opus, read-only):
 
    Prompt:
-   > You are a domain expert in {RESEARCH_DOMAIN}. Analyze this experiment:
+   > You are a domain expert in general machine learning. Analyze this experiment:
    >
    > Read: `exp/{current_exp}/results/summary.md` for quantitative results.
    > Read: `exp/{current_exp}/README.md` for experiment context.

@@ -1,8 +1,9 @@
 #!/bin/bash
 # bootstrap.sh — First-run personalization for cc-native-research-template
 #
-# Asks 4 questions, replaces placeholders, configures compute environment.
-# Idempotent: re-running enters update mode if .pipeline-state.json has last_commit set.
+# Asks 4 questions, replaces values across the project.
+# Idempotent: re-running reads current values from .pipeline-state.json
+# and replaces them with new values (no placeholder dependency).
 
 set -euo pipefail
 
@@ -14,17 +15,21 @@ STATE_FILE=".pipeline-state.json"
 # Colors
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+CYAN='\033[0;36m'
 NC='\033[0m'
 
 echo -e "${GREEN}cc-native-research-template bootstrap${NC}"
 echo "========================================"
 echo ""
 
-# Check for update mode
-LAST_COMMIT=$(python3 -c "import json; print(json.load(open('$STATE_FILE')).get('last_commit') or '')" 2>/dev/null || echo "")
-if [ -n "$LAST_COMMIT" ]; then
-    echo -e "${YELLOW}Existing project detected (last commit: ${LAST_COMMIT}).${NC}"
-    echo "Entering update mode — will only change fields you specify."
+# Read current config from state file (if previously bootstrapped)
+OLD_NAME=$(python3 -c "import json; print(json.load(open('$STATE_FILE')).get('project_name', ''))" 2>/dev/null || echo "")
+OLD_DESC=$(python3 -c "import json; print(json.load(open('$STATE_FILE')).get('description', ''))" 2>/dev/null || echo "")
+OLD_DOMAIN=$(python3 -c "import json; print(json.load(open('$STATE_FILE')).get('domain', ''))" 2>/dev/null || echo "")
+
+if [ -n "$OLD_NAME" ]; then
+    echo -e "${YELLOW}Existing project: ${OLD_NAME}${NC}"
+    echo "Current values shown in [brackets]. Press Enter to keep."
     echo ""
     UPDATE_MODE=true
 else
@@ -32,23 +37,36 @@ else
 fi
 
 # Question 1: Project name
-read -p "Project name (kebab-case, e.g. my-research-project): " PROJECT_NAME
-if [ -z "$PROJECT_NAME" ]; then
-    echo "Error: Project name is required."
-    exit 1
+if [ "$UPDATE_MODE" = true ]; then
+    read -p "Project name [${OLD_NAME}]: " PROJECT_NAME
+    PROJECT_NAME="${PROJECT_NAME:-$OLD_NAME}"
+else
+    read -p "Project name (kebab-case, e.g. my-research-project): " PROJECT_NAME
+    if [ -z "$PROJECT_NAME" ]; then
+        echo "Error: Project name is required."
+        exit 1
+    fi
 fi
 
 # Question 2: One-line description
-read -p "One-line description: " DESCRIPTION
-if [ -z "$DESCRIPTION" ]; then
-    echo "Error: Description is required."
-    exit 1
+if [ "$UPDATE_MODE" = true ]; then
+    read -p "Description [${OLD_DESC}]: " DESCRIPTION
+    DESCRIPTION="${DESCRIPTION:-$OLD_DESC}"
+else
+    read -p "One-line description: " DESCRIPTION
+    if [ -z "$DESCRIPTION" ]; then
+        echo "Error: Description is required."
+        exit 1
+    fi
 fi
 
 # Question 3: Research domain
-read -p "Research domain (e.g., NLP, computer vision, reinforcement learning): " DOMAIN
-if [ -z "$DOMAIN" ]; then
-    DOMAIN="general machine learning"
+if [ "$UPDATE_MODE" = true ]; then
+    read -p "Research domain [${OLD_DOMAIN}]: " DOMAIN
+    DOMAIN="${DOMAIN:-$OLD_DOMAIN}"
+else
+    read -p "Research domain (e.g., NLP, computer vision, reinforcement learning): " DOMAIN
+    DOMAIN="${DOMAIN:-general machine learning}"
 fi
 
 # Question 4: Compute environment
@@ -68,56 +86,64 @@ esac
 echo ""
 echo "Applying configuration..."
 
-# Replace placeholders
-if [ "$UPDATE_MODE" = false ] || [ -n "$PROJECT_NAME" ]; then
-    # Use | as sed delimiter to avoid conflicts with / in descriptions
-    find . -name "*.md" -not -path "./.git/*" -exec sed -i '' "s|{PROJECT_NAME}|${PROJECT_NAME}|g" {} +
-    find . -name "*.md" -not -path "./.git/*" -exec sed -i '' "s|{ONE_LINE_DESCRIPTION}|${DESCRIPTION}|g" {} +
-    find . -name "*.md" -not -path "./.git/*" -exec sed -i '' "s|{RESEARCH_DOMAIN}|${DOMAIN}|g" {} +
-    echo "  Replaced placeholders in .md files"
-fi
+# Determine what to search for (old values or placeholders)
+SEARCH_NAME="${OLD_NAME:-\{PROJECT_NAME\}}"
+SEARCH_DESC="${OLD_DESC:-\{ONE_LINE_DESCRIPTION\}}"
+SEARCH_DOMAIN="${OLD_DOMAIN:-\{RESEARCH_DOMAIN\}}"
+
+# Replace across all .md files and .yaml files
+for EXT in "*.md" "*.yaml"; do
+    find . -name "$EXT" -not -path "./.git/*" -exec sed -i '' "s|${SEARCH_NAME}|${PROJECT_NAME}|g" {} +
+    find . -name "$EXT" -not -path "./.git/*" -exec sed -i '' "s|${SEARCH_DESC}|${DESCRIPTION}|g" {} +
+    find . -name "$EXT" -not -path "./.git/*" -exec sed -i '' "s|${SEARCH_DOMAIN}|${DOMAIN}|g" {} +
+done
+echo "  Replaced project values in .md and .yaml files"
+
+# Replace CLAUDE.md current state placeholders (first run only)
+sed -i '' "s|{CURRENT_EXP}|null|g" CLAUDE.md 2>/dev/null || true
+sed -i '' "s|{STAGE}|dev|g" CLAUDE.md 2>/dev/null || true
+sed -i '' "s|{SKILL_UPDATE_DATE}|$(date +%Y-%m-%d)|g" CLAUDE.md 2>/dev/null || true
 
 # Configure compute environment
 if [ "$COMPUTE_ENV" = "remote-gpu" ]; then
     read -p "Remote server (user@host): " SERVER
-    # Add SSH/rsync permissions to settings.local.json
     python3 -c "
 import json
 with open('.claude/settings.local.json') as f:
     config = json.load(f)
 perms = config.setdefault('permissions', {}).setdefault('allow', [])
-for p in ['Bash(ssh ${SERVER}:*)', 'Bash(rsync:*)', 'Bash(scp:*)']:
-    if p not in perms:
-        perms.append(p.replace('\${SERVER}', '${SERVER}'))
+extras = ['Bash(ssh ${SERVER}:*)', 'Bash(rsync:*)', 'Bash(scp:*)']
+for p in extras:
+    real_p = p.replace('\${SERVER}', '${SERVER}')
+    if real_p not in perms:
+        perms.append(real_p)
 with open('.claude/settings.local.json', 'w') as f:
     json.dump(config, f, indent=2)
 "
     echo "  Added SSH/rsync permissions for ${SERVER}"
 fi
 
-# Update pipeline state
+# Save current config to pipeline state (enables future re-bootstrap)
 python3 -c "
 import json, time
 with open('$STATE_FILE') as f:
     state = json.load(f)
+state['project_name'] = '${PROJECT_NAME}'
+state['description'] = '${DESCRIPTION}'
+state['domain'] = '${DOMAIN}'
+state['compute_env'] = '${COMPUTE_ENV}'
 state['skill_updated_at'] = int(time.time())
 with open('$STATE_FILE', 'w') as f:
     json.dump(state, f, indent=2)
 "
-echo "  Updated pipeline state"
-
-# Update CLAUDE.md current state section
-sed -i '' "s|{CURRENT_EXP}|null|g" CLAUDE.md
-sed -i '' "s|{STAGE}|dev|g" CLAUDE.md
-sed -i '' "s|{SKILL_UPDATE_DATE}|$(date +%Y-%m-%d)|g" CLAUDE.md
-echo "  Updated CLAUDE.md current state"
+echo "  Saved config to .pipeline-state.json"
 
 echo ""
 echo -e "${GREEN}Bootstrap complete!${NC}"
 echo ""
-echo "Project: ${PROJECT_NAME}"
-echo "Domain:  ${DOMAIN}"
-echo "Compute: ${COMPUTE_ENV}"
+echo -e "  Project: ${CYAN}${PROJECT_NAME}${NC}"
+echo -e "  Domain:  ${CYAN}${DOMAIN}${NC}"
+echo -e "  Compute: ${CYAN}${COMPUTE_ENV}${NC}"
 echo ""
 
 if [ "$UPDATE_MODE" = false ]; then

@@ -110,7 +110,7 @@ System prompt: CC workflow best practices advisor. Knows about superpowers skill
 - [ ] **Step 3: Create domain-expert.md**
 
 Model: opus. Tools: Read, Grep, Glob. Read-only.
-System prompt: Reads `docs/papers/` for domain knowledge. Provides domain-informed interpretation of experiment results. Placeholder `{RESEARCH_DOMAIN}` for bootstrap to fill. Returns ~500 word interpretation with paper citations.
+System prompt: Reads `docs/papers/` for domain knowledge. Provides domain-informed interpretation of experiment results. Placeholder `general machine learning` for bootstrap to fill. Returns ~500 word interpretation with paper citations.
 
 - [ ] **Step 4: Create exp-manager.md**
 
@@ -151,7 +151,7 @@ git commit -m "feat: add 6 agent definitions with least-privilege boundaries"
 - [ ] **Step 1: Create skeleton SKILL.md**
 
 Template with standard sections (all placeholder content):
-- Project overview: `{PROJECT_NAME} — {ONE_LINE_DESCRIPTION}`
+- Project overview: `cc-native-research-template — Claude Code native research project template — standardized agents, skills, hooks, and experiment lifecycle`
 - Architecture: `(auto-generated after first /update-project-skill)`
 - Experiment history table: empty
 - Key pitfalls & lessons learned: empty (append-only)
@@ -934,9 +934,9 @@ git commit -m "feat: add viewer skeleton (Flask + static HTML) with tests"
 - [ ] **Step 1: Write bootstrap.sh**
 
 Interactive script asking 4 questions:
-1. Project name (kebab-case) → replaces `{PROJECT_NAME}` everywhere
-2. One-line description → replaces `{ONE_LINE_DESCRIPTION}`
-3. Research domain → replaces `{RESEARCH_DOMAIN}` in domain-expert agent
+1. Project name (kebab-case) → replaces `cc-native-research-template` everywhere
+2. One-line description → replaces `Claude Code native research project template — standardized agents, skills, hooks, and experiment lifecycle`
+3. Research domain → replaces `general machine learning` in domain-expert agent
 4. Compute environment (local/remote/cloud) → configures settings.local.json
 
 Uses `sed -i` for replacements across CLAUDE.md, SKILL.md, agent files.
@@ -1010,7 +1010,7 @@ Quick smoke test: check that all placeholder strings exist in expected files and
 
 ```bash
 bash -n bootstrap.sh && echo "Syntax OK"
-grep -r "{PROJECT_NAME}" CLAUDE.md .claude/skills/project-skill/SKILL.md
+grep -r "cc-native-research-template" CLAUDE.md .claude/skills/project-skill/SKILL.md
 ```
 
 - [ ] **Step 4: Final commit**

@@ -15,3 +15,7 @@
 - CLAUDE.md thin route hub (<80 lines)
 - Pipeline state machine with .pipeline-state.json
 - Design spec and implementation plan in docs/specs/
+
+### Changed
+- bootstrap.sh: rewritten to be truly idempotent — stores config in .pipeline-state.json, re-bootstrap replaces current values (not placeholders)
+- Bootstrapped template with own identity (cc-native-research-template)

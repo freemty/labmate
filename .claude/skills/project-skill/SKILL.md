@@ -2,9 +2,9 @@
 description: "Project knowledge base — auto-maintained by /update-project-skill"
 ---
 
-# {PROJECT_NAME} — Project Knowledge
+# cc-native-research-template — Project Knowledge
 
-> {ONE_LINE_DESCRIPTION}
+> Claude Code native research project template — standardized agents, skills, hooks, and experiment lifecycle
 
 ## Project Overview
 (auto-generated after first /update-project-skill run)
