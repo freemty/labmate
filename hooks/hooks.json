@@ -1,0 +1,32 @@
+{
+  "hooks": {
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [{"type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/pre-compact-remind.sh\"", "async": false}]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [{"type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/stop-check-workflow.sh\"", "async": false}]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [{"type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/post-commit-changelog.sh\"", "async": false}]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [{"type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/brainstorm-remind.sh\"", "async": false}]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [{"type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/worktree-suggest.sh\"", "async": false}]
+      }
+    ]
+  }
+}
