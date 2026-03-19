@@ -19,6 +19,5 @@
     "./agents/viz-frontend.md",
     "./agents/template-presenter.md"
   ],
-  "skills": ["./skills/"],
-  "hooks": "./hooks/hooks.json"
+  "skills": ["./skills/"]
 }
