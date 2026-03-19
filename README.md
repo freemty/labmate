@@ -72,6 +72,12 @@ cp 你的定制版本 .claude/agents/domain-expert.md
 
 从 settings.json 移除即可。项目目录结构和本地文件不受影响。
 
+## 致谢
+
+- [superpowers](https://github.com/obra/superpowers) — Skills 框架设计、subagent-driven-development 工作流、SessionStart hook 模式
+- [frontend-slides](https://github.com/zarazhangrui/frontend-slides) — slides-maker agent 的幻灯片生成能力
+- [Agent-Reach](https://github.com/Panniantong/Agent-Reach) — domain-expert agent 的多平台内容抓取能力（Twitter/X、GitHub、YouTube 等）
+
 ## License
 
 MIT

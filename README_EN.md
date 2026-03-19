@@ -72,6 +72,12 @@ cp your-custom-version .claude/agents/domain-expert.md
 
 Remove from settings.json. Project directory structure and local files are unaffected.
 
+## Acknowledgments
+
+- [superpowers](https://github.com/obra/superpowers) — Skills framework design, subagent-driven-development workflow, SessionStart hook pattern
+- [frontend-slides](https://github.com/zarazhangrui/frontend-slides) — Slide generation capabilities for the slides-maker agent
+- [Agent-Reach](https://github.com/Panniantong/Agent-Reach) — Multi-platform content fetching for the domain-expert agent (Twitter/X, GitHub, YouTube, etc.)
+
 ## License
 
 MIT
