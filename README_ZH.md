@@ -24,6 +24,8 @@ claude plugin install freemty/labmate
 2. 回答 4 个问题（名称、描述、领域、计算环境）
 3. 开始研究。你的 agent 已经知道工作流了。
 
+完整教程见 [Tutorial: your first experiment](docs/tutorial.md)（英文）。
+
 ## 里面有什么
 
 7 个 agent，各管一块：

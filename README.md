@@ -24,6 +24,8 @@ claude plugin install freemty/labmate
 2. Answer 4 questions (name, description, domain, compute)
 3. Start researching. Your agent now knows the workflow.
 
+See [Tutorial: your first experiment](docs/tutorial.md) for a full walkthrough.
+
 ## What's inside
 
 7 agents, each with a specific research role:
