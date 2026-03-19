@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.4.0 — LabMate (2026-03-19)
+
+### Breaking Changes
+- Renamed from `cc-native-research-template` to `labmate`
+- README.md is now English (Chinese moved to README_ZH.md)
+
+### Changed
+- All references updated (plugin.json, package.json, CLAUDE.md, hooks, gitignore-rules)
+- README rewritten with pain-point-first copy, humanized language
+- SessionStart hook context tags renamed to `<labmate>`
+- GitHub description: "Research Harness for Claude Code. Keep your agent grounded in context, not lost in vibe coding."
+
 ## v0.3.0 — Plugin Architecture (2026-03-18)
 
 ### Breaking Changes

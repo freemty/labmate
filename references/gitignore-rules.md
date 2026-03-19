@@ -1,4 +1,4 @@
-# cc-research-template rules
+# labmate rules
 # Instance-specific: paper notes
 docs/papers/*.md
 !docs/papers/landscape.md

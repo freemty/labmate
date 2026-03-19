@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SessionStart hook for cc-native-research-template plugin
+# SessionStart hook for LabMate plugin
 # Injects context based on project initialization state
 
 set -euo pipefail
@@ -20,13 +20,13 @@ escape_for_json() {
 # Detect project state
 if [ ! -f ".pipeline-state.json" ]; then
     # Project not initialized — prompt to run /init-project
-    context="<research-template-plugin>\n\nThis project has not been initialized with the research template.\n\nRun \`/init-project\` to set up:\n- Experiment directory structure (exp/, docs/papers/, scripts/, viewer/)\n- CLAUDE.md with research principles, workflow, and agent/skill registry\n- .gitignore rules for instance-specific files\n- Pipeline state tracking\n\nThe plugin provides 7 agents (@domain-expert, @project-advisor, etc.) and 7 skills (/new-experiment, /analyze-experiment, etc.) — all available after initialization.\n\n</research-template-plugin>"
+    context="<labmate>\n\nLabMate is active but this project has not been initialized yet.\n\nRun /init-project to set up experiment directories, CLAUDE.md, and pipeline state.\n\nAvailable now: @domain-expert @project-advisor @exp-manager @slides-maker\n\n</labmate>"
 else
     # Project initialized — inject current state + workflow reminder
     current_exp=$(python3 -c "import json; print(json.load(open('.pipeline-state.json')).get('current_exp', 'null'))" 2>/dev/null || echo "null")
     stage=$(python3 -c "import json; print(json.load(open('.pipeline-state.json')).get('stage', 'dev'))" 2>/dev/null || echo "dev")
 
-    context="<research-template-plugin>\n\nResearch template active.\n- current_exp: ${current_exp}\n- stage: ${stage}\n\nWorkflow: /new-experiment -> run -> /analyze-experiment -> /update-project-skill -> repeat\n\nAvailable: @domain-expert @project-advisor @exp-manager @slides-maker | /new-experiment /analyze-experiment /update-project-skill /weekly-progress\n\nRead .claude/skills/project-skill/SKILL.md for accumulated project knowledge.\n\n</research-template-plugin>"
+    context="<labmate>\n\nLabMate active. exp: ${current_exp} | stage: ${stage}\n\nWorkflow: /new-experiment -> run -> /analyze-experiment -> /update-project-skill -> repeat\n\nAgents: @domain-expert @project-advisor @exp-manager @slides-maker\nSkills: /new-experiment /analyze-experiment /update-project-skill /weekly-progress\n\nProject knowledge: .claude/skills/project-skill/SKILL.md\n\n</labmate>"
 fi
 
 escaped=$(escape_for_json "$context")

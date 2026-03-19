@@ -1,15 +1,15 @@
 {
-  "name": "cc-native-research-template",
-  "version": "0.3.0",
-  "description": "Research project lifecycle plugin — experiment scaffold, analysis, domain expertise, workflow enforcement",
+  "name": "labmate",
+  "version": "0.4.0",
+  "description": "Research Harness for Claude Code. Keep your agent grounded in context, not lost in vibe coding.",
   "author": {
     "name": "freemty",
     "url": "https://github.com/freemty"
   },
-  "homepage": "https://github.com/freemty/cc-native-research-template",
-  "repository": "https://github.com/freemty/cc-native-research-template",
+  "homepage": "https://github.com/freemty/labmate",
+  "repository": "https://github.com/freemty/labmate",
   "license": "MIT",
-  "keywords": ["research", "experiment", "claude-code", "agents", "skills"],
+  "keywords": ["research", "experiment", "claude-code", "agents", "skills", "harness", "ai-research"],
   "agents": [
     "./agents/project-advisor.md",
     "./agents/cc-advisor.md",

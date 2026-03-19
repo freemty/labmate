@@ -1,82 +1,82 @@
-# cc-native-research-template
+# LabMate
 
-> Claude Code 研究项目生命周期 Plugin — 实验骨架、结果分析、领域专家、工作流强制执行。
+Research Harness for Claude Code. Keep your agent grounded in context, not lost in vibe coding.
 
-[English](README_EN.md)
+[中文](README_ZH.md)
 
-## 安装
+## The problem
 
-```bash
-claude plugin install freemty/cc-native-research-template
-```
+You start a research project with Claude. Three hours later you're debugging a CUDA kernel and have completely forgotten what hypothesis you were testing.
 
-## 快速开始
+Meanwhile your agent has no idea what you tried last week, can't read your reference papers, and treats every session like day one.
 
-1. 在你的项目中运行 `/init-project`
-2. 按提示输入项目名称、描述、领域
-3. 骨架自动创建，开始研究
+LabMate fixes both sides. Your agent gets persistent experiment context, domain paper knowledge, and 7 specialized agents that each know their role. You get a research lifecycle that keeps hypotheses, baselines, and findings visible, even when you're deep in implementation.
 
-## 包含什么
-
-### 7 个 Agent
-
-| Agent | 用途 |
-|-------|------|
-| @project-advisor | 研究项目顾问 — 实验历史、发现、代码导航 |
-| @cc-advisor | Claude Code 最佳实践 |
-| @domain-expert | 领域研究 — 读论文、解读实验结果 |
-| @exp-manager | 实验监控 — 诊断、重试、检测完成 |
-| @slides-maker | 生成 HTML 幻灯片 |
-| @viz-frontend | 构建分析仪表盘 |
-| @template-presenter | 模板介绍与 onboarding |
-
-### 7 个 Skill
-
-| Skill | 用途 |
-|-------|------|
-| /init-project | 一键初始化项目骨架 |
-| /new-experiment | 搭建新实验 |
-| /analyze-experiment | 实验完成后分析 |
-| /update-project-skill | 更新项目知识库 |
-| /present-template | 生成模板介绍幻灯片 |
-| /weekly-progress | 周报总结 |
-| /commit-changelog | 提交 + CHANGELOG |
-
-### 5 个 Hook
-
-- PreCompact — 压缩前提醒保存进度
-- Stop — 结束时检查工作流状态
-- PostToolUse(Bash) — commit 后更新 CHANGELOG
-- PreToolUse(Write) — 写文件前提醒 brainstorm
-- PreToolUse(Bash) — 建议使用 worktree
-
-## 工作流
-
-```
-/init-project → /new-experiment → 跑实验 → /analyze-experiment
-  → 提交发现 → /update-project-skill → 重复
-```
-
-## 定制化
-
-Plugin 提供通用版本。在项目本地创建同名文件即可 override：
+## Install
 
 ```bash
-# 例：定制 domain-expert 为你的领域
+claude plugin install freemty/labmate
+```
+
+## Quick start
+
+1. Run `/init-project` in your existing project
+2. Answer 4 questions (name, description, domain, compute)
+3. Start researching. Your agent now knows the workflow.
+
+## What's inside
+
+7 agents, each with a specific research role:
+
+- `@domain-expert` reads your papers, interprets results, connects findings to literature
+- `@project-advisor` knows your experiment history and guides next steps
+- `@exp-manager` monitors running experiments, diagnoses failures, detects completion
+- `@slides-maker` turns analysis into presentation-ready HTML slides
+- plus `@cc-advisor`, `@viz-frontend`, `@template-presenter`
+
+7 skills as slash commands:
+
+- `/new-experiment` scaffolds with config, README, run script, analysis script
+- `/analyze-experiment` does domain interpretation, cross-experiment comparison, slides
+- `/update-project-skill` compresses findings into persistent project memory
+- plus `/init-project`, `/present-template`, `/weekly-progress`, `/commit-changelog`
+
+6 hooks that run automatically:
+
+- SessionStart detects project state and injects context
+- PreCompact reminds to save progress before context compression
+- Stop checks workflow state at session end
+
+## Workflow
+
+```
+/init-project → /new-experiment → run → /analyze-experiment
+  → commit findings → /update-project-skill → repeat
+```
+
+Pipeline state lives in `.pipeline-state.json`. Your agent picks up where you left off.
+
+## Customization
+
+Override anything by creating a local copy:
+
+```bash
+# Example: customize domain-expert for your field
 mkdir -p .claude/agents
-cp 你的定制版本 .claude/agents/domain-expert.md
-# 项目本地版本自动覆盖 plugin 版本
+# your local version automatically overrides the plugin
 ```
 
-## 卸载
+Agents, skills, and hooks are all overridable. See the [design spec](docs/specs/2026-03-18-inject-template-design.md) for details.
 
-从 settings.json 移除即可。项目目录结构和本地文件不受影响。
+## Roadmap
 
-## 致谢
+Next up: Auto Research Agent mode. Let your agent run the full hypothesis-to-analysis loop with minimal supervision.
 
-- [superpowers](https://github.com/obra/superpowers) — Skills 框架设计、subagent-driven-development 工作流、SessionStart hook 模式
-- [frontend-slides](https://github.com/zarazhangrui/frontend-slides) — slides-maker agent 的幻灯片生成能力
-- [Agent-Reach](https://github.com/Panniantong/Agent-Reach) — domain-expert agent 的多平台内容抓取能力（Twitter/X、GitHub、YouTube 等）
+## Acknowledgments
+
+- [superpowers](https://github.com/obra/superpowers) — skills framework, subagent-driven development, SessionStart hook pattern
+- [frontend-slides](https://github.com/zarazhangrui/frontend-slides) — slide generation for the slides-maker agent
+- [Agent-Reach](https://github.com/Panniantong/Agent-Reach) — multi-platform content fetching for the domain-expert agent
 
 ## License
 
