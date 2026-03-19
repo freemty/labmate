@@ -1,0 +1,23 @@
+{
+  "name": "labmate",
+  "version": "0.4.0",
+  "description": "Research Harness for Claude Code. Keep your agent grounded in context, not lost in vibe coding.",
+  "author": {
+    "name": "freemty",
+    "url": "https://github.com/freemty"
+  },
+  "homepage": "https://github.com/freemty/labmate",
+  "repository": "https://github.com/freemty/labmate",
+  "license": "MIT",
+  "keywords": ["research", "experiment", "claude-code", "agents", "skills", "harness", "ai-research"],
+  "agents": [
+    "./agents/project-advisor.md",
+    "./agents/cc-advisor.md",
+    "./agents/domain-expert.md",
+    "./agents/exp-manager.md",
+    "./agents/slides-maker.md",
+    "./agents/viz-frontend.md",
+    "./agents/template-presenter.md"
+  ],
+  "skills": ["./skills/"]
+}
