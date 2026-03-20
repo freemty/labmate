@@ -1,5 +1,5 @@
 #!/bin/bash
-# Hook: PostToolUse(Bash) — check CHANGELOG compliance after git commits
+# Hook: PostToolUse(Bash) — remind to update CHANGELOG after git commits
 
 INPUT=$(cat)
 
@@ -7,16 +7,32 @@ INPUT=$(cat)
 COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null)
 if ! echo "$COMMAND" | grep -q "git commit"; then exit 0; fi
 
+# Check if CHANGELOG.md exists
+if [ ! -f "CHANGELOG.md" ]; then exit 0; fi
+
 # Check what files changed in the most recent commit
 CHANGED=$(git diff --name-only HEAD~1 HEAD 2>/dev/null)
 if [ -z "$CHANGED" ]; then exit 0; fi
 
-HAS_PROMPTS=$(echo "$CHANGED" | grep "^prompts/" || true)
-HAS_SKILLS=$(echo "$CHANGED" | grep "^\.claude/skills/" || true)
+# Skip if CHANGELOG was already part of this commit
 HAS_CHANGELOG=$(echo "$CHANGED" | grep "CHANGELOG" || true)
+if [ -n "$HAS_CHANGELOG" ]; then exit 0; fi
 
-if [ -n "$HAS_PROMPTS" ] || [ -n "$HAS_SKILLS" ]; then
-  if [ -z "$HAS_CHANGELOG" ]; then
-    echo "Changed prompts/ or .claude/skills/ without CHANGELOG entry. Consider updating CHANGELOG.md."
-  fi
-fi
+# Get the commit message for context
+COMMIT_MSG=$(git log -1 --format="%s" 2>/dev/null)
+COMMIT_TYPE=$(echo "$COMMIT_MSG" | sed -E 's/^([a-z]+).*/\1/')
+
+# Map commit type to CHANGELOG section
+case "$COMMIT_TYPE" in
+  feat) SECTION="新增" ;;
+  fix)  SECTION="修复" ;;
+  refactor|perf) SECTION="变更" ;;
+  docs|chore|build|ci|test) SECTION="其他" ;;
+  *) SECTION="其他" ;;
+esac
+
+echo "Commit done: ${COMMIT_MSG}"
+echo "CHANGELOG.md was not updated. Add this entry under \"## Unreleased / ${SECTION}\":"
+echo "- ${COMMIT_MSG}"
+echo ""
+echo "Then amend or create a follow-up commit to include CHANGELOG.md."
