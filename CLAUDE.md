@@ -10,13 +10,15 @@
 | `/new-experiment` | Scaffold a new experiment directory |
 | `/analyze-experiment` | Analyze results from current experiment |
 | `/update-project-skill` | Refresh project knowledge base |
+| `/read-paper` | Deep-dive a single paper |
+| `/survey-literature` | Systematic literature survey |
 
 ## Plugin architecture
 
 | Component | Location | Auto-loaded |
 |-----------|----------|-------------|
 | Agents (7) | agents/ | Yes (plugin.json) |
-| Skills (7) | skills/ | Yes (plugin.json) |
+| Skills (9) | skills/ | Yes (plugin.json) |
 | Hooks (6) | hooks/ | Yes (hooks.json) |
 | References | references/ | No (used by init-project) |
 
@@ -43,6 +45,8 @@
 | present-template | Generate overview slides |
 | weekly-progress | Summarize week's progress |
 | commit-changelog | Commit with CHANGELOG |
+| read-paper | Deep-dive a single paper with Q&A |
+| survey-literature | Systematic literature survey |
 
 ## How to test
 
@@ -62,3 +66,4 @@
 
 - `docs/specs/2026-03-18-inject-template-design.md` — plugin architecture
 - `docs/specs/2026-03-19-labmate-rename.md` — rename rationale
+- `docs/specs/2026-03-20-literature-skills-design.md` — /read-paper + /survey-literature design
