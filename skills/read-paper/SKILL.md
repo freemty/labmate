@@ -1,6 +1,6 @@
 ---
 name: read-paper
-description: "Deep-dive a single paper — methodology, assumptions, bridge to your research. Use when user wants to deeply understand a specific paper."
+description: "Use when user wants to deeply understand a specific paper — its methodology, assumptions, or implications for their research."
 disable-model-invocation: true
 ---
 

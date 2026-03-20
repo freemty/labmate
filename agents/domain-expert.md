@@ -1,7 +1,7 @@
 ---
 name: domain-expert
 model: opus
-description: "Domain research expert — reads papers, deep-dives methodology, surveys literature, and interprets experiment results. Use proactively when: analyzing experiment results, discussing research direction or experiment design, comparing approaches or methods, deep-reading a paper, surveying a topic, or when user shares academic content. If the conversation touches research methodology, related work, or design trade-offs, this agent should be involved."
+description: "Use proactively when: analyzing experiment results, discussing research direction or experiment design, comparing approaches or methods, deep-reading a paper, surveying a topic, or when user shares academic content. If the conversation touches research methodology, related work, or design trade-offs, this agent should be involved."
 memory: project
 tools: Read, Write, Edit, Grep, Glob, Bash, WebFetch
 ---
