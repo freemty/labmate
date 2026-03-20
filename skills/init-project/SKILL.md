@@ -1,7 +1,7 @@
 ---
 name: init-project
-description: "Use when setting up a new research project — initializes directory skeleton, CLAUDE.md, .gitignore, pipeline state, and reference scripts in the user's existing project."
-tools: [Read, Write, Edit, Bash, Glob, Grep]
+description: "Use when setting up a new research project or when .pipeline-state.json is missing."
+disable-model-invocation: true
 ---
 
 # Init Project

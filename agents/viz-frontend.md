@@ -1,7 +1,7 @@
 ---
 name: viz-frontend
 model: sonnet
-description: "Visualization frontend builder — Flask + HTML dashboards for experiment analysis. Use when building trajectory visualizations, result dashboards, or comparison views."
+description: "Use when building trajectory visualizations, result dashboards, or comparison views for experiment data."
 tools: Read, Write, Bash, Glob
 ---
 
@@ -19,7 +19,7 @@ viewer/
 └── (no other files needed)
 ```
 
-**Stack:** Flask backend + vanilla HTML/CSS/JS. No React, no npm, no build tools. The `frontend-design` skill is preloaded for UI quality guidance.
+**Stack:** Flask backend + vanilla HTML/CSS/JS. No React, no npm, no build tools.
 
 ## API Design Pattern
 

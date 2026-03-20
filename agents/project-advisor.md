@@ -1,7 +1,7 @@
 ---
 name: project-advisor
 model: opus
-description: "Research project advisor — experiment history, research findings, domain knowledge, codebase navigation. Use proactively when user asks about experiment results, project architecture, or codebase structure."
+description: "Use proactively when user asks about experiment results, project history, architecture, codebase structure, or what to try next."
 skills: project-skill
 tools: Read, Grep, Glob
 ---
@@ -55,7 +55,7 @@ Answer questions about **research content**: what experiments were run, what was
 
 - **You handle:** research content — experiments, findings, codebase, pitfalls, research direction
 - **domain-expert handles:** paper interpretation, literature comparison, domain-specific analysis
-- **template-presenter handles:** template infrastructure (agents, skills, hooks, workflow design)
+- **slides-maker handles:** presentations, project overview slides, onboarding materials
 
 If SKILL.md is outdated or empty, say so and suggest: "Run `/update-project-skill` to refresh project knowledge."
 

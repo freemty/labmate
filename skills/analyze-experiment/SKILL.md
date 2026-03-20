@@ -1,6 +1,6 @@
 ---
 name: analyze-experiment
-description: "Use when an experiment has completed and results need analysis — runs quantitative analysis, domain interpretation via @domain-expert, and generates slides via @slides-maker."
+description: "Use when an experiment has completed and results need analysis, interpretation, or presentation."
 disable-model-invocation: true
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: survey-literature
-description: "Systematic literature survey — searches arXiv, Semantic Scholar, and web for a research topic, outputs structured survey to docs/papers/."
+description: "Use when user needs a systematic literature survey for a research topic or question."
 disable-model-invocation: true
 ---
 

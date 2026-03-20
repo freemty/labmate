@@ -1,6 +1,7 @@
 ---
 name: commit-changelog
-description: "Use when creating git commits, updating CHANGELOG.md, committing across nested repos/submodules, or generating weekly progress summaries."
+description: "Use when creating git commits, updating CHANGELOG.md, committing across nested repos, or generating weekly progress summaries."
+disable-model-invocation: true
 ---
 
 # Commit & Changelog

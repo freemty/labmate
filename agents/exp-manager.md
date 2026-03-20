@@ -1,7 +1,7 @@
 ---
 name: exp-manager
 model: sonnet
-description: "Experiment monitor — diagnoses failures, retries jobs, detects completion. Use proactively when experiments are running."
+description: "Use proactively when experiments are running, when checking experiment status, diagnosing job failures, or when user asks about running processes."
 tools: Read, Bash, Glob
 ---
 
