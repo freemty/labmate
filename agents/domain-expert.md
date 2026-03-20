@@ -175,6 +175,88 @@ When user says "save" / "archive" / "store" / "存档" / "保存" (or "save as {
 3. Update `docs/papers/landscape.md` — append entry to best-fitting section (same as Mode 1)
 4. Save paper summary to memory directory for cross-session recall
 
+### Mode 5: Literature Survey (文献综述)
+
+Triggered by `/survey-literature` skill. Receives a research question + user research context.
+
+#### Pipeline
+
+**Step 1: Scope (确定搜索轴)**
+- Parse the research question into 3-5 search axes (key terms, synonyms, related concepts)
+- Example: "attention sink in DiT" → axes: "attention sink", "Diffusion Transformer attention", "token concentration DiT", "attention pattern generative models"
+
+**Step 2: Search (并行搜索)**
+Use Mode 0's URL fetching logic (Jina Reader + fallbacks) for each source:
+- arXiv search: `curl -s "https://r.jina.ai/https://arxiv.org/search/?query={encoded_query}&searchtype=all" -H "Accept: text/markdown"`
+- Semantic Scholar: `curl -s "https://api.semanticscholar.org/graph/v1/paper/search?query={encoded_query}&limit=10&fields=title,authors,year,venue,abstract,url"`
+- General web: WebFetch for blog posts, talks, recent announcements
+- Run searches for multiple axes in parallel when possible
+
+**Step 3: Filter (筛选)**
+For each result: extract title, authors, year, venue, relevance (high/medium/low).
+Discard results with relevance "low" unless total count is under target.
+
+**Step 4: Synthesize (综合)**
+- Group papers by sub-topic
+- Identify dominant approaches and trade-offs
+- Identify gaps in the literature
+- Read `docs/papers/landscape.md` + `exp/summary.md` for user context
+- Connect findings to user's current research
+
+**Step 5: Output (输出)**
+Write to `docs/papers/{topic}-survey.md`:
+
+    ```markdown
+    # Literature Survey: {topic}
+
+    **Date:** {today}
+    **Query:** {original question}
+
+    ## Overview
+    {2-3 paragraph synthesis of the field}
+
+    ## Papers by Sub-topic
+
+    ### {Sub-topic 1}
+    | Paper | Year | Venue | Key Finding | Relevance |
+    |-------|------|-------|-------------|-----------|
+    | [Title](url) | YYYY | Venue | One-line finding | High/Med |
+
+    **Summary:** {paragraph synthesizing this sub-topic}
+
+    ### {Sub-topic 2}
+    ...
+
+    ## Gaps & Opportunities
+    - {identified gaps that could be research directions}
+
+    ## Relevance to Our Research
+    - {connections to current experiments from exp/summary.md}
+    - {suggested follow-up experiments or papers to read}
+
+    ## Sources
+    - [1] Full citation with URL
+    - [2] ...
+    ```
+
+**Step 6: Update landscape.md**
+Append newly discovered high-relevance papers to the appropriate sections in `docs/papers/landscape.md`.
+
+#### Fallback Strategy
+
+- If a search source fails, try remaining sources — do not abort
+- If initial searches return few results, try alternative search axes from Step 1 (synonyms, broader terms)
+- If arXiv/Semantic Scholar are both unavailable, fall back to general web search only
+- If fewer than 8 papers found after exhausting axes, output what was found with a "Coverage Limitation" note at the top of the survey
+- **Never fabricate papers** to meet the target count
+
+#### Quality Standards
+
+- Target 8+ papers per survey (soft target, not hard requirement)
+- Each paper must have a verifiable URL
+- Clearly mark source type: "peer-reviewed" vs "preprint" vs "blog/talk"
+- Separate "found via search" from "inferred from citations in other papers"
+
 ## Analysis Principles
 
 Non-negotiable:
