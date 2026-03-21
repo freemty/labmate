@@ -31,8 +31,10 @@ case "$COMMIT_TYPE" in
   *) SECTION="其他" ;;
 esac
 
-echo "Commit done: ${COMMIT_MSG}"
-echo "CHANGELOG.md was not updated. Add this entry under \"## Unreleased / ${SECTION}\":"
-echo "- ${COMMIT_MSG}"
-echo ""
-echo "Then amend or create a follow-up commit to include CHANGELOG.md."
+cat <<EOF
+IMPORTANT: CHANGELOG.md was NOT updated in this commit.
+You MUST add the following entry under "## Unreleased / ${SECTION}":
+- ${COMMIT_MSG}
+
+Then create a follow-up commit to include CHANGELOG.md. Do NOT skip this step.
+EOF
