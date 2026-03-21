@@ -5,6 +5,9 @@
 ### 新增
 - arxiv-detect hook: UserPromptSubmit 自动检测 arxiv 链接，提示使用 /read-paper
 
+### 修复
+- post-commit-changelog hook 措辞加强为 IMPORTANT/MUST，防止 Claude 忽略 CHANGELOG 提醒
+
 ## v0.4.0 — LabMate (2026-03-19)
 
 ### Breaking Changes
