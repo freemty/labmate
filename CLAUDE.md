@@ -62,6 +62,12 @@
 - **main** = Plugin release (clean, only plugin infrastructure)
 - **dev** = Development + self-use (may have override files, experiment data)
 
+## Experiment rules
+
+1. **Cleanup and running experiments must be isolated** — NEVER run disk cleanup, `umount`, environment reset, or deployment operations while experiments are active on the same machine. Always confirm no active jobs before any cleanup.
+2. **Smoke test the full pipeline before multi-machine deploy** — Before deploying N jobs x M servers, run the complete end-to-end flow on 1 machine first. Single-machine success does not guarantee distributed success (SSH, quoting, filesystem, process management all introduce new failure modes).
+3. **Experiments must have built-in resume** — Large-scale experiments will always partially fail (API rate limits, network errors, disk issues, process crashes). The framework must support checking completion rate and re-running only failed items.
+
 ## Specs
 
 - `docs/specs/2026-03-18-inject-template-design.md` — plugin architecture
