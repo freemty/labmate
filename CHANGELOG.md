@@ -2,8 +2,13 @@
 
 ## Unreleased
 
+## v0.6.0 (2026-03-26)
+
 ### 新增
 - arxiv-detect hook: UserPromptSubmit 自动检测 arxiv 链接，提示使用 /read-paper
+- 9 篇 paper deep-dive notes (cc-architecture, cc-tips, evals, gstack, harness-eng, long-running, notebooklm, skills-design, superpowers)
+- cc-advisor skill design spec and publication plan
+- CLAUDE.md: Experiment rules (cleanup isolation, smoke test, built-in resume)
 
 ### 修复
 - post-commit-changelog hook 措辞加强为 IMPORTANT/MUST，防止 Claude 忽略 CHANGELOG 提醒
