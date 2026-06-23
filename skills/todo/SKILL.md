@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 # /todo
 
-Lightweight TODO tracking — one line per item, auto-indexed in CLAUDE.md.
+Lightweight TODO tracking — one line per item, auto-indexed in the project instruction file (`AGENTS.md` for Codex/Antigravity, `CLAUDE.md` for Claude Code).
 
 ## Usage
 
@@ -32,7 +32,8 @@ Parse user input:
 
 Check if `docs/TODO.md` exists in the project root. If not:
 1. Create it with header `# TODO`
-2. Add index entry to CLAUDE.md: `- \`docs/TODO.md\` — Project action items and task backlog`
+2. Add index entry to the active instruction file: `- \`docs/TODO.md\` — Project action items and task backlog`
+3. If both `AGENTS.md` and `CLAUDE.md` exist, add the same index entry to both.
 
 If file already exists, skip this step entirely.
 
@@ -86,5 +87,5 @@ Report: "Removed N completed items."
 |---------|---------|
 | Adding vague items like "fix that thing" | Ask for specifics |
 | Forgetting the date | Always append `— YYYY-MM-DD` |
-| Creating docs/TODO.md without indexing | Always check CLAUDE.md |
+| Creating docs/TODO.md without indexing | Always check `AGENTS.md` and `CLAUDE.md` when both exist |
 | Numbering completed items in `list` | Only number pending `- [ ]` items |

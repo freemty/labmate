@@ -123,7 +123,7 @@ Write ONLY to `viewer/` directory:
 - `viewer/static/index.html` — frontend
 - `viewer/static/` — any additional static assets
 
-Do NOT touch: `exp/`, `docs/`, `.claude/`, or any other directory.
+Do NOT touch: `exp/`, `docs/`, `.claude/`, `.agents/`, or any other directory.
 
 ## Quality Rules
 

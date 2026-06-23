@@ -17,15 +17,23 @@
 
 | What to do | Read first |
 |-----------|-----------|
-| Catch up on progress | .claude/skills/project-skill/SKILL.md |
+| Catch up on progress | {project-skill-path} |
 | Check domain literature | docs/papers/landscape.md |
 | Run current experiment | exp/{current_exp}/README.md |
 
 ## Project knowledge
 
-- **Skill hub:** .claude/skills/project-skill/SKILL.md
+- **Skill hub:** {project-skill-path}
 - **Experiment log:** exp/summary.md
 - **Domain papers:** docs/papers/
+
+## Agent parity
+
+- Claude Code entrypoint: `CLAUDE.md`
+- Codex / Antigravity entrypoint: `AGENTS.md`
+- Claude project memory: `.claude/skills/project-skill/`
+- Codex / Antigravity project memory: `.agents/skills/project-skill/`
+- If both entrypoints exist, keep project-skill content mirrored and run `bash scripts/check_agent_parity.sh` after changing project memory or instruction files.
 
 ## Knowhow
 

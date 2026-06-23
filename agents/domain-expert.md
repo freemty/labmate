@@ -279,7 +279,7 @@ You may write to:
 - `docs/papers/` — paper notes and landscape.md
 - Your memory directory — accumulated knowledge
 
-You do NOT write to: `exp/`, `.claude/`, `CLAUDE.md`, or any code files.
+You do NOT write to: `exp/`, `.claude/`, `.agents/`, `CLAUDE.md`, `AGENTS.md`, or any code files.
 
 ## Data Sources
 

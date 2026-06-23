@@ -10,7 +10,7 @@ Your AI labmate for the full research lifecycle — from reading papers to runni
 
 ## The problem
 
-You start a research project with Claude. Three hours later you're debugging a CUDA kernel and have completely forgotten what hypothesis you were testing.
+You start a research project with an AI coding agent. Three hours later you're debugging a CUDA kernel and have completely forgotten what hypothesis you were testing.
 
 Your agent is no better — doesn't know what you tried last week, can't read your reference papers, and treats every session like day one.
 
@@ -28,7 +28,7 @@ Then run `/init-project` in your existing research project. LabMate auto-detects
 
 ### Tutorial
 
-New to Claude Code for research? Start here: **[CC Research Playbook](https://freemty.github.io/cc-research-playbook.html)** — covers context engineering, skills, hooks, sub-agents, and how LabMate ties it all together.
+New to agentic coding for research? Start here: **[CC Research Playbook](https://freemty.github.io/cc-research-playbook.html)** — covers context engineering, skills, hooks, sub-agents, and how LabMate ties it all together. LabMate keeps project memory portable across Claude Code (`CLAUDE.md` / `.claude/`) and Codex or Antigravity (`AGENTS.md` / `.agents/`).
 
 ### Recommended companions
 
@@ -139,9 +139,11 @@ mkdir -p .claude/agents
 # Your local .claude/agents/domain-expert.md overrides the plugin version
 ```
 
+For Codex or Antigravity project memory, use `.agents/skills/project-skill/` and keep it mirrored with `.claude/skills/project-skill/` when both platforms are active.
+
 ## Under the hood
 
-5 specialized agents, 12 skills, 8 hooks working together. See [CLAUDE.md](CLAUDE.md) for the technical architecture.
+5 specialized agents, 12 skills, 8 hooks working together. See [CLAUDE.md](CLAUDE.md) / `AGENTS.md` for the technical architecture in initialized projects.
 
 ## Acknowledgments
 
@@ -153,7 +155,7 @@ mkdir -p .claude/agents
 
 ```bibtex
 @software{labmate2026,
-  title   = {LabMate: Research Harness for Claude Code},
+  title   = {LabMate: Research Harness for AI Coding Agents},
   author  = {freemty},
   year    = {2026},
   version = {0.9.1},

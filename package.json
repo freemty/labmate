@@ -1,7 +1,7 @@
 {
   "name": "labmate",
   "version": "0.7.1",
-  "description": "Research Harness for Claude Code",
+  "description": "Research harness for AI coding agents",
   "author": "freemty",
   "license": "MIT",
   "homepage": "https://github.com/freemty/labmate"

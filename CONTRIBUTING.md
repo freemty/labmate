@@ -1,6 +1,6 @@
 # Contributing to LabMate
 
-Thanks for your interest in contributing! LabMate is a pure-Markdown Claude Code plugin — no build step, no dependencies.
+Thanks for your interest in contributing! LabMate is a pure-Markdown research harness for AI coding agents — no build step, no dependencies.
 
 ## Quick start
 
@@ -44,7 +44,7 @@ Types: feat, fix, refactor, docs, test, chore
 
 - Pure Markdown — no runtime dependencies
 - Files under 400 lines
-- Test changes by installing the plugin locally and running the relevant skill/agent
+- Test changes by installing the plugin locally and running the relevant skill/agent. For project-memory changes, verify both Claude Code (`CLAUDE.md` / `.claude/`) and Codex or Antigravity (`AGENTS.md` / `.agents/`) behavior when both surfaces are present.
 
 ## Finding work
 

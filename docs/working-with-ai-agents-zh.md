@@ -24,17 +24,17 @@
 
 这是我觉得最重要的一条。
 
-Agent 没有记忆，所以你得帮它建记忆。做法很简单：对话中产出的任何理解、决策、约定，写进文档，然后在 CLAUDE.md 里加索引。没被索引的文档等于不存在，未来 session 永远不会读到。
+Agent 没有记忆，所以你得帮它建记忆。做法很简单：对话中产出的任何理解、决策、约定，写进文档，然后在项目 instruction file 里加索引：Claude Code 用 `CLAUDE.md`，Codex / Antigravity 用 `AGENTS.md`。没被索引的文档等于不存在，未来 session 很可能不会读到。
 
-但 CLAUDE.md 本身不适合放细节。它会被加载到每个 session 开头，写太长就把 context 吃掉了。正确的分层：
+但 `CLAUDE.md` / `AGENTS.md` 本身不适合放细节。它会被加载到每个 session 开头，写太长就把 context 吃掉了。正确的分层：
 
 ```
-CLAUDE.md        ← 项目 overview + 文档索引（短，几十行）
-SKILL.md         ← 具体知识：架构、实验结论、工程教训（可以长）
-specific docs    ← 某个 topic 的深度文档
+CLAUDE.md / AGENTS.md            ← 项目 overview + 文档索引（短，几十行）
+.claude/.agents project-skill    ← 具体知识：架构、实验结论、工程教训（可以长）
+specific docs                    ← 某个 topic 的深度文档
 ```
 
-决策层和操作层分开。CLAUDE.md 告诉 agent "去哪里找信息"，SKILL.md 告诉它"信息是什么"。
+决策层和操作层分开。`CLAUDE.md` / `AGENTS.md` 告诉 agent "去哪里找信息"，project-skill 告诉它"信息是什么"。如果你同时用 Claude Code 和 Codex，`.claude/skills/project-skill/` 与 `.agents/skills/project-skill/` 必须镜像，并用 `scripts/check_agent_parity.sh` 防漂移。
 
 还有一个问题：`/compact` 等于遗忘。默认的 compact 会把之前的对话压缩掉，你刚教它的东西可能就没了。所以总结要频繁，最好用 hook 自动提醒。我用了几个：
 
@@ -160,7 +160,7 @@ Subagent（隔离 context）
         │ 写回
         ▼
 持久化文档
-  CLAUDE.md → SKILL.md → 各种 specific docs
+  CLAUDE.md / AGENTS.md → project-skill → 各种 specific docs
   跨 session 活着，对抗遗忘
 ```
 

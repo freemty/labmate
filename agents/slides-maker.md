@@ -56,7 +56,7 @@ Content types: `slides` (default), `onboarding`, `demo-script`
 
    | Step | Read | Extract |
    |------|------|---------|
-   | 1 | `CLAUDE.md` | Project name, description, agent/skill/hook counts |
+   | 1 | `AGENTS.md` or `CLAUDE.md` | Project name, description, agent/skill/hook counts |
    | 2 | `agents/*.md` (via Glob) | Each agent: name, model, description |
    | 3 | `skills/*/SKILL.md` (via Glob) | Each skill: name, trigger |
    | 4 | `.pipeline-state.json` | Current stage, active experiment |

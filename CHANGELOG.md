@@ -7,10 +7,14 @@
 - post-docs-remind hook: feat/fix/refactor commit 后提醒更新文档（2h 冷却）
 - pre-compact-archive hook: context 压缩前检测对话密度，提醒归档知识
 - post-skill-stale hook: 检测 5+ commits 后 project skill 滞后（4h 冷却）
+- Codex/Antigravity project-memory parity guard: 新增 `references/check_agent_parity.sh`，校验 `CLAUDE.md`/`AGENTS.md`、`.claude/skills/project-skill`/`.agents/skills/project-skill` 与 agent-memory 镜像
 
 ### 变更
 - /update-knowhow 变为 /update-docs 的轻量 alias
 - 分类判断完全由 agent 自主决定，移除 "If unclear, ask user once"
+- init-project/update-project-skill 会按目标 agent 生成或镜像 `.claude` 与 `.agents` 项目记忆，并在双入口项目中运行 parity guard
+- session-start hook 改为平台感知的 project-skill 路径选择，支持 `CLAUDE_PLUGIN_ROOT`、`CODEX_PLUGIN_ROOT` 与 `PLUGIN_ROOT`
+- 模板、README、教程和 active agents 更新为 Claude Code / Codex / Antigravity 兼容表述
 
 ## v0.8.0 (2026-04-15)
 

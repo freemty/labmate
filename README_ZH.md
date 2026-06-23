@@ -10,7 +10,7 @@
 
 ## 问题
 
-你用 Claude 开始一个研究项目。三小时后你在 debug 一个 CUDA kernel，完全忘了自己在验证什么假设。
+你用 AI coding agent 开始一个研究项目。三小时后你在 debug 一个 CUDA kernel，完全忘了自己在验证什么假设。
 
 你的 agent 也好不到哪去——不知道你上周试过什么，看不了你的参考论文，每次开会话都像第一天上班。
 
@@ -27,7 +27,7 @@ LabMate 管两头。给 agent 装上实验记忆和论文知识。给你一套�
 
 ### 教程
 
-第一次用 Claude Code 做研究？从这里开始：**[CC Research Playbook](https://freemty.github.io/cc-research-playbook.html)** — 讲解 context engineering、skills、hooks、sub-agent，以及 LabMate 如何把这些串起来。
+第一次用 agentic coding 做研究？从这里开始：**[CC Research Playbook](https://freemty.github.io/cc-research-playbook.html)** — 讲解 context engineering、skills、hooks、sub-agent，以及 LabMate 如何把这些串起来。LabMate 会把项目记忆分流到 Claude Code 的 `CLAUDE.md` / `.claude/`，以及 Codex / Antigravity 的 `AGENTS.md` / `.agents/`。
 
 ### 推荐搭配
 
@@ -138,9 +138,11 @@ mkdir -p .claude/agents
 # 你的 .claude/agents/domain-expert.md 自动覆盖 plugin 版本
 ```
 
+如果同时使用 Claude Code 和 Codex / Antigravity，保持 `.claude/skills/project-skill/` 与 `.agents/skills/project-skill/` 镜像一致。
+
 ## 技术架构
 
-5 个专业 agent、9 个 skill、8 个 hook 协同工作。详见 [CLAUDE.md](CLAUDE.md)。
+5 个专业 agent、12 个 skill、8 个 hook 协同工作。初始化后的项目详见 `CLAUDE.md` / `AGENTS.md`。
 
 ## 致谢
 
@@ -152,7 +154,7 @@ mkdir -p .claude/agents
 
 ```bibtex
 @software{labmate2026,
-  title   = {LabMate: Research Harness for Claude Code},
+  title   = {LabMate: Research Harness for AI Coding Agents},
   author  = {freemty},
   year    = {2026},
   version = {0.5.0},

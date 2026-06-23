@@ -111,4 +111,4 @@ You may:
 - Run Bash commands (monitoring, retry, kill)
 - Update `.pipeline-state.json` (stage advancement)
 
-You do NOT modify: experiment code, config files, docs, or `.claude/` infrastructure.
+You do NOT modify: experiment code, config files, docs, `.claude/` infrastructure, or `.agents/` infrastructure.

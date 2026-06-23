@@ -8,7 +8,7 @@ This walks you through a complete research cycle with LabMate, from install to a
 claude plugin install freemty/labmate
 ```
 
-Open Claude Code in your project directory. You should see a LabMate prompt suggesting `/init-project` — that's the SessionStart hook confirming the plugin loaded.
+Open your agentic coding tool in the project directory. In Claude Code this creates `CLAUDE.md` and `.claude/skills/project-skill/`; in Codex or Antigravity it creates `AGENTS.md` and `.agents/skills/project-skill/`. You should see a LabMate prompt suggesting `/init-project` — that's the SessionStart hook confirming the plugin loaded.
 
 ## 1. Initialize your project
 
@@ -53,7 +53,7 @@ my-nlp-project/
 ├── viewer/
 │   └── app.py
 ├── slides/
-├── CLAUDE.md               # your research hub — principles, agents, workflow
+├── CLAUDE.md or AGENTS.md  # your research hub — principles, agents, workflow
 └── .pipeline-state.json    # tracks current experiment + stage
 ```
 
@@ -114,7 +114,7 @@ LabMate also updates `exp/exp01a/README.md` with findings and `exp/summary.md` w
 you: /update-project-skill
 ```
 
-This compresses your findings into `.claude/skills/project-skill/SKILL.md` — persistent memory that survives across sessions. Next time you open this project, your agent already knows what you tried and what worked.
+This compresses your findings into the project-local skill (`.agents/skills/project-skill/SKILL.md` for Codex/Antigravity or `.claude/skills/project-skill/SKILL.md` for Claude Code) — persistent memory that survives across sessions. Next time you open this project, your agent already knows what you tried and what worked.
 
 ## 6. Iterate
 
@@ -127,7 +127,7 @@ LabMate creates `exp/exp01b/` (variant of exp01). The cycle repeats.
 
 ## What happens across sessions
 
-When you come back tomorrow and open Claude Code:
+When you come back tomorrow and open Claude Code, Codex, or Antigravity:
 
 1. SessionStart hook reads `.pipeline-state.json` and tells your agent where you left off
 2. Your agent checks `exp/summary.md` for experiment history
@@ -138,7 +138,7 @@ No more "what were we doing again?"
 
 ## Tips
 
-- **Read your CLAUDE.md** — it's the single source of truth for your research workflow. The Research Principles section is worth internalizing.
+- **Read your project instruction file** — `CLAUDE.md` for Claude Code, `AGENTS.md` for Codex/Antigravity. It is the source of truth for workflow routing. If both exist, keep them behaviorally aligned.
 - **Use `@domain-expert`** to read papers before designing experiments. Ask it to check `docs/papers/landscape.md` for related work.
 - **Commit after each experiment** — LabMate's workflow depends on git history to track what's been tried.
 - **Don't skip `/update-project-skill`** — it's what gives your agent long-term memory. Run it after every significant finding.
@@ -151,4 +151,4 @@ If you work in a specific domain, override the `@domain-expert` agent:
 mkdir -p .claude/agents
 ```
 
-Create `.claude/agents/domain-expert.md` with domain-specific knowledge (what baselines matter in your field, what metrics to use, which conferences to cite). Your local version takes priority over the plugin default.
+Create `.claude/agents/domain-expert.md` with domain-specific knowledge (what baselines matter in your field, what metrics to use, which conferences to cite). Your local version takes priority over the plugin default. For project memory, mirror `.claude/skills/project-skill/` and `.agents/skills/project-skill/` when both Claude Code and Codex/Antigravity are active.

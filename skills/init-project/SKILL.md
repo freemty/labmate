@@ -24,15 +24,26 @@ Initialize a project skeleton in the user's existing project. Supports two types
      > "检测到 git 工作区有未提交更改。继续将在此基础上写入文件。确认继续？(Y/n)"
    - 若用户回答 n，立即停止。
 
-2. 检查以下路径是否存在，记录结果（用于后续 skip 判断）：
+2. 检测 agent platform target，记录结果（用于后续 skip 判断）：
+   - Codex / Antigravity workspace target: `AGENTS.md` + `.agents/skills/project-skill/SKILL.md`
+   - Claude Code target: `CLAUDE.md` + `.claude/skills/project-skill/SKILL.md`
+   - 若当前运行环境是 Codex，优先 Codex target；若是 Claude Code，优先 Claude target。
+   - 若项目中两套 instruction file 已同时存在，则后续 Step 4 同步更新两者缺失 section。
+   - 若项目中两套 instruction file 已同时存在，则 project-skill 也必须保持 `.claude/` 与 `.agents/` 镜像一致。
+
+3. 检查以下路径是否存在，记录结果（用于后续 skip 判断）：
    - `CLAUDE.md`
+   - `AGENTS.md`
+   - `.claude/skills/project-skill/SKILL.md`
+   - `.agents/skills/project-skill/SKILL.md`
+   - `scripts/check_agent_parity.sh`
    - `exp/`
    - `docs/`
    - `.pipeline-state.json`
    - `.gitignore`
 
-3. 输出检测摘要（中文），例如：
-   > 检测结果：CLAUDE.md 不存在 | exp/ 已存在 | docs/ 不存在 | .pipeline-state.json 不存在 | .gitignore 已存在
+4. 输出检测摘要（中文），例如：
+   > 检测结果：target=codex | AGENTS.md 不存在 | .agents/skills/project-skill 不存在 | exp/ 已存在 | docs/ 不存在 | .pipeline-state.json 不存在 | .gitignore 已存在
 
 ---
 
@@ -113,7 +124,20 @@ Initialize a project skeleton in the user's existing project. Supports two types
 
 #### 3.4 project-skill 空模板
 
-若 `.claude/skills/project-skill/SKILL.md` 不存在，创建：
+根据 Step 1 检测到的 platform target 确定 project skill 路径：
+
+| Target | Project skill path | Changelog path |
+|--------|--------------------|----------------|
+| Codex / Antigravity workspace | `.agents/skills/project-skill/SKILL.md` | `.agents/skills/project-skill/CHANGELOG.md` |
+| Claude Code | `.claude/skills/project-skill/SKILL.md` | `.claude/skills/project-skill/CHANGELOG.md` |
+
+若项目中两套 instruction file 已同时存在，则两套 project-skill 路径都检查并补齐；若只存在当前 runtime 目标，则只创建当前目标。
+
+镜像规则：
+- 若一侧 project-skill 已存在、另一侧缺失，优先复制已存在侧的整个 `project-skill/` 目录到缺失侧，保留已积累知识。
+- 只有当目标侧和可复制的 counterpart 都不存在时，才创建下面的空模板。
+
+若目标路径的 `SKILL.md` 不存在，创建：
 
 ```markdown
 ---
@@ -136,7 +160,19 @@ user-invocable: false
 (none yet)
 ```
 
-将 `{project-name}` 和 `{description}` 替换为 Step 2 的值。确保 `.claude/skills/project-skill/` 目录存在。
+将 `{project-name}` 和 `{description}` 替换为 Step 2 的值。确保目标 `project-skill/` 目录存在。
+
+若目标 `project-skill/CHANGELOG.md` 不存在，创建：
+
+```markdown
+# project-skill CHANGELOG
+
+## {date} — v0
+
+Initial skeleton created by LabMate.
+```
+
+若两套 project-skill 都存在或本步骤创建了两套，确保两边 `SKILL.md` 和 `CHANGELOG.md` 内容一致。
 
 #### 3.5 CHANGELOG.md
 
@@ -216,7 +252,7 @@ Cross-experiment flight recorder. One row per experiment.
 
 ---
 
-### Step 4: 生成 CLAUDE.md
+### Step 4: 生成 agent instruction file
 
 **从插件读取模板：**
 
@@ -227,19 +263,38 @@ Cross-experiment flight recorder. One row per experiment.
    - `{project-name}` → Step 2 的项目名称
    - `{description}` → Step 2 的一句话描述
    - `{date}` → 今天日期，格式 `YYYY-MM-DD`
+   - `{project-skill-path}` → 当前 target 的 project skill 路径，例如 `.agents/skills/project-skill/SKILL.md`
 
 **写入规则：**
 
-- **若 `CLAUDE.md` 不存在**：直接写入替换后的完整模板。
+- 目标 instruction file：
+  - Codex / Antigravity workspace → `AGENTS.md`
+  - Claude Code → `CLAUDE.md`
+  - 若两者已同时存在，则对两者执行同样的缺失 section 追加逻辑。
 
-- **若 `CLAUDE.md` 已存在**：
-  1. 用 Read 读取现有 CLAUDE.md 内容
+- **若目标文件不存在**：直接写入替换后的完整模板。
+
+- **若目标文件已存在**：
+  1. 用 Read 读取现有文件内容
   2. 解析现有的 `## ` 二级标题列表（h2 sections）
   3. 解析模板的 `## ` 二级标题列表
   4. 找出模板中**存在但现有文件中缺失**的 section
-  5. 仅将缺失的 section（含其内容，直到下一个 `## ` 或文件末尾）**追加**到现有 CLAUDE.md 末尾
+  5. 仅将缺失的 section（含其内容，直到下一个 `## ` 或文件末尾）**追加**到现有文件末尾
   6. **绝对不删除、不修改**现有 section
-  7. 若所有 section 均已存在，输出"CLAUDE.md 已包含所有模板 section，跳过"
+  7. 若所有 section 均已存在，输出"{target file} 已包含所有模板 section，跳过"
+
+---
+
+### Step 4.5: Agent parity guard
+
+若项目中同时存在 `CLAUDE.md` 和 `AGENTS.md`，或同时存在 `.claude/skills/project-skill/` 与 `.agents/skills/project-skill/`：
+
+1. 确保 `scripts/` 目录存在。
+2. 若 `scripts/check_agent_parity.sh` 不存在，用 Read 读取 `<plugin_root>/references/check_agent_parity.sh` 并写入该路径。
+3. 用 Bash `chmod +x scripts/check_agent_parity.sh`。
+4. 运行 `bash scripts/check_agent_parity.sh`。若失败，报告具体失败原因，不要忽略。
+
+若只初始化单一平台目标，则跳过运行，但在摘要中提示：以后同时使用 Claude Code 和 Codex 时，应创建另一侧入口和 project-skill 镜像，并启用 parity guard。
 
 ---
 
@@ -301,7 +356,10 @@ Cross-experiment flight recorder. One row per experiment.
 2. 确认无误后提交：
    git add -A && git commit -m "chore: init project skeleton"
 
-3. （若 type=research）开始第一个实验：
+3. 若生成了 parity guard，验证：
+   bash scripts/check_agent_parity.sh
+
+4. （若 type=research）开始第一个实验：
    /labmate:new-experiment
    （若 type=general）刷新项目知识：
    /labmate:update-project-skill
@@ -323,6 +381,6 @@ Cross-experiment flight recorder. One row per experiment.
 
 - 已存在的文件：**只读，不覆盖**
 - `.gitignore` 规则：**逐行去重，不重复追加**
-- `CLAUDE.md` section：**仅追加缺失 section**
+- agent instruction file section：**仅追加缺失 section**
 - 目录：已存在则跳过 `mkdir`
 - `.pipeline-state.json`：已存在则完整跳过（不更新字段）

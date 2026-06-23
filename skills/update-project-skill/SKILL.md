@@ -9,11 +9,24 @@ disable-model-invocation: true
 
 # Update Project Skill
 
-Refreshes `.claude/skills/project-skill/SKILL.md` by scanning the entire project.
+Refreshes the project-local `project-skill/SKILL.md` by scanning the entire project.
+
+## Platform Paths
+
+Choose the project skill path before running:
+
+| Target | Project skill path | Instruction file |
+|--------|--------------------|------------------|
+| Codex / Antigravity workspace | `.agents/skills/project-skill/SKILL.md` | `AGENTS.md` |
+| Claude Code | `.claude/skills/project-skill/SKILL.md` | `CLAUDE.md` |
+
+Prefer the current runtime target. If both project skill paths already exist, or both `CLAUDE.md` and `AGENTS.md` exist, update the current runtime path first and mirror the final approved content to the other path before finishing.
+
+If `scripts/check_agent_parity.sh` exists, run it after mirroring. A failed parity check means the command is not complete.
 
 ## Detect Mode
 
-Check if `.claude/skills/project-skill/SKILL.md` is empty or only contains skeleton placeholder content.
+Check if the selected project skill file is empty or only contains skeleton placeholder content.
 
 - **Bootstrap mode** (first run / empty SKILL.md): deep scan, generate from scratch
 - **Update mode** (existing SKILL.md): incremental update, preserve existing content
@@ -28,7 +41,7 @@ Use the Agent tool to spawn an Opus subagent. Provide different prompts dependin
 
 > You are initializing the project knowledge base for the first time. Do a DEEP scan:
 >
-> 1. **Project identity**: Read CLAUDE.md, README.md, pyproject.toml/package.json → extract project name, description, purpose, motivation
+> 1. **Project identity**: Read AGENTS.md and/or CLAUDE.md, README.md, pyproject.toml/package.json → extract project name, description, purpose, motivation
 > 2. **Architecture**: Use Glob to map directory tree. Read key entry points. Identify: what does this project do? What are the main modules?
 > 3. **Design decisions**: Read docs/specs/, docs/archive/ → extract key architectural decisions and rejected alternatives
 > 4. **Experiment history**: Scan exp/*/README.md → build experiment table (ID, description, status, key finding)
@@ -43,7 +56,7 @@ Use the Agent tool to spawn an Opus subagent. Provide different prompts dependin
 
 > You are refreshing the project knowledge base. Do an INCREMENTAL scan:
 >
-> 1. Read current `.claude/skills/project-skill/SKILL.md` — preserve structure and user-added custom sections
+> 1. Read current selected project skill file — preserve structure and user-added custom sections
 > 2. Read `exp/` for new or updated experiments since last update
 > 3. Read `prompts/` for version changes
 > 4. Run `git log --oneline -20` for recent changes
@@ -78,10 +91,20 @@ Write the updated SKILL.md.
 
 ### Step 4: Append CHANGELOG
 
-Append entry to `.claude/skills/project-skill/CHANGELOG.md` with date and summary.
+Append entry to the selected `project-skill/CHANGELOG.md` with date and summary. If the counterpart platform path exists, mirror the same final `SKILL.md` and `CHANGELOG.md` there too. If both `CLAUDE.md` and `AGENTS.md` exist but the counterpart `project-skill/` directory is missing, create it and mirror the final files there.
 In bootstrap mode: "Initial bootstrap — auto-generated from existing codebase"
 
-### Step 5: Update pipeline state
+### Step 5: Check parity
+
+If `scripts/check_agent_parity.sh` exists, run:
+
+```bash
+bash scripts/check_agent_parity.sh
+```
+
+If it fails, fix the mirror drift before reporting completion.
+
+### Step 6: Update pipeline state
 
 ```python
 import json, time
@@ -90,6 +113,6 @@ state['skill_updated_at'] = int(time.time())
 json.dump(state, open('.pipeline-state.json', 'w'), indent=2)
 ```
 
-### Step 6: Prompt next action
+### Step 7: Prompt next action
 
 "Also run /commit-changelog? (Y/n)"

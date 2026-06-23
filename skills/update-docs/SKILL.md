@@ -116,7 +116,7 @@ Existing file: append `## {Topic} ({date})` section, or update overlapping conte
 
 ### A5: Index Sync
 
-1. Read `CLAUDE.md`, search for `docs/knowhow/`
+1. Read the active instruction file (`AGENTS.md` for Codex/Antigravity, `CLAUDE.md` for Claude Code), search for `docs/knowhow/`. If both instruction files exist, check and update both.
 2. If NOT found, append:
 
 ```markdown
@@ -139,7 +139,7 @@ Or: 已更新 `docs/knowhow/{category}/{slug}.md` — {what was added}
 
 ## Branch B: Docs
 
-Create or update human-facing structured documents with automatic CLAUDE.md indexing.
+Create or update human-facing structured documents with automatic instruction-file indexing.
 
 ### B1: Determine Intent
 
@@ -179,7 +179,7 @@ For **creates**: scan codebase for relevant code to document.
 
 **Update:** Read existing → identify stale sections → edit (preserve user-written sections) → verify index.
 
-### B4: Auto-Index in CLAUDE.md
+### B4: Auto-Index in Agent Instructions
 
 | Path pattern | Index action |
 |--------------|-------------|
@@ -188,7 +188,7 @@ For **creates**: scan codebase for relevant code to document.
 | `README.md`, `CHANGELOG.md` | Skip (already discoverable) |
 | Custom paths | Add to most relevant section |
 
-Check before adding: `grep -q "<path>" CLAUDE.md` — only add if not present.
+Check before adding: `grep -q "<path>" AGENTS.md CLAUDE.md 2>/dev/null` — only add if not present. Add to the active instruction file; if both files exist, update both so Claude Code and Codex see the same documentation index.
 
 ### B5: Report
 
@@ -207,6 +207,6 @@ Check before adding: `grep -q "<path>" CLAUDE.md` — only add if not present.
 | Writing agent-facing knowledge to docs/ | That's knowhow → Branch A |
 | Writing human-facing docs to docs/knowhow/ | That's docs → Branch B |
 | Overwriting user-written content | Only update generated/stale sections |
-| Forgetting CLAUDE.md index | Always check + add/update |
+| Forgetting instruction-file index | Always check + add/update `AGENTS.md` or `CLAUDE.md` |
 | Creating new knowhow subdirectories | Only 4 fixed categories allowed |
 | Calling subagent | All info is in conversation context, execute directly |
