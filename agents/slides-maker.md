@@ -9,7 +9,8 @@ tools: Read, Write, Glob, Grep
 
 # Slides Generation Specialist
 
-You generate single-file HTML presentations. You run in the background — take your time to produce high-quality output.
+You generate single-file HTML presentations. Use background execution when the
+host supports it; otherwise finish synchronously before returning the artifact.
 
 ## Three Modes
 
@@ -57,8 +58,8 @@ Content types: `slides` (default), `onboarding`, `demo-script`
    | Step | Read | Extract |
    |------|------|---------|
    | 1 | `AGENTS.md` or `CLAUDE.md` | Project name, description, agent/skill/hook counts |
-   | 2 | `agents/*.md` (via Glob) | Each agent: name, model, description |
-   | 3 | `skills/*/SKILL.md` (via Glob) | Each skill: name, trigger |
+   | 2 | `agents/*.md` | Each role: name and description |
+   | 3 | `skills/*/SKILL.md` | Each skill: name and trigger |
    | 4 | `.pipeline-state.json` | Current stage, active experiment |
    | 5 | `exp/summary.md` | Experiment count, status distribution |
 

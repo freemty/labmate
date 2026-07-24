@@ -11,6 +11,11 @@ disable-model-invocation: true
 
 Full analysis pipeline for the current experiment.
 
+## Agent Routing
+
+Read `<plugin-root>/references/agent-routing.md` before delegating. Resolve
+`<plugin-root>` by going up two directories from this `SKILL.md`.
+
 ## Instructions
 
 When this skill is invoked:
@@ -29,29 +34,39 @@ When this skill is invoked:
    ```
    This generates `exp/{current_exp}/results/summary.md`.
 
-3. **Delegate to `@domain-expert`** for interpretation:
+3. **Run the `domain-expert` role** for interpretation:
 
-   Tell it:
+   Follow the portable routing contract with
+   `<plugin-root>/agents/domain-expert.md`.
+
+   Provide this task:
    > Analyze experiment {current_exp}:
    > Read `exp/{current_exp}/results/summary.md` for quantitative results.
    > Read `exp/{current_exp}/README.md` for experiment context.
    > Scan `docs/papers/` for relevant domain papers.
    > Provide ~500 word domain interpretation with paper citations.
 
-   domain-expert has `memory: project`, so it remembers papers from previous sessions.
+   Include the current project skill and relevant paper notes as explicit
+   context. Do not assume the role has persistent memory.
 
 4. **Merge interpretation** into `exp/{current_exp}/README.md` under the "## Findings" section.
 
 5. **Update `exp/summary.md`** cross-experiment table: update the row for current_exp with status "Analyzed" and key finding summary (one line).
 
-6. **Delegate to `@slides-maker`** for presentation:
+6. **Run the `slides-maker` role** for presentation:
 
-   Tell it:
+   Follow the portable routing contract with
+   `<plugin-root>/agents/slides-maker.md`.
+
+   Provide this task:
    > mode: analysis
    > exp_id: {current_exp}
    > Generate: slides/{current_exp}-analysis.html
 
-   slides-maker has `background: true`, so it runs in the background. Tell user: "slides-maker is generating slides in the background. You'll be notified when done."
+   Use background execution when supported. Otherwise generate the slides
+   synchronously. Only report the slide path after the artifact exists; if it is
+   still running in the background, report that status explicitly and continue
+   monitoring until completion or a clear handoff point.
 
 7. **Advance pipeline state:**
    - Set `stage` to "analysis" in `.pipeline-state.json`
@@ -59,4 +74,5 @@ When this skill is invoked:
 8. **Print summary** of generated artifacts:
    - `exp/{current_exp}/results/summary.md` — quantitative analysis
    - `exp/{current_exp}/README.md` — updated with findings
-   - `slides/{current_exp}-analysis.html` — presentation (generating in background)
+   - `slides/{current_exp}-analysis.html` — presentation, or an explicit
+     in-progress status if background work is still running

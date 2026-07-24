@@ -8,18 +8,18 @@ description: >
   context implies documentation should be created or updated.
 ---
 
-# /update-docs
+# Update Docs
 
 Unified document archival. One workflow, two branches: **knowhow** (agent-facing environment knowledge) and **docs** (human-facing documentation). Route automatically — never ask the user which branch.
 
 ## Usage
 
-```
-/update-docs                     — Auto-detect from conversation context
-/update-docs <description>       — Natural language description of what to document
-/update-docs <path>              — Update existing doc at path
-/update-knowhow                  — Alias, same workflow (routes to knowhow branch)
-```
+| Input | Operation |
+|-------|-----------|
+| none | Auto-detect from conversation context |
+| `<description>` | Natural-language description of what to document |
+| `<path>` | Update an existing document at that path |
+| `update-knowhow` alias | Use the same workflow and route to the knowhow branch |
 
 ---
 
@@ -41,7 +41,7 @@ Determine which branch to use based on context. Never ask — decide yourself.
 | How-to guides for humans | **docs** |
 | README, CHANGELOG, getting started | **docs** |
 | User said "写文档", "write docs", "update README" | **docs** |
-| Invoked via /update-knowhow | **knowhow** |
+| Invoked via the `update-knowhow` alias | **knowhow** |
 | Explicit path to `docs/knowhow/` | **knowhow** |
 | Explicit path outside `docs/knowhow/` | **docs** |
 
@@ -62,7 +62,9 @@ Archive environment knowledge into `docs/knowhow/`. Fixed 4 categories, fixed te
 
 ### Pre-check
 
-Verify `docs/knowhow/` exists with all 4 subdirectories. If missing: "docs/knowhow/ 不存在，请先运行 /init-project" — stop.
+Verify `docs/knowhow/` exists with all four subdirectories. If missing, tell
+the user to initialize the project with LabMate's `init-project` skill, then
+stop.
 
 ### A1: Extract
 
@@ -78,8 +80,8 @@ Pick the best-fit category from the table above. Never ask the user — make the
 
 ### A3: Dedup Check
 
-1. Glob `docs/knowhow/{category}/*.md`
-2. Grep keywords from extracted problem/solution across matches
+1. List `docs/knowhow/{category}/*.md`
+2. Search the matching files for keywords from the extracted problem/solution
 3. Match found → **update that file** (append or revise)
 4. No match → **create new file** with kebab-case slug (e.g., `docker-build-cache.md`)
 

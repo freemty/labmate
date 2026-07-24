@@ -4,11 +4,15 @@
 
 ## Quick commands
 
-| Command | Purpose |
-|---------|---------|
-| /labmate:update-project-skill | Refresh project knowledge |
-| /labmate:commit-changelog | Commit with CHANGELOG |
-| /labmate:update-knowhow | Archive environment knowledge |
+| LabMate skill | Purpose |
+|---------------|---------|
+| `update-project-skill` | Refresh project knowledge |
+| `commit-changelog` | Commit with CHANGELOG |
+| `update-knowhow` | Archive environment knowledge |
+
+Invoke skills through the current host's skill selector or ask for them by
+name. Claude Code uses `/labmate:<skill>`; Codex uses `$labmate:<skill>` or
+`/skills`.
 
 ## Session startup
 
@@ -35,22 +39,20 @@
 - `docs/knowhow/debug-solutions/` — Error investigation paths and fixes
 - `docs/knowhow/runbooks/` — Step-by-step operational procedures
 
-## Agents
+## LabMate roles
 
-| Agent | Model | Purpose |
-|-------|-------|---------|
-| @project-advisor | opus | Project history, codebase navigation |
-| @domain-expert | opus | Domain knowledge, design advice |
+| Role | Purpose |
+|------|---------|
+| project advisor | Project history and codebase navigation |
+| domain expert | Domain knowledge and design advice |
 
 ## Skills
 
-All plugin skills use the `labmate:` prefix.
-
 | Skill | Trigger |
 |-------|---------|
-| /labmate:update-project-skill | After major findings or when stale |
-| /labmate:commit-changelog | Commit with CHANGELOG |
-| /labmate:update-knowhow | Archive environment knowledge |
+| `update-project-skill` | After major findings or when stale |
+| `commit-changelog` | Commit with CHANGELOG |
+| `update-knowhow` | Archive environment knowledge |
 
 ## Conventions
 

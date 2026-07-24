@@ -1,6 +1,6 @@
 # {project-name} — Project Knowledge
 
-> Auto-maintained by /update-project-skill. Last updated: {date}
+> Auto-maintained by LabMate's `update-project-skill` skill. Last updated: {date}
 
 ## Project Overview
 
@@ -11,7 +11,7 @@
 
 ## Experiment History
 
-No experiments yet. Run /new-experiment to start.
+No experiments yet. Use LabMate's `new-experiment` skill to start.
 
 ## Key Findings
 
@@ -19,4 +19,4 @@ No experiments yet. Run /new-experiment to start.
 
 ## Domain Knowledge
 
-(accumulated by @domain-expert as papers are archived)
+(accumulated from archived paper notes and domain-expert analyses)

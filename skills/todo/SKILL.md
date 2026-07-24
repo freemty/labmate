@@ -7,18 +7,18 @@ description: >
 disable-model-invocation: true
 ---
 
-# /todo
+# Todo
 
 Lightweight TODO tracking — one line per item, auto-indexed in the project instruction file (`AGENTS.md` for Codex/Antigravity, `CLAUDE.md` for Claude Code).
 
 ## Usage
 
-```
-/todo <description>          — Add a new item (default)
-/todo done <N>               — Mark item N as complete
-/todo list                   — Show all pending items
-/todo clean                  — Remove all completed items
-```
+| Input | Operation |
+|-------|-----------|
+| `<description>` | Add a new item (default) |
+| `done <N>` | Mark item N as complete |
+| `list` | Show all pending items |
+| `clean` | Remove all completed items |
 
 ## Step 1: Determine Operation
 

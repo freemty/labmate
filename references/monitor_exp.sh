@@ -1,9 +1,9 @@
 #!/bin/bash
-# Experiment status monitor — designed for /loop integration
+# Experiment status monitor — one status-check cycle per invocation
 # Usage: monitor_exp.sh <exp_id>
 # Exit 0 = still running (or no data), Exit 1 = all done
 #
-# Example: /loop 5m bash scripts/monitor_exp.sh exp01a
+# Example: bash scripts/monitor_exp.sh exp01a
 
 set -euo pipefail
 

@@ -12,6 +12,10 @@
 - UserPromptSubmit 同时兼容 Codex `prompt` 与 Claude Code `user_prompt`
 
 ### 新增
+- Portable agent routing：agent-backed skills 优先使用 named agent，缺失时
+  回退到普通 subagent，最终可由主线程执行
+- 10 个显式调用 skills 增加 Codex `agents/openai.yaml` policy；新增独立
+  `AGENTS.md` 与 `.agents/skills/project-skill` 镜像
 - /update-docs 统一归档: 合并 update-knowhow (Branch A) 和 update-docs (Branch B) 为单一 skill，自动路由，不再询问用户分类
 - post-docs-remind hook: feat/fix/refactor commit 后提醒更新文档（2h 冷却）
 - pre-compact-archive hook: context 压缩前检测对话密度，提醒归档知识
@@ -21,6 +25,10 @@
   apply_patch 路径、changelog、docs 与 knowhow reminders
 
 ### 变更
+- `read-paper` 的追问与归档统一由主线程承接；portable skills 和生成模板
+  不再要求 Opus、Agent tool、Claude named-agent 或宿主专属工具名
+- Codex manifest 不再声明不受支持的 Markdown agents；Claude manifest
+  继续分发原有 5 个 named agents
 - /update-knowhow 变为 /update-docs 的轻量 alias
 - 分类判断完全由 agent 自主决定，移除 "If unclear, ask user once"
 - init-project/update-project-skill 会按目标 agent 生成或镜像 `.claude` 与 `.agents` 项目记忆，并在双入口项目中运行 parity guard

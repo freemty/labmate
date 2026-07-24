@@ -19,7 +19,7 @@ Initialize a project skeleton in the user's existing project. Supports two types
 
 ### Step 1: 检测现有结构
 
-1. 使用 Bash 运行 `git status --porcelain` 检查 git 仓库状态：
+1. 运行 `git status --porcelain` 检查 git 仓库状态：
    - 若输出非空（有未提交更改），**警告用户**并询问是否继续：
      > "检测到 git 工作区有未提交更改。继续将在此基础上写入文件。确认继续？(Y/n)"
    - 若用户回答 n，立即停止。
@@ -51,8 +51,8 @@ Initialize a project skeleton in the user's existing project. Supports two types
 
 **全部自动推断，用户只需确认或修改。**
 
-1. 用 Bash 获取 `basename $(pwd)` 作为 `{project-name}`
-2. 用 Bash 获取 `{compute_env}` 默认 `local`
+1. 运行 `basename "$(pwd)"` 获取 `{project-name}`
+2. 将 `{compute_env}` 默认设为 `local`
 3. 浏览项目现有文件（README、代码、目录名等），推断出：
    - `{description}` — 一句话描述（从 README 或目录结构推断）
    - `{domain}` — 研究领域（从代码、依赖、README 关键词推断）
@@ -143,7 +143,6 @@ Initialize a project skeleton in the user's existing project. Supports two types
 ---
 name: project-skill
 description: "Use when advising on project architecture, experiment history, codebase navigation, or research findings."
-user-invocable: false
 ---
 
 # {project-name} — Project Knowledge
@@ -151,7 +150,7 @@ user-invocable: false
 > {description}
 
 ## Project overview
-(run /labmate:update-project-skill to populate)
+(use LabMate's `update-project-skill` skill to populate)
 
 ## Experiment history
 (none yet)
@@ -220,7 +219,7 @@ Cross-experiment flight recorder. One row per experiment.
 
 ## Key Papers
 
-(待填写 — 使用 @domain-expert 协助整理文献)
+(待填写 — 使用 LabMate 的 domain expert role 协助整理文献)
 
 ## Research Gaps
 
@@ -242,9 +241,9 @@ Cross-experiment flight recorder. One row per experiment.
 | `viewer/static/index.html` | `references/viewer-static/index.html` |
 
 操作步骤：
-1. 用 Read 读取插件 references 中的源文件内容
-2. 若目标文件不存在，用 Write 写入
-3. 确保父目录存在（必要时用 Bash `mkdir -p` 创建）
+1. 读取插件 references 中的源文件内容
+2. 若目标文件不存在，写入该文件
+3. 确保父目录存在（必要时运行 `mkdir -p` 创建）
 
 #### 3.9 Slides
 
@@ -257,8 +256,8 @@ Cross-experiment flight recorder. One row per experiment.
 **从插件读取模板：**
 
 1. 根据项目类型选择模板：
-   - `general` → 用 Read 读取 `<plugin_root>/references/claude-md-template-general.md`
-   - `research` → 用 Read 读取 `<plugin_root>/references/claude-md-template-research.md`
+   - `general` → 读取 `<plugin_root>/references/instruction-template-general.md`
+   - `research` → 读取 `<plugin_root>/references/instruction-template-research.md`
 2. 替换以下占位符：
    - `{project-name}` → Step 2 的项目名称
    - `{description}` → Step 2 的一句话描述
@@ -275,7 +274,7 @@ Cross-experiment flight recorder. One row per experiment.
 - **若目标文件不存在**：直接写入替换后的完整模板。
 
 - **若目标文件已存在**：
-  1. 用 Read 读取现有文件内容
+  1. 读取现有文件内容
   2. 解析现有的 `## ` 二级标题列表（h2 sections）
   3. 解析模板的 `## ` 二级标题列表
   4. 找出模板中**存在但现有文件中缺失**的 section
@@ -290,8 +289,8 @@ Cross-experiment flight recorder. One row per experiment.
 若项目中同时存在 `CLAUDE.md` 和 `AGENTS.md`，或同时存在 `.claude/skills/project-skill/` 与 `.agents/skills/project-skill/`：
 
 1. 确保 `scripts/` 目录存在。
-2. 若 `scripts/check_agent_parity.sh` 不存在，用 Read 读取 `<plugin_root>/references/check_agent_parity.sh` 并写入该路径。
-3. 用 Bash `chmod +x scripts/check_agent_parity.sh`。
+2. 若 `scripts/check_agent_parity.sh` 不存在，读取 `<plugin_root>/references/check_agent_parity.sh` 并写入该路径。
+3. 运行 `chmod +x scripts/check_agent_parity.sh`。
 4. 运行 `bash scripts/check_agent_parity.sh`。若失败，报告具体失败原因，不要忽略。
 
 若只初始化单一平台目标，则跳过运行，但在摘要中提示：以后同时使用 Claude Code 和 Codex 时，应创建另一侧入口和 project-skill 镜像，并启用 parity guard。
@@ -300,9 +299,9 @@ Cross-experiment flight recorder. One row per experiment.
 
 ### Step 5: 追加 .gitignore 规则
 
-1. 若 `.gitignore` 不存在，先用 Write 创建空文件（内容为空字符串）
+1. 若 `.gitignore` 不存在，先创建空文件（内容为空字符串）
 
-2. 用 Read 读取现有 `.gitignore` 内容，将所有行存入集合 `existing_lines`
+2. 读取现有 `.gitignore` 内容，将所有行存入集合 `existing_lines`
 
 3. **根据项目类型确定待追加规则：**
 
@@ -316,7 +315,7 @@ Cross-experiment flight recorder. One row per experiment.
    ```
 
    **若类型为 `research`：**
-   用 Read 读取 `<plugin_root>/references/gitignore-rules.md`，按以下逻辑处理全部行。
+   读取 `<plugin_root>/references/gitignore-rules.md`，按以下逻辑处理全部行。
 
 4. 逐行处理待追加规则的每一行：
    - **空行**：追加空行（用于格式间隔）
@@ -326,7 +325,7 @@ Cross-experiment flight recorder. One row per experiment.
      - 若该行**不在** `existing_lines` 中，则追加
      - 若已存在，跳过
 
-5. 将所有待追加内容一次性用 Edit 写入 `.gitignore` 末尾
+5. 将所有待追加内容一次性写入 `.gitignore` 末尾
 
 ---
 
@@ -335,7 +334,7 @@ Cross-experiment flight recorder. One row per experiment.
 以中文输出结构化摘要，格式如下：
 
 ```
-=== /init-project 完成 ===
+=== LabMate init-project 完成 ===
 
 项目类型：{type}
 
@@ -360,9 +359,9 @@ Cross-experiment flight recorder. One row per experiment.
    bash scripts/check_agent_parity.sh
 
 4. （若 type=research）开始第一个实验：
-   /labmate:new-experiment
+   使用 LabMate 的 new-experiment skill
    （若 type=general）刷新项目知识：
-   /labmate:update-project-skill
+   使用 LabMate 的 update-project-skill skill
 ```
 
 根据实际操作结果填写"已创建"、"已跳过"、"已更新"列表。

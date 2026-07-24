@@ -1,13 +1,13 @@
 ---
 name: update-knowhow
 description: >
-  Alias for /update-docs (knowhow branch). Use when user says '记下来', '归档',
-  'save this', or after a <knowhow-hint> prompt. Routes to the unified
-  /update-docs workflow with knowhow branch auto-selected.
+  Use when the user says '记下来', '归档', 'save this', or after a
+  <knowhow-hint> prompt and the context should be archived as project knowhow.
 ---
 
 # /update-knowhow
 
-This is an alias. Execute `/update-docs` — it will auto-route to Branch A (knowhow) based on context.
+This is an alias. Execute LabMate's `update-docs` workflow; it will auto-route
+to Branch A (knowhow) based on context.
 
-All logic lives in `/update-docs`. Do not duplicate workflow here.
+All logic lives in the `update-docs` skill. Do not duplicate workflow here.

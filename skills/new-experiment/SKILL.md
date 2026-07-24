@@ -53,7 +53,7 @@ When this skill is invoked:
    See `config.yaml` for configuration.
 
    ## Findings
-   (populated by /analyze-experiment)
+   (populated by LabMate's `analyze-experiment` skill)
 
    ## Pitfalls
    (append lessons learned here)
@@ -150,4 +150,5 @@ When this skill is invoked:
    - Set `current_exp` to new exp_id
    - Set `stage` to "experiment"
 
-6. **Print summary** of created files and suggest: "Run `/monitor {exp_id}` after launching your experiment."
+6. **Print summary** of created files and suggest using LabMate's `monitor`
+   skill with `{exp_id}` after launching the experiment.

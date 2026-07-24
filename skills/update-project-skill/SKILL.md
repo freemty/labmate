@@ -33,16 +33,18 @@ Check if the selected project skill file is empty or only contains skeleton plac
 
 ## Instructions
 
-### Step 1: Spawn Opus subagent (read-only)
+### Step 1: Run a read-only project scan
 
-Use the Agent tool to spawn an Opus subagent. Provide different prompts depending on mode:
+Prefer a read-only, high-reasoning subagent when the host supports subagents.
+Otherwise perform the scan in the main thread. Do not require a particular
+vendor model or named agent. Provide different prompts depending on mode:
 
 **Bootstrap mode prompt** (first run on existing repo):
 
 > You are initializing the project knowledge base for the first time. Do a DEEP scan:
 >
 > 1. **Project identity**: Read AGENTS.md and/or CLAUDE.md, README.md, pyproject.toml/package.json → extract project name, description, purpose, motivation
-> 2. **Architecture**: Use Glob to map directory tree. Read key entry points. Identify: what does this project do? What are the main modules?
+> 2. **Architecture**: Map the directory tree and read key entry points. Identify: what does this project do? What are the main modules?
 > 3. **Design decisions**: Read docs/specs/, docs/archive/ → extract key architectural decisions and rejected alternatives
 > 4. **Experiment history**: Scan exp/*/README.md → build experiment table (ID, description, status, key finding)
 > 5. **Domain papers**: List docs/papers/ contents → inventory of reference material
@@ -115,4 +117,4 @@ json.dump(state, open('.pipeline-state.json', 'w'), indent=2)
 
 ### Step 7: Prompt next action
 
-"Also run /commit-changelog? (Y/n)"
+"Also use LabMate's `commit-changelog` skill? (Y/n)"

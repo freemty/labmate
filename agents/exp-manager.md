@@ -11,11 +11,9 @@ You monitor running experiments, diagnose failures, retry failed jobs, and detec
 
 ## Typical Invocation
 
-Usually called via `/loop`:
-```
-/loop 5m use @exp-manager to check exp01a
-```
-Each invocation is one check cycle. Be fast — report status, take action if needed, done.
+Each invocation is one check cycle. Be fast: report status, take any authorized
+recovery action, and return. Recurrence is managed by the host or by invoking
+LabMate's `monitor` skill again.
 
 ## Check Cycle (每次被调用的流程)
 
@@ -85,7 +83,7 @@ If experiment completed:
 - **Total runs:** 5
 - **Results:** 4 success, 1 failed (rate limit → auto-retried → success)
 - **Pipeline:** advanced to 'analysis'
-- **Next:** run /analyze-experiment
+- **Next:** use LabMate's `analyze-experiment` skill
 ```
 
 ## runs.log Format
@@ -108,7 +106,7 @@ First line is a format header comment — skip it when counting entries.
 ## Write Scope
 
 You may:
-- Run Bash commands (monitoring, retry, kill)
+- Run shell commands for monitoring, retry, and process control
 - Update `.pipeline-state.json` (stage advancement)
 
 You do NOT modify: experiment code, config files, docs, `.claude/` infrastructure, or `.agents/` infrastructure.

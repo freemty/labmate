@@ -11,6 +11,11 @@ disable-model-invocation: true
 
 Systematically search and synthesize relevant literature for a research question. Outputs a structured survey document.
 
+## Agent Routing
+
+Read `<plugin-root>/references/agent-routing.md` before delegating. Resolve
+`<plugin-root>` by going up two directories from this `SKILL.md`.
+
 ## Instructions
 
 When this skill is invoked with `<topic>`:
@@ -21,9 +26,10 @@ Read the following files if they exist (skip silently if not found):
 - `docs/papers/landscape.md` — user's existing literature map
 - `exp/summary.md` — user's experiment history
 
-### Step 2: Delegate to @domain-expert
+### Step 2: Run the `domain-expert` role
 
-Invoke `@domain-expert` with this prompt:
+Follow the portable routing contract with
+`<plugin-root>/agents/domain-expert.md`, using this task:
 
 > **Mode 5: Literature Survey**
 >
@@ -42,4 +48,5 @@ After domain-expert completes, tell the user:
 - Path to the generated survey file
 - Number of papers found
 - Any coverage limitations encountered
-- Suggest: "Use `/read-paper` to deep-dive any paper from this survey."
+- Suggest using LabMate's `read-paper` skill to deep-dive any paper from the
+  survey.

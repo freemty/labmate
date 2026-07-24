@@ -4,14 +4,18 @@
 
 ## Quick commands
 
-| Command | Purpose |
-|---------|---------|
-| /labmate:new-experiment | Scaffold new experiment |
-| /labmate:analyze-experiment | Analyze results |
-| /labmate:update-project-skill | Refresh project knowledge |
-| /labmate:commit-changelog | Commit with CHANGELOG |
-| /labmate:update-knowhow | Archive environment knowledge |
+| LabMate skill | Purpose |
+|---------------|---------|
+| `new-experiment` | Scaffold new experiment |
+| `analyze-experiment` | Analyze results |
+| `update-project-skill` | Refresh project knowledge |
+| `commit-changelog` | Commit with CHANGELOG |
+| `update-knowhow` | Archive environment knowledge |
 | python scripts/launch_exp.py --exp <id> | Launch experiment |
+
+Invoke skills through the current host's skill selector or ask for them by
+name. Claude Code uses `/labmate:<skill>`; Codex uses `$labmate:<skill>` or
+`/skills`.
 
 ## Session startup
 
@@ -42,35 +46,33 @@
 - `docs/knowhow/debug-solutions/` — Error investigation paths and fixes
 - `docs/knowhow/runbooks/` — Step-by-step operational procedures
 
-## Agents
+## LabMate roles
 
-| Agent | Model | Purpose |
-|-------|-------|---------|
-| @project-advisor | opus | Experiment history, findings, codebase navigation |
-| @domain-expert | opus | Papers, domain knowledge, design advice |
-| @exp-manager | sonnet | Monitors experiments, diagnoses failures |
-| @slides-maker | sonnet | Generates HTML slides from analysis |
-| @viz-frontend | sonnet | Builds analysis dashboards |
+| Role | Purpose |
+|------|---------|
+| project advisor | Experiment history, findings, codebase navigation |
+| domain expert | Papers, domain knowledge, design advice |
+| experiment manager | Monitor experiments and diagnose failures |
+| slides maker | Generate HTML slides from analysis |
+| visualization frontend | Build analysis dashboards |
 
 ## Skills
 
-All plugin skills use the `labmate:` prefix.
-
 | Skill | Trigger |
 |-------|---------|
-| /labmate:new-experiment | Starting a new experiment |
-| /labmate:analyze-experiment | After experiment completes |
-| /labmate:update-project-skill | After major findings or when stale |
-| /labmate:commit-changelog | Commit with CHANGELOG |
-| /labmate:update-knowhow | Archive environment knowledge |
-| /labmate:visualize | Results dashboard or project overview |
-| /labmate:monitor | Check experiment status |
+| `new-experiment` | Starting a new experiment |
+| `analyze-experiment` | After experiment completes |
+| `update-project-skill` | After major findings or when stale |
+| `commit-changelog` | Commit with CHANGELOG |
+| `update-knowhow` | Archive environment knowledge |
+| `visualize` | Results dashboard or project overview |
+| `monitor` | Check experiment status |
 
 ## Workflow
 
 ```
-/labmate:new-experiment → run → /labmate:analyze-experiment
-  → commit findings → /labmate:update-project-skill → repeat
+new-experiment → run → analyze-experiment
+  → commit findings → update-project-skill → repeat
 ```
 
 Pipeline state tracked in .pipeline-state.json.

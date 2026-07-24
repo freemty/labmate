@@ -73,7 +73,7 @@ Breaking change: `feat!: <summary>`
 
 ## Weekly Progress Mode
 
-When invoked as `/commit-changelog --weekly` or when user asks for a weekly summary:
+When invoked with `--weekly`, or when the user asks for a weekly summary:
 
 1. **Determine week range:**
    - Current ISO week number and date range (Monday-Sunday)
