@@ -2,12 +2,23 @@
 
 ## Unreleased
 
+### 修复
+- Codex hook runtime parity: `PreToolUse`/`PostToolUse` 提醒改为结构化
+  `hookSpecificOutput.additionalContext`，不再依赖 Codex 会忽略的普通 stdout
+- PostToolUse 输入同时兼容 Codex `tool_response` 与 Claude Code
+  `tool_output`，恢复错误输出、exit code 与 knowhow 检测
+- Codex `apply_patch` 路径解析支持 Add/Update/Delete/Move，使实验、论文和
+  brainstorming hooks 能识别实际修改文件
+- UserPromptSubmit 同时兼容 Codex `prompt` 与 Claude Code `user_prompt`
+
 ### 新增
 - /update-docs 统一归档: 合并 update-knowhow (Branch A) 和 update-docs (Branch B) 为单一 skill，自动路由，不再询问用户分类
 - post-docs-remind hook: feat/fix/refactor commit 后提醒更新文档（2h 冷却）
 - pre-compact-archive hook: context 压缩前检测对话密度，提醒归档知识
 - post-skill-stale hook: 检测 5+ commits 后 project skill 滞后（4h 冷却）
 - Codex/Antigravity project-memory parity guard: 新增 `references/check_agent_parity.sh`，校验 `CLAUDE.md`/`AGENTS.md`、`.claude/skills/project-skill`/`.agents/skills/project-skill` 与 agent-memory 镜像
+- `tests/test-hooks.sh`: 覆盖 Codex/Claude payload、结构化 hook 输出、
+  apply_patch 路径、changelog、docs 与 knowhow reminders
 
 ### 变更
 - /update-knowhow 变为 /update-docs 的轻量 alias
@@ -15,6 +26,9 @@
 - init-project/update-project-skill 会按目标 agent 生成或镜像 `.claude` 与 `.agents` 项目记忆，并在双入口项目中运行 parity guard
 - session-start hook 改为平台感知的 project-skill 路径选择，支持 `CLAUDE_PLUGIN_ROOT`、`CODEX_PLUGIN_ROOT` 与 `PLUGIN_ROOT`
 - 模板、README、教程和 active agents 更新为 Claude Code / Codex / Antigravity 兼容表述
+- /update-docs 与 /update-knowhow 允许 agent 在 hook 已提供充分上下文时自动调用；
+  未解决问题仍不得写成 knowhow
+- 安装指南增加 Codex marketplace、hook trust、更新与运行时验证步骤
 
 ## v0.8.0 (2026-04-15)
 

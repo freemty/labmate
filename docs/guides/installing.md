@@ -4,12 +4,12 @@
 
 ## Prerequisites
 
-- Claude Code CLI installed
+- Claude Code CLI or OpenAI Codex CLI installed
 - Git configured (for marketplace cloning)
 
 ## Install
 
-### First time
+### Claude Code
 
 ```
 /plugin marketplace add freemty/labmate-marketplace
@@ -29,7 +29,22 @@ Then in your research project:
 /plugin install agent-reach
 ```
 
+### OpenAI Codex
+
+For a local checkout of the `yuanbo-skills` marketplace:
+
+```bash
+codex plugin marketplace add /path/to/yuanbo-skills
+codex plugin add labmate@yuanbo-skills
+```
+
+Start a new Codex session after installation. Plugin hooks are not trusted just
+because the plugin is enabled: open `/hooks`, review the LabMate definitions,
+and trust the current hashes before expecting lifecycle reminders to run.
+
 ## Update
+
+### Claude Code
 
 ```
 /plugin update
@@ -42,6 +57,21 @@ Then **open a new session** and run:
 
 The current session caches the plugin path at startup. `/reload-plugins` in the same session will re-fetch content but still use the old path. A new session is required.
 
+### OpenAI Codex
+
+For a Git marketplace, refresh the marketplace snapshot and reinstall the
+plugin version:
+
+```bash
+codex plugin marketplace upgrade yuanbo-skills
+codex plugin add labmate@yuanbo-skills
+```
+
+For a local marketplace, the source checkout is already current; rerun
+`codex plugin add labmate@yuanbo-skills` to refresh the installed snapshot.
+Open a new session and review `/hooks` again because changed hook hashes require
+new trust.
+
 ### Verify
 
 Invoke any labmate skill (e.g. `/labmate:todo list`) and check the `Base directory` line shows the expected version number.
@@ -50,6 +80,16 @@ Or check directly:
 ```
 /plugin
 ```
+
+On Codex:
+
+```bash
+codex plugin list
+bash plugins/labmate/tests/test-hooks.sh
+```
+
+Then use `/hooks` in an interactive Codex session and confirm the LabMate
+`PreToolUse`, `PostToolUse`, and `SessionStart` commands are trusted.
 
 ## Troubleshooting
 
@@ -89,3 +129,11 @@ Ensure the marketplace is added:
 /plugin marketplace add freemty/labmate-marketplace
 ```
 Then install again.
+
+### Codex skills load but hook reminders do not appear
+
+1. Run `codex features list` and confirm `hooks` is enabled.
+2. Open `/hooks` and trust the current LabMate hook hashes.
+3. Start a new session after installing or updating the plugin.
+4. Run `bash plugins/labmate/tests/test-hooks.sh` from the marketplace checkout
+   to validate both Codex and Claude Code hook payloads.

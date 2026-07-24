@@ -6,7 +6,6 @@ description: >
   Triggers on: "update docs", "更新文档", "写 README", "记下来", "归档", "save this",
   "update knowhow", or after a <knowhow-hint> prompt. Also triggers when conversation
   context implies documentation should be created or updated.
-disable-model-invocation: true
 ---
 
 # /update-docs

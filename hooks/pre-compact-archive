@@ -55,9 +55,8 @@ if [ "$TOTAL_NEW" -ge 5 ] 2>/dev/null; then
   DETAILS="${DETAILS}${TOTAL_NEW} 个新文件"
 fi
 
-cat << HINT
-<archive-hint>
+MESSAGE="<archive-hint>
 本轮对话较密集（${DETAILS}），context 即将压缩。
 建议归档有价值的知识：说"记下来"或 /update-docs
-</archive-hint>
-HINT
+</archive-hint>"
+emit_hook_system_message "$MESSAGE"

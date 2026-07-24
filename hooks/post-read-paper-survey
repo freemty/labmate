@@ -1,9 +1,13 @@
 #!/bin/bash
 # Hook: PostToolUse(Write) — suggest /survey-literature after paper deep-dive archival
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "${SCRIPT_DIR}/hook-utils"
+
 INPUT=$(cat)
 
 # Guard: only act on Write to docs/papers/*-deep-dive.md
-FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty' 2>/dev/null)
+FILE_PATH=$(printf '%s' "$INPUT" | hook_changed_paths \
+  | grep -E '(^|/)docs/papers/.*-deep-dive\.md$' | head -1)
 if [ -z "$FILE_PATH" ]; then exit 0; fi
 
 if ! echo "$FILE_PATH" | grep -qE 'docs/papers/.*-deep-dive\.md$'; then exit 0; fi
@@ -11,4 +15,5 @@ if ! echo "$FILE_PATH" | grep -qE 'docs/papers/.*-deep-dive\.md$'; then exit 0; 
 # Extract paper name from filename
 PAPER_NAME=$(basename "$FILE_PATH" | sed 's/-deep-dive\.md$//')
 
-echo "Paper archived: ${PAPER_NAME}. Want to find related work? Try /survey-literature"
+emit_hook_context "PostToolUse" \
+  "Paper archived: ${PAPER_NAME}. Want to find related work? Try /survey-literature"

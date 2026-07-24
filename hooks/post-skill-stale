@@ -7,7 +7,7 @@ source "${SCRIPT_DIR}/hook-utils"
 
 INPUT=$(cat)
 
-COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null)
+COMMAND=$(printf '%s' "$INPUT" | hook_command)
 if [ -z "$COMMAND" ]; then exit 0; fi
 
 # Only trigger on git commit
@@ -35,9 +35,8 @@ if [ "$COMMITS_SINCE" -lt 5 ] 2>/dev/null; then exit 0; fi
 
 mark_reminded skill_stale
 
-cat << HINT
-<skill-stale-hint>
+MESSAGE="<skill-stale-hint>
 自上次 /update-project-skill 以来已有 ${COMMITS_SINCE} 个 commit，project skill 可能已滞后。
 建议运行 /update-project-skill 同步项目知识。
-</skill-stale-hint>
-HINT
+</skill-stale-hint>"
+emit_hook_context "PostToolUse" "$MESSAGE"

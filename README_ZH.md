@@ -1,6 +1,6 @@
 # LabMate
 
-![version](https://img.shields.io/badge/version-0.5.0-blue)
+![version](https://img.shields.io/badge/version-0.9.2-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
 <!-- TODO: 30s demo GIF — record with VHS or asciinema -->
 
@@ -28,6 +28,9 @@ LabMate 管两头。给 agent 装上实验记忆和论文知识。给你一套�
 ### 教程
 
 第一次用 agentic coding 做研究？从这里开始：**[CC Research Playbook](https://freemty.github.io/cc-research-playbook.html)** — 讲解 context engineering、skills、hooks、sub-agent，以及 LabMate 如何把这些串起来。LabMate 会把项目记忆分流到 Claude Code 的 `CLAUDE.md` / `.claude/`，以及 Codex / Antigravity 的 `AGENTS.md` / `.agents/`。
+
+Codex 用户在安装或更新后还需要通过 `/hooks` 检查并信任 LabMate
+lifecycle hooks。Skill 能正常显示并不代表尚未信任的 plugin hooks 已经运行。
 
 ### 推荐搭配
 
@@ -157,7 +160,7 @@ mkdir -p .claude/agents
   title   = {LabMate: Research Harness for AI Coding Agents},
   author  = {freemty},
   year    = {2026},
-  version = {0.5.0},
+  version = {0.9.2},
   url     = {https://github.com/freemty/labmate}
 }
 ```

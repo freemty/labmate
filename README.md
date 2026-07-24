@@ -1,6 +1,6 @@
 # LabMate
 
-![version](https://img.shields.io/badge/version-0.9.1-blue)
+![version](https://img.shields.io/badge/version-0.9.2-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
 <!-- TODO: 30s demo GIF — record with VHS or asciinema -->
 
@@ -29,6 +29,10 @@ Then run `/init-project` in your existing research project. LabMate auto-detects
 ### Tutorial
 
 New to agentic coding for research? Start here: **[CC Research Playbook](https://freemty.github.io/cc-research-playbook.html)** — covers context engineering, skills, hooks, sub-agents, and how LabMate ties it all together. LabMate keeps project memory portable across Claude Code (`CLAUDE.md` / `.claude/`) and Codex or Antigravity (`AGENTS.md` / `.agents/`).
+
+Codex users should review and trust LabMate's lifecycle hooks with `/hooks`
+after installation or update. Skills can load while untrusted plugin hooks
+remain skipped.
 
 ### Recommended companions
 
@@ -158,7 +162,7 @@ For Codex or Antigravity project memory, use `.agents/skills/project-skill/` and
   title   = {LabMate: Research Harness for AI Coding Agents},
   author  = {freemty},
   year    = {2026},
-  version = {0.9.1},
+  version = {0.9.2},
   url     = {https://github.com/freemty/labmate}
 }
 ```

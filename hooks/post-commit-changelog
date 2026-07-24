@@ -1,10 +1,13 @@
 #!/bin/bash
 # Hook: PostToolUse(Bash) — remind to update CHANGELOG after git commits
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "${SCRIPT_DIR}/hook-utils"
+
 INPUT=$(cat)
 
 # Guard: only act if this was a git commit command
-COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null)
+COMMAND=$(printf '%s' "$INPUT" | hook_command)
 if ! echo "$COMMAND" | grep -q "git commit"; then exit 0; fi
 
 # Check if CHANGELOG.md exists
@@ -31,10 +34,9 @@ case "$COMMIT_TYPE" in
   *) SECTION="其他" ;;
 esac
 
-cat <<EOF
-IMPORTANT: CHANGELOG.md was NOT updated in this commit.
-You MUST add the following entry under "## Unreleased / ${SECTION}":
+MESSAGE="IMPORTANT: CHANGELOG.md was NOT updated in this commit.
+You MUST add the following entry under \"## Unreleased / ${SECTION}\":
 - ${COMMIT_MSG}
 
-Then create a follow-up commit to include CHANGELOG.md. Do NOT skip this step.
-EOF
+Then create a follow-up commit to include CHANGELOG.md. Do NOT skip this step."
+emit_hook_context "PostToolUse" "$MESSAGE"

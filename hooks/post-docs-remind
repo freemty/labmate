@@ -7,7 +7,7 @@ source "${SCRIPT_DIR}/hook-utils"
 
 INPUT=$(cat)
 
-COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null)
+COMMAND=$(printf '%s' "$INPUT" | hook_command)
 if [ -z "$COMMAND" ]; then exit 0; fi
 
 # Only trigger on git commit
@@ -56,9 +56,8 @@ if [ -z "$STALE_SIGNALS" ]; then exit 0; fi
 
 mark_reminded docs_remind
 
-cat << HINT
-<docs-hint>
+MESSAGE="<docs-hint>
 刚提交了 ${COMMIT_TYPE} commit（${STALE_SIGNALS}），相关文档可能需要同步更新。
-需要更新吗？说"更新文档"或 /update-docs
-</docs-hint>
-HINT
+如果对话中已经有足够的设计或操作上下文，使用 /update-docs 立即同步；否则提醒用户补充。
+</docs-hint>"
+emit_hook_context "PostToolUse" "$MESSAGE"

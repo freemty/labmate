@@ -1,19 +1,31 @@
 #!/bin/bash
 # Hook: PreToolUse(Write) — remind to brainstorm before big changes
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "${SCRIPT_DIR}/hook-utils"
+
 INPUT=$(cat)
 
-# Extract file path from Write tool input
-FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty' 2>/dev/null)
+# Claude Code Write supplies file_path. Codex apply_patch supplies the patch in
+# tool_input.command, so extract every touched path through the shared helper.
+FILE_PATHS=$(printf '%s' "$INPUT" | hook_changed_paths)
 
 # Only remind for new file creation, not edits
-if [ -n "$FILE_PATH" ] && [ -f "$FILE_PATH" ]; then
-  exit 0
-fi
+NEW_FILE=""
+while IFS= read -r file_path; do
+  [ -z "$file_path" ] && continue
+  if [ ! -e "$file_path" ]; then
+    NEW_FILE="$file_path"
+    break
+  fi
+done <<< "$FILE_PATHS"
+
+[ -z "$NEW_FILE" ] && exit 0
 
 # Only remind if no recent spec exists (within last 24h)
 RECENT_SPEC=$(find docs/specs/ -name "*.md" -mtime -1 2>/dev/null | head -1)
 
 if [ -z "$RECENT_SPEC" ]; then
-  echo "Tip: Creating new file without a recent spec. Consider /brainstorming first for big changes."
+  emit_hook_context "PreToolUse" \
+    "Tip: Creating ${NEW_FILE} without a recent spec. Consider /brainstorming first for big changes."
 fi
