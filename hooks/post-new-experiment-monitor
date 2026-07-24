@@ -1,5 +1,5 @@
 #!/bin/bash
-# Hook: PostToolUse(Write) — remind to use /monitor after new experiment scaffolding
+# Hook: PostToolUse(Write) — suggest monitoring after experiment scaffolding
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "${SCRIPT_DIR}/hook-utils"
 
@@ -16,5 +16,5 @@ if ! echo "$FILE_PATH" | grep -qE 'exp/[^/]+/README\.md$'; then exit 0; fi
 # Extract experiment ID from path
 EXP_ID=$(basename "$(dirname "$FILE_PATH")")
 
-emit_hook_context "PostToolUse" \
-  "Experiment ${EXP_ID} scaffolded. After starting your run, use /monitor to check status."
+  emit_hook_context "PostToolUse" \
+  "Experiment ${EXP_ID} scaffolded. After starting the run, use LabMate's monitor skill to check status."

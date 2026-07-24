@@ -3,6 +3,10 @@
 ## Unreleased
 
 ### 修复
+- SessionStart 不再用 Codex 兼容变量 `CLAUDE_PLUGIN_ROOT` 误判运行平台；
+  Codex 优先读取 `.agents/skills/project-skill`
+- 13 个 hook handlers 的提示全部改为平台中立 skill 名称，并修复
+  `docs/TODO.md`、`AGENTS.md`、空更新时间与 knowhow session 计数
 - Codex hook runtime parity: `PreToolUse`/`PostToolUse` 提醒改为结构化
   `hookSpecificOutput.additionalContext`，不再依赖 Codex 会忽略的普通 stdout
 - PostToolUse 输入同时兼容 Codex `tool_response` 与 Claude Code
@@ -12,6 +16,10 @@
 - UserPromptSubmit 同时兼容 Codex `prompt` 与 Claude Code `user_prompt`
 
 ### 新增
+- Hook tests 覆盖全部 13 个 handlers，并新增 Codex/Claude SessionStart、
+  session reset、PreCompact、AGENTS 文档更新和 null timestamp 场景
+- `tests/test-platform-compat.sh` 校验 manifest、skill policy、模板、版本和
+  hook 测试覆盖率
 - Portable agent routing：agent-backed skills 优先使用 named agent，缺失时
   回退到普通 subagent，最终可由主线程执行
 - 10 个显式调用 skills 增加 Codex `agents/openai.yaml` policy；新增独立
@@ -25,6 +33,8 @@
   apply_patch 路径、changelog、docs 与 knowhow reminders
 
 ### 变更
+- Hook plugin root 解析顺序统一为 `PLUGIN_ROOT` → `CODEX_PLUGIN_ROOT` →
+  `CLAUDE_PLUGIN_ROOT`；Claude/Codex 共用结构化 hook 输出
 - `read-paper` 的追问与归档统一由主线程承接；portable skills 和生成模板
   不再要求 Opus、Agent tool、Claude named-agent 或宿主专属工具名
 - Codex manifest 不再声明不受支持的 Markdown agents；Claude manifest

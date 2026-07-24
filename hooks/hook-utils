@@ -3,7 +3,14 @@
 # Source this file: source "${SCRIPT_DIR}/hook-utils"
 
 hook_command() {
-  jq -r '.tool_input.command // empty' 2>/dev/null
+  jq -r '
+    .tool_input as $input
+    | if ($input | type) == "string" then
+        $input
+      else
+        $input.command // $input.cmd // empty
+      end
+  ' 2>/dev/null
 }
 
 hook_response_text() {
@@ -33,7 +40,17 @@ hook_changed_paths() {
   fi
 
   command=$(printf '%s' "$input" \
-    | jq -r '.tool_input.command // empty' 2>/dev/null)
+    | jq -r '
+        .tool_input as $input
+        | (
+            if ($input | type) == "string" then
+              $input
+            else
+              $input.command // $input.patch // $input.input // empty
+            end
+          )
+        | if type == "string" then . else empty end
+      ' 2>/dev/null)
   if [ -n "$command" ]; then
     printf '%s\n' "$command" | sed -nE \
       -e 's/^\*\*\* (Add|Update|Delete) File: (.*)$/\2/p' \

@@ -1,7 +1,7 @@
 #!/bin/bash
 # Hook: PreCompact — remind to archive knowledge before context compresses
-# Checks session activity level (tool calls, commits) and suggests /update-docs if significant.
-# Depends on: post-knowhow-remind writes 'knowhow_session_count' to .labmate-hook-state.json
+# Checks session activity level and suggests durable archival if significant.
+# Depends on: post-knowhow-remind writes 'knowhow_session' state.
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "${SCRIPT_DIR}/hook-utils"
@@ -16,12 +16,13 @@ if [ "$(should_remind session_archive 0.5)" != "yes" ]; then exit 0; fi
 RECENT_COMMITS=$(git log --oneline --since="4 hours ago" --author="$(git config user.name)" 2>/dev/null | wc -l | tr -d ' ')
 
 # Signal 2: check if any errors were resolved (knowhow-worthy)
-# Proxy: .labmate-hook-state.json has knowhow_session_count > 0 (hints were fired)
+# Proxy: .labmate-hook-state.json has knowhow_session.count > 0.
 KNOWHOW_HINTS=$(python3 -c "
 import json
 try:
     s = json.load(open('.labmate-hook-state.json'))
-    print(s.get('knowhow_session_count', 0))
+    entry = s.get('knowhow_session', {})
+    print(entry.get('count', s.get('knowhow_session_count', 0)))
 except:
     print(0)
 " 2>/dev/null || echo "0")
@@ -57,6 +58,6 @@ fi
 
 MESSAGE="<archive-hint>
 本轮对话较密集（${DETAILS}），context 即将压缩。
-建议归档有价值的知识：说"记下来"或 /update-docs
+建议归档有价值的知识：说"记下来"或使用 LabMate 的 update-docs skill
 </archive-hint>"
 emit_hook_system_message "$MESSAGE"

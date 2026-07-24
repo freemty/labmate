@@ -1,5 +1,5 @@
 #!/bin/bash
-# Hook: UserPromptSubmit — detect arxiv links and suggest /read-paper
+# Hook: UserPromptSubmit — detect arxiv links and suggest the read-paper skill
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "${SCRIPT_DIR}/hook-utils"
 
@@ -16,6 +16,6 @@ if ! echo "$PROMPT" | grep -qiE 'arxiv\.org/(abs|pdf|html)/[0-9]+\.[0-9]+'; then
 ARXIV_ID=$(echo "$PROMPT" | grep -oiE 'arxiv\.org/(abs|pdf|html)/[0-9]+\.[0-9]+' | head -1 | grep -oE '[0-9]+\.[0-9]+')
 
 MESSAGE="IMPORTANT: Detected arxiv paper ${ARXIV_ID} in user message.
-You MUST ask the user: \"检测到 arxiv 论文 ${ARXIV_ID}，要我用 /read-paper 做结构化深度分析吗？\"
-Do NOT silently ignore this. Do NOT just summarize the link. Ask first, then run /read-paper if confirmed."
+You MUST ask the user: \"检测到 arxiv 论文 ${ARXIV_ID}，要我用 LabMate 的 read-paper skill 做结构化深度分析吗？\"
+Do NOT silently ignore this. Do NOT just summarize the link. Ask first, then use the LabMate read-paper skill if confirmed."
 emit_hook_context "UserPromptSubmit" "$MESSAGE"

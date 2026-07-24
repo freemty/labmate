@@ -1,5 +1,5 @@
 #!/bin/bash
-# Hook: PostToolUse(Write) — suggest /survey-literature after paper deep-dive archival
+# Hook: PostToolUse(Write) — suggest literature survey after paper archival
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "${SCRIPT_DIR}/hook-utils"
 
@@ -15,5 +15,5 @@ if ! echo "$FILE_PATH" | grep -qE 'docs/papers/.*-deep-dive\.md$'; then exit 0; 
 # Extract paper name from filename
 PAPER_NAME=$(basename "$FILE_PATH" | sed 's/-deep-dive\.md$//')
 
-emit_hook_context "PostToolUse" \
-  "Paper archived: ${PAPER_NAME}. Want to find related work? Try /survey-literature"
+  emit_hook_context "PostToolUse" \
+  "Paper archived: ${PAPER_NAME}. To find related work, try LabMate's survey-literature skill."

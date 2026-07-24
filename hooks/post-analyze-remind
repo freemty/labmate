@@ -1,5 +1,5 @@
 #!/bin/bash
-# Hook: PostToolUse(Bash) — remind to run /analyze-experiment after analysis script completes
+# Hook: PostToolUse(Bash) — suggest the next LabMate analysis skill
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "${SCRIPT_DIR}/hook-utils"
@@ -24,17 +24,17 @@ if [ -f "$STATE_FILE" ]; then
   STAGE=$(python3 -c "import json; print(json.load(open('$STATE_FILE')).get('stage', ''))" 2>/dev/null)
   case "$STAGE" in
     experiment|monitoring)
-      MESSAGE="Analysis script completed successfully. Run /analyze-experiment to process results and update findings."
+      MESSAGE="Analysis script completed successfully. Use LabMate's analyze-experiment skill to process results and update findings."
       ;;
     analysis)
-      MESSAGE="Analysis complete. Run /visualize to see results as a dashboard, or /visualize compare for cross-experiment comparison."
+      MESSAGE="Analysis complete. Use LabMate's visualize skill for a dashboard, or use its compare mode for a cross-experiment comparison."
       ;;
     *)
-      MESSAGE="Analysis script completed. Consider running /analyze-experiment if this was an experiment run."
+      MESSAGE="Analysis script completed. Consider using LabMate's analyze-experiment skill if this was an experiment run."
       ;;
   esac
 else
-  MESSAGE="Analysis script completed. Run /analyze-experiment to process results."
+  MESSAGE="Analysis script completed. Use LabMate's analyze-experiment skill to process results."
 fi
 
 emit_hook_context "PostToolUse" "$MESSAGE"

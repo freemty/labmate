@@ -1,6 +1,6 @@
 #!/bin/bash
 # Hook: PostToolUse(Bash) — detect project skill staleness by commit count
-# If 5+ commits since last /update-project-skill, remind.
+# If 5+ commits since the last project-skill refresh, remind.
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "${SCRIPT_DIR}/hook-utils"
@@ -36,7 +36,7 @@ if [ "$COMMITS_SINCE" -lt 5 ] 2>/dev/null; then exit 0; fi
 mark_reminded skill_stale
 
 MESSAGE="<skill-stale-hint>
-自上次 /update-project-skill 以来已有 ${COMMITS_SINCE} 个 commit，project skill 可能已滞后。
-建议运行 /update-project-skill 同步项目知识。
+自上次刷新 project skill 以来已有 ${COMMITS_SINCE} 个 commit，项目知识可能已滞后。
+建议使用 LabMate 的 update-project-skill skill 同步项目知识。
 </skill-stale-hint>"
 emit_hook_context "PostToolUse" "$MESSAGE"

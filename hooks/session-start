@@ -4,8 +4,18 @@
 
 set -euo pipefail
 
+if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then
+    LABMATE_RUNTIME="cursor"
+elif [ -n "${PLUGIN_ROOT:-}" ] || [ -n "${CODEX_PLUGIN_ROOT:-}" ]; then
+    LABMATE_RUNTIME="codex"
+elif [ -n "${CLAUDE_PLUGIN_ROOT:-}" ]; then
+    LABMATE_RUNTIME="claude"
+else
+    LABMATE_RUNTIME="unknown"
+fi
+
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PLUGIN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+LABMATE_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 escape_for_json() {
     local s="$1"
@@ -19,13 +29,12 @@ escape_for_json() {
 
 # Detect project state
 if [ ! -f ".pipeline-state.json" ]; then
-    # Project not initialized — prompt to run /init-project
-    context="<labmate>\n\nLabMate is active but this project has not been initialized yet.\n\nRun /init-project to set up experiment directories, AGENTS.md/CLAUDE.md, project-skill, and pipeline state.\n\nAvailable now: @domain-expert @project-advisor @exp-manager @slides-maker\n\n</labmate>"
+    context="<labmate>\n\nLabMate is active but this project has not been initialized yet.\n\nUse LabMate's init-project skill to set up experiment directories, the active instruction file, project-skill, and pipeline state.\n\nLabMate workflows can provide domain-expert, project-advisor, experiment-manager, slides, and visualization roles without requiring named agents.\n\n</labmate>"
 else
     # Project initialized — inject current state + workflow reminder
     current_exp=$(python3 -c "import json; print(json.load(open('.pipeline-state.json')).get('current_exp', 'null'))" 2>/dev/null || echo "null")
     stage=$(python3 -c "import json; print(json.load(open('.pipeline-state.json')).get('stage', 'dev'))" 2>/dev/null || echo "dev")
-    if [ -n "${CLAUDE_PLUGIN_ROOT:-}" ]; then
+    if [ "$LABMATE_RUNTIME" = "claude" ]; then
         project_skill_path=".claude/skills/project-skill/SKILL.md"
         fallback_project_skill_path=".agents/skills/project-skill/SKILL.md"
     else
@@ -36,7 +45,7 @@ else
         project_skill_path="$fallback_project_skill_path"
     fi
 
-    context="<labmate>\n\nLabMate active. exp: ${current_exp} | stage: ${stage}\n\nWorkflow: /new-experiment -> /monitor -> /analyze-experiment -> /visualize -> /commit-changelog\n\nAgents: @domain-expert @project-advisor @exp-manager @slides-maker @viz-frontend\nSkills: /read-paper /survey-literature /new-experiment /analyze-experiment /visualize /monitor /commit-changelog /update-project-skill\n\nProject knowledge: ${project_skill_path}\n\n</labmate>"
+    context="<labmate>\n\nLabMate active. exp: ${current_exp} | stage: ${stage}\n\nWorkflow: new-experiment -> monitor -> analyze-experiment -> visualize -> commit-changelog\n\nAvailable skills: read-paper, survey-literature, new-experiment, analyze-experiment, visualize, monitor, commit-changelog, update-project-skill\n\nUse the current host's skill selector or ask for a LabMate skill by name.\n\nProject knowledge: ${project_skill_path}\n\n</labmate>"
 fi
 
 # --- Periodic reminders (frequency-capped) ---
@@ -61,10 +70,10 @@ else:
     print(int(days))
 " 2>/dev/null || echo "never")
     if [ "$days_since" = "never" ]; then
-      reminders="${reminders}No papers in docs/papers/ yet. Try /read-paper to start building your literature base.\n"
+      reminders="${reminders}No papers in docs/papers/ yet. Try LabMate's read-paper skill to start building your literature base.\n"
       mark_reminded "read_paper"
     elif [ "$days_since" -gt 7 ] 2>/dev/null; then
-      reminders="${reminders}It's been ${days_since} days since your last paper note. Try /read-paper to stay current.\n"
+      reminders="${reminders}It's been ${days_since} days since your last paper note. Try LabMate's read-paper skill to stay current.\n"
       mark_reminded "read_paper"
     fi
   fi
@@ -75,20 +84,20 @@ else:
     WEEK=$(date +%Y-W%V)
     WEEKLY_FILE="docs/weekly/${WEEK}.md"
     if [ ! -f "$WEEKLY_FILE" ] && [ "$(should_remind 'weekly' 24)" = "yes" ]; then
-      reminders="${reminders}No weekly progress for ${WEEK}. Run /commit-changelog --weekly to summarize this week.\n"
+      reminders="${reminders}No weekly progress for ${WEEK}. Use LabMate's commit-changelog skill in weekly mode to summarize this week.\n"
       mark_reminded "weekly"
     fi
   fi
 
-  # Remind about TODO.md (P0 items or staleness, 24h cap)
-  if [ -f "TODO.md" ] && [ "$(should_remind 'todo_check' 24)" = "yes" ]; then
-    TODO_P0=$(awk '/^## P0/,/^## P[1-9]/' TODO.md | grep -c '^\- \[ \]' || echo "0")
-    TODO_MTIME=$(python3 -c "import os,time; print(int((time.time()-os.path.getmtime('TODO.md'))/86400))" 2>/dev/null || echo "0")
+  # Remind about docs/TODO.md (P0 items or staleness, 24h cap)
+  if [ -f "docs/TODO.md" ] && [ "$(should_remind 'todo_check' 24)" = "yes" ]; then
+    TODO_P0=$(awk '/^## P0/,/^## P[1-9]/' docs/TODO.md | grep -c '^\- \[ \]' || echo "0")
+    TODO_MTIME=$(python3 -c "import os,time; print(int((time.time()-os.path.getmtime('docs/TODO.md'))/86400))" 2>/dev/null || echo "0")
     if [ "$TODO_MTIME" -gt 7 ] 2>/dev/null; then
-      reminders="${reminders}TODO.md is ${TODO_MTIME} days stale. Review and update after this session.\n"
+      reminders="${reminders}docs/TODO.md is ${TODO_MTIME} days stale. Review and update it after this session.\n"
       mark_reminded "todo_check"
     elif [ "$TODO_P0" -gt 0 ] 2>/dev/null; then
-      reminders="${reminders}TODO.md has ${TODO_P0} open P0 items. See TODO.md for priorities.\n"
+      reminders="${reminders}docs/TODO.md has ${TODO_P0} open P0 items. Review those priorities first.\n"
       mark_reminded "todo_check"
     fi
   fi
@@ -101,12 +110,10 @@ fi
 escaped=$(escape_for_json "$context")
 
 # Output context injection
-if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then
+if [ "$LABMATE_RUNTIME" = "cursor" ]; then
     printf '{\n  "additional_context": "%s"\n}\n' "$escaped"
-elif [ -n "${CLAUDE_PLUGIN_ROOT:-}" ]; then
-    printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "SessionStart",\n    "additionalContext": "%s"\n  }\n}\n' "$escaped"
 else
-    printf '{\n  "additional_context": "%s"\n}\n' "$escaped"
+    printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "SessionStart",\n    "additionalContext": "%s"\n  }\n}\n' "$escaped"
 fi
 
 exit 0

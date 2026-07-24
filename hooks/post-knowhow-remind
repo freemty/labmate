@@ -1,6 +1,6 @@
 #!/bin/bash
 # Hook: PostToolUse(Bash) — remind to archive environment knowledge
-# Detects env-related commands (install, docker, ssh, debug errors) and suggests /update-knowhow
+# Detects env-related commands and suggests durable knowhow archival
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "${SCRIPT_DIR}/hook-utils"
@@ -36,24 +36,38 @@ if [ "$MATCHED" -eq 0 ]; then exit 0; fi
 # Frequency control: 5 min apart
 if [ "$(should_remind knowhow_remind 0.083)" != "yes" ]; then exit 0; fi
 
-# Session count check + increment + mark reminded (single python3 call)
+# Session count check + increment. Reset when the hook session changes.
 STATE_FILE=".labmate-hook-state.json"
-ALLOWED=$(python3 -c "
+SESSION_KEY=$(printf '%s' "$INPUT" \
+  | jq -r '.session_id // .transcript_path // empty' 2>/dev/null)
+if [ -z "$SESSION_KEY" ]; then
+  SESSION_KEY="date:$(date +%Y-%m-%d)"
+fi
+ALLOWED=$(LABMATE_SESSION_KEY="$SESSION_KEY" LABMATE_STATE_FILE="$STATE_FILE" \
+  python3 - <<'PY' 2>/dev/null || echo "yes"
 import json
-from datetime import datetime
-f = '$STATE_FILE'
+import os
+
+path = os.environ["LABMATE_STATE_FILE"]
+session_key = os.environ["LABMATE_SESSION_KEY"]
 try:
-    s = json.load(open(f))
-except:
-    s = {}
-count = s.get('knowhow_session_count', 0)
+    with open(path) as handle:
+        state = json.load(handle)
+except Exception:
+    state = {}
+
+entry = state.get("knowhow_session", {})
+count = entry.get("count", 0) if entry.get("id") == session_key else 0
 if count >= 3:
-    print('no')
+    print("no")
 else:
-    s['knowhow_session_count'] = count + 1
-    json.dump(s, open(f, 'w'), indent=2)
-    print('yes')
-" 2>/dev/null || echo "yes")
+    state["knowhow_session"] = {"id": session_key, "count": count + 1}
+    state.pop("knowhow_session_count", None)
+    with open(path, "w") as handle:
+        json.dump(state, handle, indent=2)
+    print("yes")
+PY
+)
 
 if [ "$ALLOWED" != "yes" ]; then exit 0; fi
 
@@ -61,6 +75,6 @@ mark_reminded knowhow_remind
 
 MESSAGE="<knowhow-hint>
 刚才的操作看起来包含值得记录的环境知识。
-如果问题已经定位并解决，使用 /update-docs 的 knowhow 分支归档 problem、cause、solution 和命令；如果尚未解决，继续诊断，不要归档猜测。
+如果问题已经定位并解决，使用 LabMate 的 update-docs skill 的 knowhow 分支归档 problem、cause、solution 和命令；如果尚未解决，继续诊断，不要归档猜测。
 </knowhow-hint>"
 emit_hook_context "PostToolUse" "$MESSAGE"
