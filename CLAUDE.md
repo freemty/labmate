@@ -6,28 +6,32 @@
 
 | Command | Purpose |
 |---------|---------|
-| `/init-project` | Initialize research skeleton in target project |
-| `/new-experiment` | Scaffold a new experiment directory |
-| `/analyze-experiment` | Analyze results from current experiment |
-| `/update-project-skill` | Refresh project knowledge base |
-| `/read-paper` | Deep-dive a single paper |
-| `/survey-literature` | Systematic literature survey |
-| `/visualize` | Build results dashboard for experiment |
-| `/monitor` | Check experiment status via exp-manager |
-| `/update-knowhow` | Alias → /update-docs (auto-routes to knowhow branch) |
-| `/todo` | Lightweight task tracking with auto-index |
-| `/update-docs` | Unified archival: knowhow (agent) + docs (human), auto-routes |
+| `/labmate:init-project` | Initialize research skeleton in target project |
+| `/labmate:new-experiment` | Scaffold a new experiment directory |
+| `/labmate:analyze-experiment` | Analyze results from current experiment |
+| `/labmate:update-project-skill` | Refresh project knowledge base |
+| `/labmate:read-paper` | Deep-dive a single paper |
+| `/labmate:survey-literature` | Systematic literature survey |
+| `/labmate:visualize` | Build results dashboard for experiment |
+| `/labmate:monitor` | Check experiment status |
+| `/labmate:update-knowhow` | Alias to update-docs knowhow branch |
+| `/labmate:todo` | Lightweight task tracking with auto-index |
+| `/labmate:update-docs` | Unified archival for knowhow and human docs |
 
 ## Plugin architecture
 
 | Component | Location | Auto-loaded |
 |-----------|----------|-------------|
-| Agents (5) | agents/ | Yes (plugin.json) |
+| Claude named agents (5) | agents/ | Yes (`.claude-plugin/plugin.json`) |
 | Skills (12) | skills/ | Yes (plugin.json) |
-| Hooks (11) | hooks/ | Yes (hooks.json) |
+| Hook handlers (13 / 5 events) | hooks/ | Yes (hooks.json) |
 | References | references/ | No (used by init-project) |
 
 ## Agents
+
+The Markdown body of each agent is portable. Codex does not load these named
+agents from its plugin manifest; agent-backed skills instead use a normal
+subagent or main-thread fallback.
 
 | Agent | Model | Purpose |
 |-------|-------|---------|
@@ -56,12 +60,13 @@
 
 ## How to test
 
-1. Install locally: add plugin path to settings.json
+1. Install locally in Claude Code or from the parent Codex marketplace
 2. Create a test project: `mkdir /tmp/test-project && cd /tmp/test-project && git init`
-3. Run `/init-project` and verify skeleton creation
-4. Run `/init-project` again to verify idempotency
+3. Run `/labmate:init-project` and verify skeleton creation
+4. Run `/labmate:init-project` again to verify idempotency
 5. Test agent override: create `.claude/agents/domain-expert.md` in test project
 6. Verify SessionStart hook injects context on new session
+7. Run `bash tests/test-hooks.sh` and `bash tests/test-platform-compat.sh`
 
 ## Branch strategy
 

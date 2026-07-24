@@ -38,6 +38,8 @@ codex_version=$(jq -r '.version' "$ROOT/.codex-plugin/plugin.json")
   || fail "package and Codex manifest versions differ"
 grep -q "version-${package_version}-" "$ROOT/README.md" \
   || fail "README version badge differs from package version"
+grep -q "version-${package_version}-" "$ROOT/README_ZH.md" \
+  || fail "README_ZH version badge differs from package version"
 
 cmp -s \
   "$ROOT/.claude/skills/project-skill/SKILL.md" \
@@ -62,6 +64,7 @@ runtime_paths=(
   "$ROOT/references/instruction-template-general.md"
   "$ROOT/references/instruction-template-research.md"
   "$ROOT/references/project-skill-template.md"
+  "$ROOT/references/viewer-static/index.html"
 )
 if rg -n \
   '@(domain-expert|project-advisor|exp-manager|slides-maker|viz-frontend)|/loop\b|/brainstorming\b|/(read-paper|survey-literature|new-experiment|monitor|analyze-experiment|visualize|commit-changelog|update-project-skill|update-docs)\b' \

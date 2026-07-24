@@ -18,12 +18,30 @@ LabMate 管两头。给 agent 装上实验记忆和论文知识。给你一套�
 
 ## 安装
 
+### Claude Code
+
 ```bash
 # 从 Anthropic 插件市场安装
-/plugin install labmate
+/plugin marketplace add freemty/labmate-marketplace
+/plugin install labmate@labmate-marketplace
 ```
 
-然后在你的研究项目里跑 `/init-project`。LabMate 自动检测项目信息、搭好骨架。搞定。
+### OpenAI Codex
+
+在本地 `yuanbo-skills` marketplace checkout 中：
+
+```bash
+codex plugin marketplace add /path/to/yuanbo-skills
+codex plugin add labmate@yuanbo-skills
+```
+
+打开新任务后，用 `/hooks` 检查并信任 LabMate hook。然后初始化项目：
+
+| 宿主 | 调用方式 |
+|------|----------|
+| Claude Code | `/labmate:init-project` |
+| Codex | 输入 `$labmate:init-project`，或从 `/skills` 选择 |
+| 其他 Agent Skills 宿主 | 用自然语言要求使用 LabMate 的 `init-project` skill |
 
 ### 教程
 
@@ -34,7 +52,7 @@ lifecycle hooks。Skill 能正常显示并不代表尚未信任的 plugin hooks 
 
 ### 推荐搭配
 
-LabMate 独立可用，但装上这些效果更好：
+LabMate 独立可用，但装上这些效果更好。以下是 Claude Code 命令：
 
 ```bash
 # 开发工作流（TDD、计划模式、代码审查、头脑风暴）
@@ -55,31 +73,31 @@ LabMate 独立可用，但装上这些效果更好：
 
 丢一个链接或 PDF，LabMate 帮你拆解方法论、标出假设、连接到你的研究。
 
-```
-/read-paper https://arxiv.org/abs/2401.04088
-```
+Claude Code：`/labmate:read-paper https://arxiv.org/abs/2401.04088`
+
+Codex：`$labmate:read-paper https://arxiv.org/abs/2401.04088`
 
 精读完可以继续追问。说"存档"就自动保存到你的文献库。
 
 想看更全的图景？综述一整个方向：
 
-```
-/survey-literature attention sink mechanisms in Diffusion Transformers
-```
+Claude Code：`/labmate:survey-literature attention sink mechanisms in Diffusion Transformers`
+
+Codex：`$labmate:survey-literature attention sink mechanisms in Diffusion Transformers`
 
 ### 跑实验
 
 描述你想测什么。LabMate 搭建实验目录、config、运行脚本、分析脚本。
 
-```
-/new-experiment
-```
+Claude Code：`/labmate:new-experiment`
+
+Codex：`$labmate:new-experiment`
 
 跑起来之后，随时查状态：
 
-```
-/monitor
-```
+Claude Code：`/labmate:monitor`
+
+Codex：`$labmate:monitor`
 
 LabMate 会诊断失败、重试挂掉的 job、跑完了告诉你。
 
@@ -87,15 +105,15 @@ LabMate 会诊断失败、重试挂掉的 job、跑完了告诉你。
 
 一个命令搞定领域解读、文献对比、演示幻灯片：
 
-```
-/analyze-experiment
-```
+Claude Code：`/labmate:analyze-experiment`
+
+Codex：`$labmate:analyze-experiment`
 
 然后看交互式 dashboard：
 
-```
-/visualize
-```
+Claude Code：`/labmate:visualize`
+
+Codex：`$labmate:visualize`
 
 ### 保持有序
 
@@ -103,19 +121,21 @@ LabMate 跨 session 记忆。实验历史、论文笔记、关键发现都持久
 
 提交代码自动更新 CHANGELOG：
 
-```
-/commit-changelog
-```
+Claude Code：`/labmate:commit-changelog`
+
+Codex：`$labmate:commit-changelog`
 
 ## 不需要记命令
 
-LabMate 会告诉你下一步做什么。创建实验后提示 `/monitor`，分析完提示 `/visualize`，周五提醒写周报。跟着提示走就行。
+LabMate 会告诉你下一步做什么。创建实验后提示使用 `monitor` skill，
+分析完提示 `visualize`，周五提醒写周报。
 
 ## 完整研究生命周期
 
 ```
-/init-project → /new-experiment → /monitor → /analyze-experiment → /visualize → /commit-changelog → 重复
-    随时读论文：/read-paper, /survey-literature
+init-project → new-experiment → monitor → analyze-experiment
+  → visualize → commit-changelog → 重复
+  随时读论文：read-paper, survey-literature
 ```
 
 Pipeline 状态记在 `.pipeline-state.json`。下次开 session，agent 从断点继续。
@@ -134,18 +154,25 @@ Pipeline 状态记在 `.pipeline-state.json`。下次开 session，agent 从断�
 
 ## 定制
 
-在项目本地创建同名文件就能覆盖 plugin 默认：
+Claude Code 可以在项目本地覆盖 named agent：
 
 ```bash
 mkdir -p .claude/agents
 # 你的 .claude/agents/domain-expert.md 自动覆盖 plugin 版本
 ```
 
-如果同时使用 Claude Code 和 Codex / Antigravity，保持 `.claude/skills/project-skill/` 与 `.agents/skills/project-skill/` 镜像一致。
+Codex 不会加载 plugin 中的 Markdown named agents。依赖专业角色的 LabMate
+skills 会自动回退到普通 subagent 或主线程。`.codex/agents/*.toml` 是可选的，
+LabMate 不会自动创建。
+
+如果同时使用 Claude Code 和 Codex / Antigravity，保持
+`.claude/skills/project-skill/` 与 `.agents/skills/project-skill/` 镜像一致。
 
 ## 技术架构
 
-5 个专业 agent、12 个 skill、8 个 hook 协同工作。初始化后的项目详见 `CLAUDE.md` / `AGENTS.md`。
+LabMate 包含 12 个跨平台 skills，以及分布在 5 类生命周期事件中的 13 个
+hook handlers。Claude Code 额外获得 5 个 named agents；Codex 通过 skill
+fallback 使用同一套角色说明。
 
 ## 致谢
 

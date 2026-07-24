@@ -23,11 +23,22 @@ body:
       description: What did you expect to happen?
     validations:
       required: true
-  - type: input
-    id: cc-version
+  - type: dropdown
+    id: host
     attributes:
-      label: Claude Code version
-      placeholder: "e.g. 1.0.12"
+      label: Agent host
+      options:
+        - Claude Code
+        - OpenAI Codex
+        - Google Antigravity
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: host-version
+    attributes:
+      label: Host version
+      placeholder: "e.g. codex-cli 0.145.0 or Claude Code 1.0.12"
     validations:
       required: true
   - type: dropdown
@@ -45,4 +56,4 @@ body:
     id: related
     attributes:
       label: Related skill or agent (optional)
-      placeholder: "e.g. @domain-expert, /labmate:analyze-experiment"
+      placeholder: "e.g. domain-expert role or analyze-experiment skill"

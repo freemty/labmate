@@ -3,13 +3,27 @@ set -euo pipefail
 
 MARKETPLACE_DIR="$HOME/.claude/plugins/marketplaces/labmate-marketplace"
 MARKETPLACE_JSON="$MARKETPLACE_DIR/.claude-plugin/marketplace.json"
-PLUGIN_JSON=".claude-plugin/plugin.json"
 
-VERSION=$(python3 -c "import json; print(json.load(open('$PLUGIN_JSON'))['version'])")
+VERSION=$(python3 -c "import json; print(json.load(open('package.json'))['version'])")
 
 echo "=== Releasing labmate v${VERSION} ==="
 
-# 1. Verify on dev branch with clean state
+# 1. Verify platform parity and tests before any release mutation
+python3 scripts/sync-version.py --check
+bash tests/test-hooks.sh
+bash tests/test-platform-compat.sh
+PARENT_MARKETPLACE="$(cd ../.. 2>/dev/null && pwd || true)"
+if [ -f "$PARENT_MARKETPLACE/.agents/plugins/marketplace.json" ] &&
+   [ -x "$PARENT_MARKETPLACE/tests/test-install.sh" ]; then
+  bash "$PARENT_MARKETPLACE/tests/test-install.sh"
+  if command -v codex >/dev/null 2>&1; then
+    bash tests/test-codex-plugin-smoke.sh "$PARENT_MARKETPLACE"
+  fi
+else
+  echo "NOTE: outer yuanbo-skills checkout not found; installer smoke skipped"
+fi
+
+# 2. Verify on dev branch with clean state
 BRANCH=$(git branch --show-current)
 if [ "$BRANCH" != "dev" ]; then
   echo "ERROR: must be on dev branch (currently on $BRANCH)"
@@ -21,19 +35,19 @@ if [ -n "$(git diff --name-only HEAD)" ] || [ -n "$(git diff --cached --name-onl
   exit 1
 fi
 
-# 2. Merge dev → main
-echo "[1/4] Merging dev → main..."
+# 3. Merge dev → main
+echo "[1/5] Merging dev → main..."
 git checkout main
 git merge dev --no-ff -m "release: v${VERSION}"
 
-# 3. Push both branches
-echo "[2/4] Pushing main + dev..."
+# 4. Push both branches
+echo "[2/5] Pushing main + dev..."
 git push origin main
 git checkout dev
 git push origin dev
 
-# 4. Sync marketplace.json version
-echo "[3/4] Syncing marketplace.json → v${VERSION}..."
+# 5. Sync the Claude marketplace version. Codex reads the plugin manifest.
+echo "[3/5] Syncing Claude marketplace.json → v${VERSION}..."
 if [ ! -f "$MARKETPLACE_JSON" ]; then
   echo "ERROR: marketplace.json not found at $MARKETPLACE_JSON"
   exit 1
@@ -56,8 +70,8 @@ else
   git push origin main
 fi
 
-# 5. Fix installed_plugins.json — update all labmate entries to new version + correct SHA
-echo "[4/4] Fixing installed_plugins.json..."
+# 6. Fix Claude installed_plugins.json — update version + correct SHA
+echo "[4/5] Fixing Claude installed_plugins.json..."
 INSTALLED="$HOME/.claude/plugins/installed_plugins.json"
 CACHE_PATH="$HOME/.claude/plugins/cache/labmate-marketplace/labmate/${VERSION}"
 MARKETPLACE_SHA=$(cd "$MARKETPLACE_DIR" && git rev-parse HEAD)
@@ -87,7 +101,7 @@ else:
 "
 fi
 
-# 6. Clean up stale cache versions
+# 7. Clean up stale Claude cache versions
 echo "[5/5] Cleaning stale cache..."
 CACHE_BASE="$HOME/.claude/plugins/cache/labmate-marketplace/labmate"
 for dir in "$CACHE_BASE"/*/; do
@@ -98,7 +112,9 @@ for dir in "$CACHE_BASE"/*/; do
   fi
 done
 
-# 7. Done
+# 8. Done
 echo ""
 echo "  labmate v${VERSION} released."
-echo "  Run '/reload-plugins' in a new session to verify."
+echo "  Claude: open a new session and run '/reload-plugins'."
+echo "  Codex: update and commit the yuanbo-skills submodule pointer,"
+echo "         refresh the marketplace, reinstall LabMate, and review /hooks."

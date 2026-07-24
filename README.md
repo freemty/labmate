@@ -18,25 +18,44 @@ LabMate fixes both sides. It gives your agent persistent experiment memory and d
 
 ## Install
 
+### Claude Code
+
 ```bash
 # Add marketplace, then install
 /plugin marketplace add freemty/labmate-marketplace
 /plugin install labmate@labmate-marketplace
 ```
 
-Then run `/init-project` in your existing research project. LabMate auto-detects your project and sets up the skeleton. Done.
+### OpenAI Codex
+
+From a local checkout of the `yuanbo-skills` marketplace:
+
+```bash
+codex plugin marketplace add /path/to/yuanbo-skills
+codex plugin add labmate@yuanbo-skills
+```
+
+Start a new task and review LabMate's hook definitions with `/hooks`.
+
+Then initialize your project:
+
+| Host | Invocation |
+|------|------------|
+| Claude Code | `/labmate:init-project` |
+| Codex | Type `$labmate:init-project`, or choose it from `/skills` |
+| Other Agent Skills hosts | Ask to use LabMate's `init-project` skill |
 
 ### Tutorial
 
 New to agentic coding for research? Start here: **[CC Research Playbook](https://freemty.github.io/cc-research-playbook.html)** — covers context engineering, skills, hooks, sub-agents, and how LabMate ties it all together. LabMate keeps project memory portable across Claude Code (`CLAUDE.md` / `.claude/`) and Codex or Antigravity (`AGENTS.md` / `.agents/`).
 
-Codex users should review and trust LabMate's lifecycle hooks with `/hooks`
-after installation or update. Skills can load while untrusted plugin hooks
-remain skipped.
+Codex users must review changed lifecycle-hook hashes after installation or
+update. Skills can load while untrusted plugin hooks remain skipped.
 
 ### Recommended companions
 
-LabMate works on its own, but these plugins make it better:
+LabMate works on its own, but these plugins make it better. The commands below
+are for Claude Code:
 
 ```bash
 # Development workflow (TDD, planning, code review, brainstorming)
@@ -57,31 +76,31 @@ superpowers is strongly recommended — it powers the structured development wor
 
 Drop a link or PDF. LabMate breaks down the methodology, flags the assumptions, and connects it to your own work.
 
-```
-/read-paper https://arxiv.org/abs/2401.04088
-```
+Claude Code: `/labmate:read-paper https://arxiv.org/abs/2401.04088`
+
+Codex: `$labmate:read-paper https://arxiv.org/abs/2401.04088`
 
 After the deep-dive, ask follow-up questions. Say "save" when done — it archives to your literature base automatically.
 
 Want a broader picture? Survey a whole topic:
 
-```
-/survey-literature attention sink mechanisms in Diffusion Transformers
-```
+Claude Code: `/labmate:survey-literature attention sink mechanisms in Diffusion Transformers`
+
+Codex: `$labmate:survey-literature attention sink mechanisms in Diffusion Transformers`
 
 ### Running experiments
 
 Describe what you want to test. LabMate scaffolds the experiment directory, config, run script, and analysis script.
 
-```
-/new-experiment
-```
+Claude Code: `/labmate:new-experiment`
+
+Codex: `$labmate:new-experiment`
 
 After you start the run, check status anytime:
 
-```
-/monitor
-```
+Claude Code: `/labmate:monitor`
+
+Codex: `$labmate:monitor`
 
 LabMate diagnoses failures, retries crashed jobs, and tells you when it's done.
 
@@ -89,15 +108,15 @@ LabMate diagnoses failures, retries crashed jobs, and tells you when it's done.
 
 One command to get domain interpretation, literature comparison, and presentation slides:
 
-```
-/analyze-experiment
-```
+Claude Code: `/labmate:analyze-experiment`
+
+Codex: `$labmate:analyze-experiment`
 
 Then see the results as an interactive dashboard:
 
-```
-/visualize
-```
+Claude Code: `/labmate:visualize`
+
+Codex: `$labmate:visualize`
 
 ### Staying organized
 
@@ -105,19 +124,22 @@ LabMate remembers across sessions. Your experiment history, paper notes, and key
 
 Commit your work with automatic CHANGELOG updates:
 
-```
-/commit-changelog
-```
+Claude Code: `/labmate:commit-changelog`
+
+Codex: `$labmate:commit-changelog`
 
 ## You don't need to memorize commands
 
-LabMate tells you what to do next. After creating an experiment, it suggests `/monitor`. After analysis finishes, it suggests `/visualize`. On Fridays it reminds you to write your weekly summary. Just follow the prompts.
+LabMate tells you what to do next. After creating an experiment, it suggests
+the `monitor` skill. After analysis finishes, it suggests `visualize`. On
+Fridays it reminds you to write your weekly summary.
 
 ## The full research lifecycle
 
 ```
-/init-project → /new-experiment → /monitor → /analyze-experiment → /visualize → /commit-changelog → repeat
-    read papers anytime: /read-paper, /survey-literature
+init-project → new-experiment → monitor → analyze-experiment
+  → visualize → commit-changelog → repeat
+  read papers anytime: read-paper, survey-literature
 ```
 
 Pipeline state lives in `.pipeline-state.json`. Your agent picks up where you left off.
@@ -138,16 +160,28 @@ Pipeline state lives in `.pipeline-state.json`. Your agent picks up where you le
 
 Override anything by creating a local copy in your project:
 
+Claude Code named-agent override:
+
 ```bash
 mkdir -p .claude/agents
 # Your local .claude/agents/domain-expert.md overrides the plugin version
 ```
 
-For Codex or Antigravity project memory, use `.agents/skills/project-skill/` and keep it mirrored with `.claude/skills/project-skill/` when both platforms are active.
+Codex does not load the plugin's Markdown named agents. Agent-backed LabMate
+skills automatically use a normal subagent or the main thread instead. Personal
+Codex custom agents in `.codex/agents/*.toml` are optional and are not created
+by LabMate.
+
+For Codex or Antigravity project memory, use `.agents/skills/project-skill/`
+and keep it mirrored with `.claude/skills/project-skill/` when both platforms
+are active.
 
 ## Under the hood
 
-5 specialized agents, 12 skills, 8 hooks working together. See [CLAUDE.md](CLAUDE.md) / `AGENTS.md` for the technical architecture in initialized projects.
+LabMate contains 12 portable skills and 13 hook handlers across 5 lifecycle
+events. Claude Code also receives 5 specialized named agents; Codex uses the
+same role instructions through skill-level fallback. See [CLAUDE.md](CLAUDE.md)
+and [AGENTS.md](AGENTS.md).
 
 ## Acknowledgments
 

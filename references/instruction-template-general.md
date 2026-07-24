@@ -11,8 +11,7 @@
 | `update-knowhow` | Archive environment knowledge |
 
 Invoke skills through the current host's skill selector or ask for them by
-name. Claude Code uses `/labmate:<skill>`; Codex uses `$labmate:<skill>` or
-`/skills`.
+name.
 
 ## Session startup
 

@@ -14,8 +14,7 @@
 | python scripts/launch_exp.py --exp <id> | Launch experiment |
 
 Invoke skills through the current host's skill selector or ask for them by
-name. Claude Code uses `/labmate:<skill>`; Codex uses `$labmate:<skill>` or
-`/skills`.
+name.
 
 ## Session startup
 

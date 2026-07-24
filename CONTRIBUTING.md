@@ -5,11 +5,19 @@ Thanks for your interest in contributing! LabMate is a pure-Markdown research ha
 ## Quick start
 
 1. Fork and clone the repo
-2. Add the plugin to your Claude Code settings:
+2. Install the local plugin in the host you want to test:
+
+   Claude Code:
    ```json
    {
      "plugins": ["/path/to/your/labmate"]
    }
+   ```
+
+   Codex, from the parent `yuanbo-skills` checkout:
+   ```bash
+   codex plugin marketplace add /path/to/yuanbo-skills
+   codex plugin add labmate@yuanbo-skills
    ```
 3. Create a branch: `git checkout -b feat/your-feature`
 4. Make changes
@@ -18,14 +26,16 @@ Thanks for your interest in contributing! LabMate is a pure-Markdown research ha
 
 ## What you can contribute
 
-**Agents** (`agents/*.md`):
+**Claude Code named agents** (`agents/*.md`):
 - One Markdown file per agent
 - Frontmatter: name, description, model (haiku/sonnet/opus)
+- Keep the Markdown body portable because Codex fallback subagents also read it
 - Keep under 400 lines
 
 **Skills** (`skills/<name>/SKILL.md`):
 - One directory per skill, with a `SKILL.md` file
 - Frontmatter: name, description
+- Explicit-only skills also require `agents/openai.yaml` for Codex
 - Follow the existing skill structure
 
 **Hooks** (`hooks/`):
@@ -44,7 +54,11 @@ Types: feat, fix, refactor, docs, test, chore
 
 - Pure Markdown — no runtime dependencies
 - Files under 400 lines
-- Test changes by installing the plugin locally and running the relevant skill/agent. For project-memory changes, verify both Claude Code (`CLAUDE.md` / `.claude/`) and Codex or Antigravity (`AGENTS.md` / `.agents/`) behavior when both surfaces are present.
+- Run `bash tests/test-hooks.sh` and `bash tests/test-platform-compat.sh`.
+- Test the relevant workflow without named agents, then verify the Claude named
+  agent path still works.
+- For project-memory changes, verify both Claude Code (`CLAUDE.md` / `.claude/`)
+  and Codex or Antigravity (`AGENTS.md` / `.agents/`) behavior.
 
 ## Finding work
 

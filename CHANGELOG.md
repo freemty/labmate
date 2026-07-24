@@ -11,6 +11,8 @@
   `hookSpecificOutput.additionalContext`，不再依赖 Codex 会忽略的普通 stdout
 - PostToolUse 输入同时兼容 Codex `tool_response` 与 Claude Code
   `tool_output`，恢复错误输出、exit code 与 knowhow 检测
+- Codex shell input 同时识别 `tool_input.cmd` / `command`，`apply_patch`
+  同时识别 freeform、`input`、`patch` 与 `command` payload
 - Codex `apply_patch` 路径解析支持 Add/Update/Delete/Move，使实验、论文和
   brainstorming hooks 能识别实际修改文件
 - UserPromptSubmit 同时兼容 Codex `prompt` 与 Claude Code `user_prompt`
@@ -31,6 +33,10 @@
 - Codex/Antigravity project-memory parity guard: 新增 `references/check_agent_parity.sh`，校验 `CLAUDE.md`/`AGENTS.md`、`.claude/skills/project-skill`/`.agents/skills/project-skill` 与 agent-memory 镜像
 - `tests/test-hooks.sh`: 覆盖 Codex/Claude payload、结构化 hook 输出、
   apply_patch 路径、changelog、docs 与 knowhow reminders
+- `scripts/sync-version.py` 以 `package.json.version` 为唯一版本源，校验或
+  同步 Claude/Codex manifests 与中英文 README badges
+- Release CI 在 PR 和 main 发布前运行版本、manifest、skill policy、hook
+  与平台兼容检查
 
 ### 变更
 - Hook plugin root 解析顺序统一为 `PLUGIN_ROOT` → `CODEX_PLUGIN_ROOT` →
@@ -47,6 +53,10 @@
 - /update-docs 与 /update-knowhow 允许 agent 在 hook 已提供充分上下文时自动调用；
   未解决问题仍不得写成 knowhow
 - 安装指南增加 Codex marketplace、hook trust、更新与运行时验证步骤
+- Codex 以 plugin marketplace 为正式安装路径；全局 plugin-skill symlink
+  仅作为不支持插件时的 legacy 模式，避免同一 skill 重复注册
+- Release 流程明确要求发布后更新并提交外层 `yuanbo-skills` 的 Labmate
+  submodule pointer
 
 ## v0.8.0 (2026-04-15)
 

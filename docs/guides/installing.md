@@ -18,7 +18,7 @@
 
 Then in your research project:
 ```
-/init-project
+/labmate:init-project
 ```
 
 ### Recommended companions
@@ -41,6 +41,19 @@ codex plugin add labmate@yuanbo-skills
 Start a new Codex session after installation. Plugin hooks are not trusted just
 because the plugin is enabled: open `/hooks`, review the LabMate definitions,
 and trust the current hashes before expecting lifecycle reminders to run.
+
+Use `/skills` or type `$labmate:init-project` to initialize the project.
+
+Do not also link LabMate's plugin skills into `~/.agents/skills`; that registers
+the same skill twice. If this repository's legacy installer created those
+links, run:
+
+```bash
+./install.sh --target codex --prune-plugin-skill-links
+```
+
+Use `--include-plugin-skills` only with an older Codex build that cannot install
+plugins.
 
 ## Update
 
@@ -74,7 +87,8 @@ new trust.
 
 ### Verify
 
-Invoke any labmate skill (e.g. `/labmate:todo list`) and check the `Base directory` line shows the expected version number.
+Invoke any LabMate skill. Claude Code uses `/labmate:todo list`; Codex uses
+`$labmate:todo list` or `/skills`.
 
 Or check directly:
 ```
@@ -86,6 +100,7 @@ On Codex:
 ```bash
 codex plugin list
 bash plugins/labmate/tests/test-hooks.sh
+bash plugins/labmate/tests/test-codex-plugin-smoke.sh
 ```
 
 Then use `/hooks` in an interactive Codex session and confirm the LabMate
@@ -137,3 +152,14 @@ Then install again.
 3. Start a new session after installing or updating the plugin.
 4. Run `bash plugins/labmate/tests/test-hooks.sh` from the marketplace checkout
    to validate both Codex and Claude Code hook payloads.
+
+### Codex shows each LabMate skill twice
+
+The plugin and legacy global skill links are both active. From the
+`yuanbo-skills` checkout, run:
+
+```bash
+./install.sh --target codex --prune-plugin-skill-links
+```
+
+Restart Codex and confirm each `labmate:<skill>` appears once.
