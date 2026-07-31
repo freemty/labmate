@@ -1,6 +1,6 @@
 {
   "name": "labmate",
-  "version": "0.9.2",
+  "version": "0.10.0",
   "description": "Your AI labmate for the full research lifecycle — from reading papers to running experiments to writing them up.",
   "author": {
     "name": "freemty",
@@ -9,7 +9,15 @@
   "homepage": "https://github.com/freemty/labmate",
   "repository": "https://github.com/freemty/labmate",
   "license": "MIT",
-  "keywords": ["research", "experiment", "claude-code", "agents", "skills", "harness", "ai-research"],
+  "keywords": [
+    "research",
+    "experiment",
+    "claude-code",
+    "agents",
+    "skills",
+    "harness",
+    "ai-research"
+  ],
   "agents": [
     "./agents/project-advisor.md",
     "./agents/domain-expert.md",
@@ -17,5 +25,7 @@
     "./agents/slides-maker.md",
     "./agents/viz-frontend.md"
   ],
-  "skills": ["./skills/"]
+  "skills": [
+    "./skills/"
+  ]
 }

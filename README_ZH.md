@@ -1,6 +1,6 @@
 # LabMate
 
-![version](https://img.shields.io/badge/version-0.9.2-blue)
+![version](https://img.shields.io/badge/version-0.10.0-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
 <!-- TODO: 30s demo GIF — record with VHS or asciinema -->
 
@@ -99,17 +99,17 @@ Claude Code：`/labmate:monitor`
 
 Codex：`$labmate:monitor`
 
-LabMate 会诊断失败、重试挂掉的 job、跑完了告诉你。
+LabMate 会诊断失败并提出最小安全恢复动作；重试或中断进程仍需明确授权。
 
 ### 分析结果
 
-一个命令搞定领域解读、文献对比、演示幻灯片：
+一个命令完成领域解读和文献对比：
 
 Claude Code：`/labmate:analyze-experiment`
 
 Codex：`$labmate:analyze-experiment`
 
-然后看交互式 dashboard：
+需要幻灯片时单独使用 `research-slides`；需要结果界面时：
 
 Claude Code：`/labmate:visualize`
 
@@ -117,7 +117,8 @@ Codex：`$labmate:visualize`
 
 ### 保持有序
 
-LabMate 跨 session 记忆。实验历史、论文笔记、关键发现都持久化。每次开 session 自带上下文——agent 知道你在什么阶段、下一步该做什么。
+LabMate 把实验历史、论文笔记和关键发现保存在项目文件中。SessionStart
+只注入当前阶段和项目知识入口，深层上下文由相关 skill 按需加载。
 
 提交代码自动更新 CHANGELOG：
 
@@ -125,10 +126,10 @@ Claude Code：`/labmate:commit-changelog`
 
 Codex：`$labmate:commit-changelog`
 
-## 不需要记命令
+## 安静的上下文
 
-LabMate 会告诉你下一步做什么。创建实验后提示使用 `monitor` skill，
-分析完提示 `visualize`，周五提醒写周报。
+LabMate 不会在每次工具调用后注入流程目录或交叉推荐。Skill description
+负责发现，typed scripts 负责机械状态修改，项目文件负责持久知识。
 
 ## 完整研究生命周期
 
@@ -170,9 +171,9 @@ LabMate 不会自动创建。
 
 ## 技术架构
 
-LabMate 包含 12 个跨平台 skills，以及分布在 5 类生命周期事件中的 13 个
-hook handlers。Claude Code 额外获得 5 个 named agents；Codex 通过 skill
-fallback 使用同一套角色说明。
+LabMate 包含 12 个跨平台 skills，以及分布在 3 类生命周期事件中的 3 个
+focused hook handlers。Claude Code 额外获得 5 个 named agents；Codex
+通过 skill fallback 使用同一套精简角色说明。
 
 ## 致谢
 
@@ -187,7 +188,7 @@ fallback 使用同一套角色说明。
   title   = {LabMate: Research Harness for AI Coding Agents},
   author  = {freemty},
   year    = {2026},
-  version = {0.9.2},
+  version = {0.10.0},
   url     = {https://github.com/freemty/labmate}
 }
 ```

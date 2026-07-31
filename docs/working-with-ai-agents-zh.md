@@ -29,18 +29,14 @@ Agent 没有记忆，所以你得帮它建记忆。做法很简单：对话中�
 但 `CLAUDE.md` / `AGENTS.md` 本身不适合放细节。它会被加载到每个 session 开头，写太长就把 context 吃掉了。正确的分层：
 
 ```
-CLAUDE.md / AGENTS.md            ← 项目 overview + 文档索引（短，几十行）
-.claude/.agents project-skill    ← 具体知识：架构、实验结论、工程教训（可以长）
-specific docs                    ← 某个 topic 的深度文档
+CLAUDE.md / AGENTS.md                         ← 项目 overview + 文档索引（短，几十行）
+.claude/skills 或 .agents/skills/project-skill ← 架构、实验结论、工程教训
+specific docs                                 ← 某个 topic 的深度文档
 ```
 
 决策层和操作层分开。`CLAUDE.md` / `AGENTS.md` 告诉 agent "去哪里找信息"，project-skill 告诉它"信息是什么"。如果你同时用 Claude Code 和 Codex，`.claude/skills/project-skill/` 与 `.agents/skills/project-skill/` 必须镜像，并用 `scripts/check_agent_parity.sh` 防漂移。
 
-还有一个问题：`/compact` 等于遗忘。默认的 compact 会把之前的对话压缩掉，你刚教它的东西可能就没了。所以总结要频繁，最好用 hook 自动提醒。我用了几个：
-
-- `pre-compact-remind` — compact 前提醒把发现写入文档
-- `post-read-paper-survey` — 读完论文后提醒更新 landscape
-- `commit-changelog` — 每次 commit 强制写变更记录，这样 agent 犯了什么错、什么时候犯的，都有迹可循
+还有一个问题：context 压缩会丢掉未落盘的细节。LabMate 只在压缩前给一次简短归档提示；真正的持久化由 `update-docs` 完成，机械写入交给脚本。不要靠一串交叉推荐 hook 反复占用 context。
 
 ---
 
@@ -51,23 +47,15 @@ specific docs                    ← 某个 topic 的深度文档
 解法是把 context 拆开。在 Labmate 里我们用的架构：
 
 ```
-你触发一个 Skill（workflow 编排）
-    ├── 简单操作直接做
-    ├── 需要深度推理 → 委派给 @domain-expert（独立 context）
-    ├── 需要前端能力 → 委派给 @viz-frontend（独立 context）
-    └── 汇总结果，写回文档
+你触发一个 Skill（发现入口与判断契约）
+    ├── 机械操作 → 调用确定性脚本
+    ├── 深度推理 → 可用时委派给隔离 context 的角色
+    └── 主线程汇总结果，决定是否写回文档
 ```
 
 **Skill 是 workflow，subagent 是有独立 context 的独立能力。** 这个区分很关键。
 
-对用户来说，任何任务都给 skill 做就行，不用想"这个该交给谁"。Skill 内部自己决定要不要拉 subagent。比如 `/read-paper` 这个 skill 会在 Step 3 自动 delegate 给 @domain-expert。用户不需要知道这些。
-
-Superpowers 插件有几个现成的 skill 也在解决这个问题：
-
-- `/brainstorming` — 需求模糊时先厘清再动手，不然 agent 会按自己的理解乱跑
-- `/subagent-driven-development` — 把独立任务自动拆给多个 subagent 并行完成
-- `/simplify` — 清理 agent 写出来的冗余代码（它真的会写很多）
-- `/requesting-code-review` — 完成后让另一个 context 做 review
+对用户来说，只需调用 skill，不必知道宿主有没有 named agent。LabMate 的角色路由是：Claude Code 有对应 named agent 时直接用；否则使用普通 subagent 加载同一角色说明；再不可用时由主线程按同一判断契约完成。`read-paper` 可以委派分析，但追问、保存和归档始终回到主线程。
 
 ---
 
@@ -77,11 +65,11 @@ Agent 按 workflow 执行完就停了。它不会像人一样遇到问题绕路�
 
 几个应对办法：
 
-**用 `/loop` 定期检查。** 比如 `/loop 5m /monitor` 每 5 分钟看一次实验状态。OpenClaw 项目就是这么用的，效果不错。
+**用宿主原生调度重复检查。** Codex App 建议为 LabMate `monitor` 创建 Scheduled Task；其他宿主手动重复调用。只有宿主明确提供 loop 能力时，才把 `monitor` 放进该机制。`monitor` 本身保持一次调用、一次快照，不伪装成常驻进程。
 
 **commit-changelog 建时间线。** Agent 最大的问题之一是不知道自己之前犯过什么错。如果你用 changelog 记录每次变更和原因，后面 debug 的时候至少有迹可循。
 
-**找第二意见。** 可以用 `/codex` 让 OpenAI Codex 做独立 review。两个不同的模型互相检查，比同一个模型自己 review 自己靠谱。
+**找第二意见。** 让另一个隔离 context 做只读 review。关键不是命令名或模型品牌，而是它没有共享原任务的推理惯性。
 
 **以天为单位 review 代码。** Agent 就是会写冗余代码，这个改不了。接受它，然后定期清理。
 
@@ -111,10 +99,10 @@ uv sync  # .venv/ 下，不用找
 
 还是那句话：一切对话落盘。但对于复杂 repo，光落盘不够，还需要系统化的 workflow：
 
-1. 厘清需求 → `/brainstorming`（别直接开干，先搞清楚到底要干什么）
-2. 制定计划 → `/writing-plans`
-3. 并行化 → `/subagent-driven-development`
-4. Review → `/requesting-code-review`
+1. 先写简短 spec，明确目标、边界和验收条件。
+2. 把可机械验证的部分写成脚本或测试，把判断标准写成 rubric。
+3. 只有任务真正独立时才拆隔离 context，并由主线程负责汇总。
+4. 完成后用未参与实现的 context 做只读 review。
 
 关于 Claude Code 本身怎么配、怎么用这类问题，其实可以直接问它自己。但要给它足够的参考文档，不然它也是瞎猜。
 
@@ -153,9 +141,9 @@ Skill（workflow）
         │
         │ 委派
         ▼
-Subagent（隔离 context）
-  @domain-expert / @exp-manager / @viz-frontend
-  各自干各自的，context 互不污染
+角色执行（可选隔离 context）
+  named agent / 普通 subagent / 主线程 fallback
+  共享同一角色判断与输出契约
         │
         │ 写回
         ▼
@@ -168,4 +156,4 @@ Subagent（隔离 context）
 
 1. 对话中得出的结论，写进文档并索引。不写等于没聊。
 2. 一个 context 只干一件事。多件事拆 subagent。
-3. Agent 不会主动追进度。你得用 `/loop`、hook、定期 review 盯着它。
+3. Agent 不会主动追进度。用宿主原生调度、一次性 `monitor` 快照和定期 review 盯着它。

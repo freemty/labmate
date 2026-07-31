@@ -37,8 +37,8 @@ manifest, Codex manifest, or README badges differ.
 ```
 
 The script automatically:
-1. Runs version parity, hook, platform compatibility, and available outer
-   installer/plugin smoke checks
+1. Runs version parity, hook, context-budget, deterministic-interface,
+   platform compatibility, and available outer installer/plugin smoke checks
 2. Verifies you're on `dev` with a clean working tree
 3. Merges `dev` into `main` (no-ff) and pushes both branches
 4. Updates the Claude marketplace version

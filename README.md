@@ -1,6 +1,6 @@
 # LabMate
 
-![version](https://img.shields.io/badge/version-0.9.2-blue)
+![version](https://img.shields.io/badge/version-0.10.0-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
 <!-- TODO: 30s demo GIF — record with VHS or asciinema -->
 
@@ -102,17 +102,18 @@ Claude Code: `/labmate:monitor`
 
 Codex: `$labmate:monitor`
 
-LabMate diagnoses failures, retries crashed jobs, and tells you when it's done.
+LabMate diagnoses failures and proposes the smallest safe recovery action.
+Retries or process interruption remain explicit, authorized actions.
 
 ### Analyzing results
 
-One command to get domain interpretation, literature comparison, and presentation slides:
+One command to get domain interpretation and literature comparison:
 
 Claude Code: `/labmate:analyze-experiment`
 
 Codex: `$labmate:analyze-experiment`
 
-Then see the results as an interactive dashboard:
+Request slides separately through `research-slides`, or build a result view:
 
 Claude Code: `/labmate:visualize`
 
@@ -120,7 +121,9 @@ Codex: `$labmate:visualize`
 
 ### Staying organized
 
-LabMate remembers across sessions. Your experiment history, paper notes, and key findings persist. Every new session starts with context — your agent knows what stage you're at and what to do next.
+LabMate keeps experiment history, paper notes, and key findings in project
+files. Session startup injects only current stage and a pointer to that durable
+knowledge; skills load the deeper context when needed.
 
 Commit your work with automatic CHANGELOG updates:
 
@@ -128,11 +131,11 @@ Claude Code: `/labmate:commit-changelog`
 
 Codex: `$labmate:commit-changelog`
 
-## You don't need to memorize commands
+## Context stays quiet
 
-LabMate tells you what to do next. After creating an experiment, it suggests
-the `monitor` skill. After analysis finishes, it suggests `visualize`. On
-Fridays it reminds you to write your weekly summary.
+LabMate does not inject a workflow catalog or cross-sell reminders after every
+tool call. Skill descriptions handle discovery, typed scripts handle mechanical
+state changes, and project files hold durable knowledge.
 
 ## The full research lifecycle
 
@@ -178,10 +181,10 @@ are active.
 
 ## Under the hood
 
-LabMate contains 12 portable skills and 13 hook handlers across 5 lifecycle
-events. Claude Code also receives 5 specialized named agents; Codex uses the
-same role instructions through skill-level fallback. See [CLAUDE.md](CLAUDE.md)
-and [AGENTS.md](AGENTS.md).
+LabMate contains 12 portable skills and 3 focused hook handlers across 3
+lifecycle events. Claude Code also receives 5 specialized named agents; Codex
+uses the same compact role instructions through skill-level fallback. See
+[CLAUDE.md](CLAUDE.md) and [AGENTS.md](AGENTS.md).
 
 ## Acknowledgments
 
@@ -196,7 +199,7 @@ and [AGENTS.md](AGENTS.md).
   title   = {LabMate: Research Harness for AI Coding Agents},
   author  = {freemty},
   year    = {2026},
-  version = {0.9.2},
+  version = {0.10.0},
   url     = {https://github.com/freemty/labmate}
 }
 ```

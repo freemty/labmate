@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# Shared helper functions for LabMate hooks
-# Source this file: source "${SCRIPT_DIR}/hook-utils"
+# Shared normalization and output helpers for LabMate hooks.
 
 hook_command() {
   jq -r '
@@ -11,51 +10,6 @@ hook_command() {
         $input.command // $input.cmd // empty
       end
   ' 2>/dev/null
-}
-
-hook_response_text() {
-  jq -r '
-    (.tool_response // .tool_output // empty)
-    | if type == "string" then . else tojson end
-  ' 2>/dev/null
-}
-
-hook_exit_code() {
-  jq -r '
-    .tool_response.exit_code
-    // .tool_response.exitCode
-    // .tool_output.exit_code
-    // .tool_output.exitCode
-    // empty
-  ' 2>/dev/null
-}
-
-hook_changed_paths() {
-  local input direct command
-  input=$(cat)
-  direct=$(printf '%s' "$input" \
-    | jq -r '.tool_input.file_path // .tool_input.path // empty' 2>/dev/null)
-  if [ -n "$direct" ]; then
-    printf '%s\n' "$direct"
-  fi
-
-  command=$(printf '%s' "$input" \
-    | jq -r '
-        .tool_input as $input
-        | (
-            if ($input | type) == "string" then
-              $input
-            else
-              $input.command // $input.patch // $input.input // empty
-            end
-          )
-        | if type == "string" then . else empty end
-      ' 2>/dev/null)
-  if [ -n "$command" ]; then
-    printf '%s\n' "$command" | sed -nE \
-      -e 's/^\*\*\* (Add|Update|Delete) File: (.*)$/\2/p' \
-      -e 's/^\*\*\* Move to: (.*)$/\1/p'
-  fi
 }
 
 emit_hook_context() {
@@ -85,38 +39,4 @@ print(json.dumps({
     "systemMessage": os.environ["HOOK_MESSAGE"],
 }, ensure_ascii=False))
 PY
-}
-
-should_remind() {
-  local key="$1"
-  local hours="${2:-24}"
-  local state_file=".labmate-hook-state.json"
-  if [ ! -f "$state_file" ]; then echo "yes"; return; fi
-  local result=$(python3 -c "
-import json
-from datetime import datetime, timedelta
-s = json.load(open('$state_file'))
-last = s.get('$key', '2000-01-01T00:00:00')
-if datetime.fromisoformat(last) < datetime.now() - timedelta(hours=$hours):
-    print('yes')
-else:
-    print('no')
-" 2>/dev/null || echo "yes")
-  echo "$result"
-}
-
-mark_reminded() {
-  local key="$1"
-  local state_file=".labmate-hook-state.json"
-  python3 -c "
-import json
-from datetime import datetime
-f = '$state_file'
-try:
-    s = json.load(open(f))
-except:
-    s = {}
-s['$key'] = datetime.now().isoformat()
-json.dump(s, open(f, 'w'), indent=2)
-" 2>/dev/null
 }

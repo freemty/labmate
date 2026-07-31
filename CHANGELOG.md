@@ -2,61 +2,36 @@
 
 ## Unreleased
 
-### 修复
-- SessionStart 不再用 Codex 兼容变量 `CLAUDE_PLUGIN_ROOT` 误判运行平台；
-  Codex 优先读取 `.agents/skills/project-skill`
-- 13 个 hook handlers 的提示全部改为平台中立 skill 名称，并修复
-  `docs/TODO.md`、`AGENTS.md`、空更新时间与 knowhow session 计数
-- Codex hook runtime parity: `PreToolUse`/`PostToolUse` 提醒改为结构化
-  `hookSpecificOutput.additionalContext`，不再依赖 Codex 会忽略的普通 stdout
-- PostToolUse 输入同时兼容 Codex `tool_response` 与 Claude Code
-  `tool_output`，恢复错误输出、exit code 与 knowhow 检测
-- Codex shell input 同时识别 `tool_input.cmd` / `command`，`apply_patch`
-  同时识别 freeform、`input`、`patch` 与 `command` payload
-- Codex `apply_patch` 路径解析支持 Add/Update/Delete/Move，使实验、论文和
-  brainstorming hooks 能识别实际修改文件
-- UserPromptSubmit 同时兼容 Codex `prompt` 与 Claude Code `user_prompt`
-
 ### 新增
-- Hook tests 覆盖全部 13 个 handlers，并新增 Codex/Claude SessionStart、
-  session reset、PreCompact、AGENTS 文档更新和 null timestamp 场景
-- `tests/test-platform-compat.sh` 校验 manifest、skill policy、模板、版本和
-  hook 测试覆盖率
-- Portable agent routing：agent-backed skills 优先使用 named agent，缺失时
-  回退到普通 subagent，最终可由主线程执行
-- 10 个显式调用 skills 增加 Codex `agents/openai.yaml` policy；新增独立
-  `AGENTS.md` 与 `.agents/skills/project-skill` 镜像
-- /update-docs 统一归档: 合并 update-knowhow (Branch A) 和 update-docs (Branch B) 为单一 skill，自动路由，不再询问用户分类
-- post-docs-remind hook: feat/fix/refactor commit 后提醒更新文档（2h 冷却）
-- pre-compact-archive hook: context 压缩前检测对话密度，提醒归档知识
-- post-skill-stale hook: 检测 5+ commits 后 project skill 滞后（4h 冷却）
-- Codex/Antigravity project-memory parity guard: 新增 `references/check_agent_parity.sh`，校验 `CLAUDE.md`/`AGENTS.md`、`.claude/skills/project-skill`/`.agents/skills/project-skill` 与 agent-memory 镜像
-- `tests/test-hooks.sh`: 覆盖 Codex/Claude payload、结构化 hook 输出、
-  apply_patch 路径、changelog、docs 与 knowhow reminders
-- `scripts/sync-version.py` 以 `package.json.version` 为唯一版本源，校验或
-  同步 Claude/Codex manifests 与中英文 README badges
-- Release CI 在 PR 和 main 发布前运行版本、manifest、skill policy、hook
-  与平台兼容检查
+- `init_project.py`, `new_experiment.py`, `todo.py`, and
+  `project_snapshot.py` provide typed plan/apply/check or CRUD interfaces for
+  deterministic project mutations.
+- Context-contract and interface tests enforce entrypoint budgets, compact role
+  prompts, explicit skill policy parity, and idempotent scripts.
+- Portable role routing remains named agent → generic subagent → main thread.
 
 ### 变更
-- Hook plugin root 解析顺序统一为 `PLUGIN_ROOT` → `CODEX_PLUGIN_ROOT` →
-  `CLAUDE_PLUGIN_ROOT`；Claude/Codex 共用结构化 hook 输出
-- `read-paper` 的追问与归档统一由主线程承接；portable skills 和生成模板
-  不再要求 Opus、Agent tool、Claude named-agent 或宿主专属工具名
-- Codex manifest 不再声明不受支持的 Markdown agents；Claude manifest
-  继续分发原有 5 个 named agents
-- /update-knowhow 变为 /update-docs 的轻量 alias
-- 分类判断完全由 agent 自主决定，移除 "If unclear, ask user once"
-- init-project/update-project-skill 会按目标 agent 生成或镜像 `.claude` 与 `.agents` 项目记忆，并在双入口项目中运行 parity guard
-- session-start hook 改为平台感知的 project-skill 路径选择，支持 `CLAUDE_PLUGIN_ROOT`、`CODEX_PLUGIN_ROOT` 与 `PLUGIN_ROOT`
-- 模板、README、教程和 active agents 更新为 Claude Code / Codex / Antigravity 兼容表述
-- /update-docs 与 /update-knowhow 允许 agent 在 hook 已提供充分上下文时自动调用；
-  未解决问题仍不得写成 knowhow
-- 安装指南增加 Codex marketplace、hook trust、更新与运行时验证步骤
-- Codex 以 plugin marketplace 为正式安装路径；全局 plugin-skill symlink
-  仅作为不支持插件时的 legacy 模式，避免同一 skill 重复注册
-- Release 流程明确要求发布后更新并提交外层 `yuanbo-skills` 的 Labmate
-  submodule pointer
+- All 12 skill entrypoints are thin discovery/judgment guides; detailed
+  templates, archival contracts, and deterministic behavior moved to
+  references and scripts.
+- `analyze-experiment` no longer generates slides unconditionally.
+  Research presentations route through `research-slides` and its default
+  Speculative Decoding reference profile.
+- Five Claude agent bodies now contain only durable role judgment and output
+  contracts. Claude-only models/tools remain in frontmatter.
+- `update-docs` is the only implicit archival workflow.
+  `update-knowhow` is an explicit compatibility alias, bringing explicit policy
+  parity to 11 skills.
+- SessionStart injects only stage, experiment, and project-skill path.
+  Reminder/cross-sell hooks were removed; three focused handlers remain across
+  SessionStart, PreCompact, and PreToolUse.
+- Generated AGENTS.md/CLAUDE.md templates contain project pointers and gotchas,
+  not skill catalogs or duplicated workflows.
+
+### 修复
+- Bump the plugin to `0.10.0` so the portable source cannot alias the stale
+  `0.9.2` Codex cache that still contained named-agent and `/loop` assumptions.
+- Keep package, Claude manifest, Codex manifest, and README badges synchronized.
 
 ## v0.8.0 (2026-04-15)
 

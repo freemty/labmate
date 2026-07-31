@@ -1,48 +1,28 @@
 # LabMate
 
-> Research harness for AI coding agents.
+Research harness for AI coding agents: 12 portable skills, five Claude named
+agents, shared references/scripts, and three lifecycle hooks.
 
-## Codex skill invocation
+## Non-obvious boundaries
 
-Use `/skills` or type `$` and select `labmate:<skill>`. Core workflows include:
-
-| Skill | Purpose |
-|-------|---------|
-| `init-project` | Initialize a project skeleton |
-| `new-experiment` | Scaffold an experiment |
-| `monitor` | Check experiment status |
-| `analyze-experiment` | Analyze results |
-| `read-paper` | Deep-dive a paper |
-| `survey-literature` | Survey a topic |
-| `visualize` | Build dashboards or overview artifacts |
-| `update-project-skill` | Refresh project knowledge |
-| `commit-changelog` | Commit with CHANGELOG updates |
-
-## Architecture
-
-- `skills/`: twelve portable Agent Skills.
-- `agents/`: five Claude Code named-agent definitions. Codex skills use the
-  same role bodies through portable subagent fallback.
-- `hooks/`: thirteen handlers across five lifecycle events.
-- `references/`: templates and reusable project assets.
-
-Codex does not load `agents/*.md` from the plugin manifest. Agent-backed skills
-must follow `references/agent-routing.md` and remain executable without named
-agents or background execution.
-
-## Project knowledge
-
-Read `.agents/skills/project-skill/SKILL.md` for accumulated architecture,
-experiment history, and lessons. Keep it mirrored with
-`.claude/skills/project-skill/SKILL.md`.
+- Codex does not register `agents/*.md`. Agent-backed skills follow
+  `references/agent-routing.md`: named agent, generic subagent, then main-thread
+  fallback.
+- Deterministic project mutation belongs in `scripts/`; SKILL.md files remain
+  thin discovery and judgment guides.
+- Claude explicit-invocation policy lives in skill frontmatter. Codex policy
+  lives in `skills/*/agents/openai.yaml`.
+- Package and both plugin manifests share one version. A changed plugin must
+  receive a new version so installed caches cannot alias different source.
 
 ## Verification
 
 ```bash
 bash tests/test-hooks.sh
 bash tests/test-platform-compat.sh
+bash tests/test-context-contract.sh
+bash tests/test-scripts.sh
 ```
 
-When installer behavior changes, also run the outer repository installer tests.
-Preserve unrelated dirty worktree state and commit the LabMate submodule before
-updating the parent repository pointer.
+Preserve unrelated worktree changes. Commit this nested repository before its
+parent gitlink.

@@ -15,8 +15,8 @@ jq -e '.agents | length == 5' "$ROOT/.claude-plugin/plugin.json" >/dev/null \
 
 explicit_skills=$(rg -l '^disable-model-invocation: true$' \
   "$ROOT"/skills/*/SKILL.md | sort)
-[ "$(printf '%s\n' "$explicit_skills" | sed '/^$/d' | wc -l | tr -d ' ')" = "10" ] \
-  || fail "expected ten explicit-only skills"
+[ "$(printf '%s\n' "$explicit_skills" | sed '/^$/d' | wc -l | tr -d ' ')" = "11" ] \
+  || fail "expected eleven explicit-only skills"
 
 while IFS= read -r skill_file; do
   [ -n "$skill_file" ] || continue
@@ -26,7 +26,7 @@ while IFS= read -r skill_file; do
     || fail "incorrect Codex invocation policy: $metadata"
 done <<< "$explicit_skills"
 
-[ "$(find "$ROOT/skills" -path '*/agents/openai.yaml' | wc -l | tr -d ' ')" = "10" ] \
+[ "$(find "$ROOT/skills" -path '*/agents/openai.yaml' | wc -l | tr -d ' ')" = "11" ] \
   || fail "unexpected number of Codex skill policy files"
 
 package_version=$(jq -r '.version' "$ROOT/package.json")
@@ -106,8 +106,8 @@ else
   )
 fi
 
-[ "${#configured_hooks[@]}" = "13" ] \
-  || fail "expected thirteen configured hook handlers"
+[ "${#configured_hooks[@]}" = "3" ] \
+  || fail "expected three configured hook handlers"
 for hook in "${configured_hooks[@]}"; do
   rg -q "(run_hook|run_hook_env).*${hook}" "$ROOT/tests/test-hooks.sh" \
     || fail "configured hook lacks a direct test: $hook"

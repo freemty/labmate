@@ -1,35 +1,26 @@
 ---
 name: project-skill
-description: "Use when advising on project architecture, experiment history, codebase navigation, or research findings."
+description: Use when project architecture, experiment history, durable findings, or known pitfalls are needed.
 ---
 
 # {PROJECT_NAME} — Project Knowledge
 
 > {ONE_LINE_DESCRIPTION}
 
-## Project Overview
-(auto-generated after first LabMate `update-project-skill` run)
-
 ## Architecture
-(auto-generated — code structure, data flow, key modules)
 
-## Experiment History
+(non-obvious boundaries and data flow)
 
-| Exp | Description | Status | Key Finding |
-|-----|-------------|--------|-------------|
-| (none yet) | | | |
+## Experiment findings
 
-## Key Pitfalls & Lessons Learned
-(append-only — lessons are permanent, never remove entries)
+| Experiment | Status | Evidence-backed finding |
+| --- | --- | --- |
+| (none yet) | | |
 
-## Active Prompt Versions
-(auto-generated — current prompt versions and trade-offs)
+## Durable pitfalls
 
-## Quick Reference
+(append verified lessons with source paths)
 
-| LabMate skill | Purpose |
-|---------------|---------|
-| `new-experiment` | Scaffold new experiment |
-| `analyze-experiment` | Analyze current experiment results |
-| `update-project-skill` | Refresh this knowledge file |
-| `python viewer/app.py` | Start analysis viewer |
+## Active interfaces
+
+(current versions, entrypoints, and compatibility constraints)

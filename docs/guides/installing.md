@@ -40,7 +40,7 @@ codex plugin add labmate@yuanbo-skills
 
 Start a new Codex session after installation. Plugin hooks are not trusted just
 because the plugin is enabled: open `/hooks`, review the LabMate definitions,
-and trust the current hashes before expecting lifecycle reminders to run.
+and trust the current hashes before expecting lifecycle context to run.
 
 Use `/skills` or type `$labmate:init-project` to initialize the project.
 
@@ -104,7 +104,7 @@ bash plugins/labmate/tests/test-codex-plugin-smoke.sh
 ```
 
 Then use `/hooks` in an interactive Codex session and confirm the LabMate
-`PreToolUse`, `PostToolUse`, and `SessionStart` commands are trusted.
+`PreToolUse`, `PreCompact`, and `SessionStart` commands are trusted.
 
 ## Troubleshooting
 
@@ -145,7 +145,7 @@ Ensure the marketplace is added:
 ```
 Then install again.
 
-### Codex skills load but hook reminders do not appear
+### Codex skills load but lifecycle context does not appear
 
 1. Run `codex features list` and confirm `hooks` is enabled.
 2. Open `/hooks` and trust the current LabMate hook hashes.

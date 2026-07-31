@@ -12,6 +12,8 @@ echo "=== Releasing labmate v${VERSION} ==="
 python3 scripts/sync-version.py --check
 bash tests/test-hooks.sh
 bash tests/test-platform-compat.sh
+bash tests/test-context-contract.sh
+bash tests/test-scripts.sh
 PARENT_MARKETPLACE="$(cd ../.. 2>/dev/null && pwd || true)"
 if [ -f "$PARENT_MARKETPLACE/.agents/plugins/marketplace.json" ] &&
    [ -x "$PARENT_MARKETPLACE/tests/test-install.sh" ]; then

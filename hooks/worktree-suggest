@@ -10,6 +10,5 @@ COMMAND=$(printf '%s' "$INPUT" | hook_command)
 
 if echo "$COMMAND" | grep -qE "git (reset --hard|checkout -- \.|clean -f|clean -fd|branch -D)"; then
   emit_hook_context "PreToolUse" \
-    "Tip: Consider using 'git worktree' for destructive/exploratory changes.
-Usage: git worktree add ../experiment-branch experiment-branch"
+    "Destructive git operation detected. Resolve the exact target and preserve unrelated work; use an isolated git worktree when the operation is exploratory."
 fi

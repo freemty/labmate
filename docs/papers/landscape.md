@@ -1,12 +1,13 @@
 # Literature Landscape
 
-> Living literature map — maintained by @domain-expert agent.
+> Living literature map — maintained through LabMate's literature workflows.
 > Each paper has detailed notes in `docs/papers/{short-name}.md`.
 
 ## Agent Harness & Workflow Engineering
 
 | Source | Date | Key Contribution | Relevance to Template | Notes |
 |--------|------|------------------|-----------------------|-------|
+| [The new rules of context engineering for Claude 5 generation models](https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models) — Thariq Shihipar (Anthropic) | 2026-07 | Model judgment, typed interfaces, progressive disclosure, rich references, and verifier rubrics | Direct basis for LabMate 0.10 context simplification | [notes](context-engineering-claude5-trq212.md) |
 | [Lessons from Building Claude Code: How We Use Skills](https://x.com/trq212/article/2033772621536591872) — @trq212 (Anthropic) | 2026-03 | Skills 9 大分类 + 文件夹化设计 + Gotchas 最高信号密度 | Skills 架构直接参考 | [notes](skills-design-trq212.md) |
 | [10 Tips for Using Claude Code](https://x.com/bcherny/status/2017742741636321619) — @bcherny (Claude Code 创始人) | 2026-01 | 并行 worktrees、Plan Mode、CLAUDE.md 迭代、Subagents | 工作流最佳实践 | [notes](cc-tips-bcherny.md) |
 | [你不知道的 Claude Code](https://x.com/HiTw93/article/2032079318256664586) — @HiTw93 | 2026-03 | 六层架构模型、上下文预算量化、HANDOFF.md 模式 | 上下文治理 + session 交接 | [notes](cc-architecture-tw93.md) |
@@ -24,7 +25,7 @@
 
 ## Cross-Cutting Themes
 
-1. **Skills 是首要杠杆** — 文件夹化、Gotchas 积累、mandatory 触发（trq212 + bcherny + superpowers）
+1. **Skill 是按需入口，不是规则仓库** — 保留团队特有判断，把机械约束移到接口和验证器（trq212 2026-07）
 2. **上下文工程 > Prompt 工程** — MCP 隐形消耗量化、分层加载策略（HiTw93 + OpenAI）
 3. **外部状态 > 模型记忆** — progress file + git log + feature list + HANDOFF.md（Anthropic long-running + HiTw93）
 4. **结构性约束 > 运行时监管** — linter 编码规则、feature list 防误判（OpenAI + Anthropic eval）

@@ -1,120 +1,28 @@
 ---
 name: update-project-skill
-description: >
-  Regenerate project-skill/SKILL.md from current codebase. Triggers when project
-  skill is stale (>24h), before context compacts, after major findings, or on
-  first run. Also on "refresh project knowledge", "更新项目知识".
+description: Use when durable project architecture, experiment findings, pitfalls, or active interfaces have materially changed.
 disable-model-invocation: true
 ---
 
 # Update Project Skill
 
-Refreshes the project-local `project-skill/SKILL.md` by scanning the entire project.
+Keep project-skill as a compact map of stable facts and gotchas, not a session
+diary or repository duplicate.
 
-## Platform Paths
+1. Resolve `<plugin-root>` and collect bounded facts:
 
-Choose the project skill path before running:
+   ```bash
+   python3 <plugin-root>/scripts/project_snapshot.py
+   ```
 
-| Target | Project skill path | Instruction file |
-|--------|--------------------|------------------|
-| Codex / Antigravity workspace | `.agents/skills/project-skill/SKILL.md` | `AGENTS.md` |
-| Claude Code | `.claude/skills/project-skill/SKILL.md` | `CLAUDE.md` |
+2. Read only files needed to validate architecture, findings, active versions,
+   and durable pitfalls.
+3. Propose a focused diff. Preserve append-only lessons unless evidence shows
+   they are false.
+4. Apply after approval when semantic. Mechanical mirror synchronization may
+   proceed without another prompt.
+5. Keep `.agents/` and `.claude/` mirrors identical when both exist, run the
+   parity checker, append the changelog, and update `skill_updated_at`.
 
-Prefer the current runtime target. If both project skill paths already exist, or both `CLAUDE.md` and `AGENTS.md` exist, update the current runtime path first and mirror the final approved content to the other path before finishing.
-
-If `scripts/check_agent_parity.sh` exists, run it after mirroring. A failed parity check means the command is not complete.
-
-## Detect Mode
-
-Check if the selected project skill file is empty or only contains skeleton placeholder content.
-
-- **Bootstrap mode** (first run / empty SKILL.md): deep scan, generate from scratch
-- **Update mode** (existing SKILL.md): incremental update, preserve existing content
-
-## Instructions
-
-### Step 1: Run a read-only project scan
-
-Prefer a read-only, high-reasoning subagent when the host supports subagents.
-Otherwise perform the scan in the main thread. Do not require a particular
-vendor model or named agent. Provide different prompts depending on mode:
-
-**Bootstrap mode prompt** (first run on existing repo):
-
-> You are initializing the project knowledge base for the first time. Do a DEEP scan:
->
-> 1. **Project identity**: Read AGENTS.md and/or CLAUDE.md, README.md, pyproject.toml/package.json → extract project name, description, purpose, motivation
-> 2. **Architecture**: Map the directory tree and read key entry points. Identify: what does this project do? What are the main modules?
-> 3. **Design decisions**: Read docs/specs/, docs/archive/ → extract key architectural decisions and rejected alternatives
-> 4. **Experiment history**: Scan exp/*/README.md → build experiment table (ID, description, status, key finding)
-> 5. **Domain papers**: List docs/papers/ contents → inventory of reference material
-> 6. **Prompt evolution**: Scan prompts/*/CHANGELOG.md → active versions and trade-offs
-> 7. **Git milestone history**: Run `git log --oneline -50` → identify key milestones
-> 8. **Known pitfalls**: Extract from exp/*/README.md "Pitfalls" sections + any LESSONS.md or troubleshooting docs
->
-> Generate a complete SKILL.md. Mark as "v0 — auto-generated bootstrap, review recommended."
-
-**Update mode prompt** (incremental refresh):
-
-> You are refreshing the project knowledge base. Do an INCREMENTAL scan:
->
-> 1. Read current selected project skill file — preserve structure and user-added custom sections
-> 2. Read `exp/` for new or updated experiments since last update
-> 3. Read `prompts/` for version changes
-> 4. Run `git log --oneline -20` for recent changes
-> 5. Check `docs/` for new specs or plans
->
-> Update only sections that changed. CRITICAL constraints:
-> - NEVER remove entries from "Key Pitfalls & Lessons Learned" (append-only)
-> - NEVER downgrade experiment status ("Done" stays "Done")
-> - Preserve any user-added custom sections unchanged
-
-**Common output format for both modes:**
-
-> Output: complete SKILL.md content with these sections:
-> - **Project Overview & Current State** (name, description, motivation, current stage)
-> - **Architecture** (code structure, data flow, key modules)
-> - **System Cognition** (core understanding: what works, what doesn't, validated hypotheses, active assumptions)
-> - **Technical Archive** (key technical decisions, parameter choices, benchmark baselines, rejected alternatives with rationale)
-> - **Experiment History Table** (exp → status → prediction → actual → key finding — include prediction calibration column)
-> - **Prediction Calibration** (prediction vs actual meta-learning: systematic biases, calibration accuracy trends)
-> - **Engineering Lessons** (APPEND-ONLY — pitfalls, debugging insights, tooling gotchas, workflow improvements)
-> - **Active Prompt Versions & Trade-offs**
-> - **Quick Reference** (commands, paths, env vars)
-
-### Step 2: Show diff to user
-
-Show diff between current and proposed SKILL.md for approval.
-In bootstrap mode, show the entire generated content.
-
-### Step 3: Write on approval
-
-Write the updated SKILL.md.
-
-### Step 4: Append CHANGELOG
-
-Append entry to the selected `project-skill/CHANGELOG.md` with date and summary. If the counterpart platform path exists, mirror the same final `SKILL.md` and `CHANGELOG.md` there too. If both `CLAUDE.md` and `AGENTS.md` exist but the counterpart `project-skill/` directory is missing, create it and mirror the final files there.
-In bootstrap mode: "Initial bootstrap — auto-generated from existing codebase"
-
-### Step 5: Check parity
-
-If `scripts/check_agent_parity.sh` exists, run:
-
-```bash
-bash scripts/check_agent_parity.sh
-```
-
-If it fails, fix the mirror drift before reporting completion.
-
-### Step 6: Update pipeline state
-
-```python
-import json, time
-state = json.load(open('.pipeline-state.json'))
-state['skill_updated_at'] = int(time.time())
-json.dump(state, open('.pipeline-state.json', 'w'), indent=2)
-```
-
-### Step 7: Prompt next action
-
-"Also use LabMate's `commit-changelog` skill? (Y/n)"
+Do not copy file trees, skill catalogs, command tutorials, or transient tasks
+into project-skill.

@@ -1,6 +1,7 @@
 # Tutorial: your first experiment
 
-This walks you through a complete research cycle with LabMate, from install to analysis slides. Takes about 10 minutes.
+This walks you through a complete research cycle with LabMate, from install to
+reviewed findings. Takes about 10 minutes.
 
 ## 0. Install
 
@@ -60,7 +61,7 @@ my-nlp-project/
 ├── viewer/
 │   └── app.py
 ├── slides/
-├── CLAUDE.md or AGENTS.md  # your research hub — principles, roles, workflow
+├── CLAUDE.md or AGENTS.md  # compact project pointers and gotchas
 └── .pipeline-state.json    # tracks current experiment + stage
 ```
 
@@ -103,16 +104,18 @@ Results land in `exp/exp01a/results/`.
 
 Use LabMate's `analyze-experiment` skill.
 
-This triggers a three-part analysis:
+This performs a two-part analysis:
 
 1. The domain-expert role interprets what the numbers mean in context
 2. Cross-experiment comparison against prior runs (if any)
-3. The slides-maker role generates presentation-ready HTML slides in `slides/`
 
 Claude Code can use named agents for these roles. Codex uses ordinary
 subagents, with a main-thread fallback when subagents are unavailable.
 
 LabMate also updates `exp/exp01a/README.md` with findings and `exp/summary.md` with a one-line verdict.
+
+If you need a talk, invoke `research-slides` separately. It uses the default
+Speculative Decoding story/reference profile and rendered Beamer QA.
 
 ## 5. Save project knowledge
 
@@ -133,16 +136,18 @@ LabMate creates `exp/exp01b/` (variant of exp01). The cycle repeats.
 
 When you come back tomorrow and open Claude Code, Codex, or Antigravity:
 
-1. SessionStart hook reads `.pipeline-state.json` and tells your agent where you left off
-2. Your agent checks `exp/summary.md` for experiment history
-3. The domain-expert role reads your paper notes in `docs/papers/`
-4. `update-project-skill` output provides compressed context from prior work
+1. SessionStart injects the current stage and project-skill path
+2. The relevant skill loads `exp/summary.md` or paper notes only when needed
+3. `update-project-skill` provides compact durable context from prior work
 
 No more "what were we doing again?"
 
 ## Tips
 
-- **Read your project instruction file** — `CLAUDE.md` for Claude Code, `AGENTS.md` for Codex/Antigravity. It is the source of truth for workflow routing. If both exist, keep them behaviorally aligned.
+- **Keep project instructions small** — `CLAUDE.md` for Claude Code,
+  `AGENTS.md` for Codex/Antigravity. Store detailed workflows in skills,
+  references, scripts, and tests. If both files exist, keep their project facts
+  behaviorally aligned.
 - **Use LabMate's `read-paper` skill** before designing experiments; it applies
   the domain-expert role and checks `docs/papers/landscape.md`.
 - **Commit after each experiment** — LabMate's workflow depends on git history to track what's been tried.

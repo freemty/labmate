@@ -1,22 +1,24 @@
+---
+name: project-skill
+description: Use when project architecture, experiment history, durable findings, or known pitfalls are needed.
+---
+
 # {project-name} — Project Knowledge
 
-> Auto-maintained by LabMate's `update-project-skill` skill. Last updated: {date}
+> {description}
 
-## Project Overview
+## Architecture
 
-- **Name:** {project-name}
-- **Description:** {description}
-- **Domain:** {research-domain}
-- **Status:** initialized
+(populate only non-obvious boundaries and data flow)
 
-## Experiment History
+## Experiment findings
 
-No experiments yet. Use LabMate's `new-experiment` skill to start.
+(one evidence-backed row per material experiment)
 
-## Key Findings
+## Durable pitfalls
 
-(none yet)
+(append verified lessons with source paths)
 
-## Domain Knowledge
+## Active interfaces
 
-(accumulated from archived paper notes and domain-expert analyses)
+(current versions, entrypoints, and compatibility constraints)

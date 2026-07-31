@@ -1,52 +1,17 @@
 ---
 name: survey-literature
-description: >
-  Systematic literature survey for a research topic. Triggers on "survey the
-  literature", "文献调研", "find papers about", "what's been done on",
-  "literature review", "related work for".
+description: Use when a research question requires comparing multiple papers, mapping a field, or identifying evidence-backed gaps.
 disable-model-invocation: true
 ---
 
 # Survey Literature
 
-Systematically search and synthesize relevant literature for a research question. Outputs a structured survey document.
+1. Define the question, inclusion boundary, time range, and comparison axes.
+2. Read the local landscape and project findings before searching.
+3. Follow `../../references/agent-routing.md` for the `domain-expert` role.
+4. Produce a source-backed comparison, synthesis, contradictions, unresolved
+   gaps, and project implications. Distinguish source claims from synthesis.
+5. Save or update the landscape only when requested.
 
-## Agent Routing
-
-Read `<plugin-root>/references/agent-routing.md` before delegating. Resolve
-`<plugin-root>` by going up two directories from this `SKILL.md`.
-
-## Instructions
-
-When this skill is invoked with `<topic>`:
-
-### Step 1: Gather research context
-
-Read the following files if they exist (skip silently if not found):
-- `docs/papers/landscape.md` — user's existing literature map
-- `exp/summary.md` — user's experiment history
-
-### Step 2: Run the `domain-expert` role
-
-Follow the portable routing contract with
-`<plugin-root>/agents/domain-expert.md`, using this task:
-
-> **Mode 5: Literature Survey**
->
-> Research question: {topic}
->
-> Research context:
-> - Literature landscape: {landscape.md content or "not available"}
-> - Experiment history: {exp/summary.md content or "not available"}
->
-> Execute your full survey pipeline: Scope → Search → Filter → Synthesize → Output → Update landscape.md.
-> Write the survey to `docs/papers/{slugified-topic}-survey.md`.
-
-### Step 3: Report results
-
-After domain-expert completes, tell the user:
-- Path to the generated survey file
-- Number of papers found
-- Any coverage limitations encountered
-- Suggest using LabMate's `read-paper` skill to deep-dive any paper from the
-  survey.
+Coverage claims must name the search boundary. Do not call a convenience sample
+systematic or exhaustive.
