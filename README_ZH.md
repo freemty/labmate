@@ -1,6 +1,6 @@
 # LabMate
 
-![version](https://img.shields.io/badge/version-0.9.2-blue)
+![version](https://img.shields.io/badge/version-0.9.3-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
 <!-- TODO: 30s demo GIF — record with VHS or asciinema -->
 
@@ -73,9 +73,9 @@ LabMate 独立可用，但装上这些效果更好。以下是 Claude Code 命�
 
 丢一个链接或 PDF，LabMate 帮你拆解方法论、标出假设、连接到你的研究。
 
-Claude Code：`/labmate:read-paper https://arxiv.org/abs/2401.04088`
+Claude Code：`/labmate:read-paper https://arxiv.org/pdf/2401.04088`
 
-Codex：`$labmate:read-paper https://arxiv.org/abs/2401.04088`
+Codex：`$labmate:read-paper https://arxiv.org/pdf/2401.04088`
 
 精读完可以继续追问。说"存档"就自动保存到你的文献库。
 
@@ -187,7 +187,7 @@ fallback 使用同一套角色说明。
   title   = {LabMate: Research Harness for AI Coding Agents},
   author  = {freemty},
   year    = {2026},
-  version = {0.9.2},
+  version = {0.9.3},
   url     = {https://github.com/freemty/labmate}
 }
 ```

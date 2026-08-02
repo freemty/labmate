@@ -1,8 +1,10 @@
 # Changelog
 
-## Unreleased
+## v0.9.3 @freemty - 2026-08-02
 
 ### 修复
+- `read-paper` 不再把 arXiv 摘要页当成全文精读，也不再把 GitHub/Awesome
+  文献索引误走单篇论文分析
 - SessionStart 不再用 Codex 兼容变量 `CLAUDE_PLUGIN_ROOT` 误判运行平台；
   Codex 优先读取 `.agents/skills/project-skill`
 - 13 个 hook handlers 的提示全部改为平台中立 skill 名称，并修复
@@ -18,6 +20,8 @@
 - UserPromptSubmit 同时兼容 Codex `prompt` 与 Claude Code `user_prompt`
 
 ### 新增
+- `read-paper` 新增带 SHA256、coverage、页数与 byte-span anchor 的 paper
+  packet、确定性 validator、可重放归档，以及 literature-hub triage 路由
 - Hook tests 覆盖全部 13 个 handlers，并新增 Codex/Claude SessionStart、
   session reset、PreCompact、AGENTS 文档更新和 null timestamp 场景
 - `tests/test-platform-compat.sh` 校验 manifest、skill policy、模板、版本和
@@ -39,6 +43,8 @@
   与平台兼容检查
 
 ### 变更
+- 论文精读改为传递 artifact/context 路径而非内联整篇正文；输出新增
+  Evidence Ledger，严格区分论文证据、解释、项目桥接和未知项
 - Hook plugin root 解析顺序统一为 `PLUGIN_ROOT` → `CODEX_PLUGIN_ROOT` →
   `CLAUDE_PLUGIN_ROOT`；Claude/Codex 共用结构化 hook 输出
 - `read-paper` 的追问与归档统一由主线程承接；portable skills 和生成模板

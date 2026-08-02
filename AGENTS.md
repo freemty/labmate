@@ -12,7 +12,7 @@ Use `/skills` or type `$` and select `labmate:<skill>`. Core workflows include:
 | `new-experiment` | Scaffold an experiment |
 | `monitor` | Check experiment status |
 | `analyze-experiment` | Analyze results |
-| `read-paper` | Deep-dive a paper |
+| `read-paper` | Verified paper deep-dive or literature-hub triage |
 | `survey-literature` | Survey a topic |
 | `visualize` | Build dashboards or overview artifacts |
 | `update-project-skill` | Refresh project knowledge |

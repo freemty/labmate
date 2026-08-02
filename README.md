@@ -1,6 +1,6 @@
 # LabMate
 
-![version](https://img.shields.io/badge/version-0.9.2-blue)
+![version](https://img.shields.io/badge/version-0.9.3-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
 <!-- TODO: 30s demo GIF — record with VHS or asciinema -->
 
@@ -76,9 +76,9 @@ superpowers is strongly recommended — it powers the structured development wor
 
 Drop a link or PDF. LabMate breaks down the methodology, flags the assumptions, and connects it to your own work.
 
-Claude Code: `/labmate:read-paper https://arxiv.org/abs/2401.04088`
+Claude Code: `/labmate:read-paper https://arxiv.org/pdf/2401.04088`
 
-Codex: `$labmate:read-paper https://arxiv.org/abs/2401.04088`
+Codex: `$labmate:read-paper https://arxiv.org/pdf/2401.04088`
 
 After the deep-dive, ask follow-up questions. Say "save" when done — it archives to your literature base automatically.
 
@@ -196,7 +196,7 @@ and [AGENTS.md](AGENTS.md).
   title   = {LabMate: Research Harness for AI Coding Agents},
   author  = {freemty},
   year    = {2026},
-  version = {0.9.2},
+  version = {0.9.3},
   url     = {https://github.com/freemty/labmate}
 }
 ```

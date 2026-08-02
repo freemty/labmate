@@ -1,84 +1,83 @@
 ---
 name: read-paper
 description: >
-  Deep-dive a single paper — methodology, assumptions, implications. Triggers on
-  "read this paper", "读论文", "explain this PDF", "arxiv.org/abs/", paper URLs,
-  "what does this paper say", "paper deep-dive".
+  Use when the user explicitly requests a deep read of one paper or technical
+  report, or invokes read-paper on a literature hub that needs candidate triage.
 disable-model-invocation: true
 ---
 
 # Read Paper
 
-Deep-dive a single paper with interactive Q&A. Outputs a structured analysis, then lets the user ask follow-up questions.
+Turn paper-like input into an auditable artifact before analysis. Never treat an
+abstract, landing page, or repository index as a paper's full text.
 
-## Agent Routing
+## Routing contract
 
-Read `<plugin-root>/references/agent-routing.md` before delegating. Resolve
-`<plugin-root>` by going up two directories from this `SKILL.md`. The main
-thread always owns follow-up questions and archival.
+Read `<plugin-root>/references/agent-routing.md`, resolving `<plugin-root>` by
+going up two directories from this file. The main thread owns user Q&A and any
+archive writes. Delegated roles return analysis only.
 
-## Instructions
+## 1. Acquire and validate
 
-When this skill is invoked with `<input>`:
+Read [references/paper-acquisition.md](references/paper-acquisition.md). Create
+a temporary paper packet plus a page/section-preserving text artifact, then run:
 
-### Step 1: Parse input and fetch paper content
+```bash
+python3 "{skill_root}/scripts/validate-paper-packet.py" packet.json \
+  --mode deep-dive --require-anchor equation:7
+```
 
-Determine input type and fetch accordingly:
+Use `--mode hub-triage` for a hub; omit `--require-anchor` when none was requested.
 
-| Input type | Detection | Action |
-|-----------|-----------|--------|
-| Local PDF | `<input>` ends with `.pdf` and is a file path | Use the host's native PDF/document capability. If unavailable, run `pdftotext "<input>" -` and read the extracted text. If neither works, ask for pasted text or a URL. |
-| arXiv PDF URL | `<input>` matches `arxiv.org/pdf/` | Convert to abstract URL (replace `/pdf/` with `/abs/`, remove `.pdf` suffix), then fetch with Jina Reader: `curl -s "https://r.jina.ai/{abstract_url}" -H "Accept: text/markdown"` |
-| arXiv URL | `<input>` matches `arxiv.org` (non-PDF) | Fetch with Jina Reader: `curl -s "https://r.jina.ai/{url}" -H "Accept: text/markdown"` |
-| Other URL | `<input>` starts with `http://` or `https://` | Use the host's native web-reading capability first. If unavailable or insufficient, use Jina Reader: `curl -s "https://r.jina.ai/{url}" -H "Accept: text/markdown"` |
-| Pasted text | None of the above | Use `<input>` directly as paper content |
+Choose the route from the packet, not from the URL suffix:
 
-If fetching fails entirely, tell the user and suggest an alternative input method.
+- `single_paper` + `full_text` → `deep-dive`.
+- `single_paper` + partial/`abstract_only` → stop the deep-dive. State the
+  coverage limit; offer an explicitly scoped abstract-level reading or request
+  the PDF/full text. Do not update the landscape as if the paper was read.
+- `literature_hub` + `hub_index` → `hub-triage`. A repository, Awesome list,
+  proceedings page, or reading list is not a single paper.
 
-### Step 2: Gather research context
+If validation fails, report the failed invariant and repair acquisition before
+analysis. Never silently replace an arXiv PDF with its `/abs/` page.
+Translate each user-requested equation, figure, table, page, or section into a
+repeatable `--require-anchor TYPE:ID`; missing anchors limit or block the answer.
 
-Read the following files if they exist (skip silently if not found):
-- `docs/papers/landscape.md` — user's literature map
-- `exp/summary.md` — user's experiment history
+## 2. Gather context by path
 
-### Step 3: Run the `domain-expert` role
+Pass only relevant existing paths, such as `project-skill/SKILL.md`,
+`docs/papers/landscape.md`, `exp/summary.md`, and a directly related experiment
+README/result. Do not inline whole files or preload every experiment.
 
-Follow the portable routing contract with
-`<plugin-root>/agents/domain-expert.md`, using this task:
+## 3. Delegate analysis
 
-> **Mode 4: Paper Deep-Dive**
->
-> Paper content:
-> {fetched paper content}
->
-> Research context:
-> - Literature landscape: {landscape.md content or "not available"}
-> - Experiment history: {exp/summary.md content or "not available"}
->
-> Return a structured deep-dive analysis with Methodology Skeleton,
-> Assumptions & Limitations, and Bridge Analysis. Return the analysis to the
-> main thread; do not take over the user conversation.
+Use `<plugin-root>/agents/domain-expert.md` through the portable routing
+contract. For a paper, request Mode 4; for a hub, request Mode 5 seed-hub
+triage. The task must contain:
 
-### Step 4: Continue Q&A in the main thread
+```text
+Paper packet path: {packet_path}
+Research context paths:
+- {relevant_path_or_none}
+User focus: {question_or_none}
+Read the artifacts directly. Return analysis to the main thread.
+```
 
-Present the analysis and append:
+Do not paste the fetched paper into the delegation prompt.
 
-> 可以继续追问任何细节。回复「存档」/「保存」/「save」或
-> 「save as {short-name}」保存精读笔记。
+## 4. Continue and archive
 
-Answer every follow-up in the main thread, using the fetched paper, research
-context, and delegated analysis. Track unresolved questions for archival.
+Present the result with its coverage/provenance and invite follow-up questions.
+Answer in the main thread, preserving unresolved questions.
+For hub triage, begin with `input_kind=literature_hub` so the boundary is visible.
 
-### Step 5: Archive on request
+Only on explicit “save/archive/store/存档/保存”:
 
-When the user says "save", "archive", "store", "存档", or "保存":
-
-1. Use the user-provided short name, or generate a lowercase hyphenated name
-   from the paper title with at most 40 characters.
-2. Write `docs/papers/{short-name}-deep-dive.md` containing paper metadata,
-   Methodology Skeleton, Assumptions & Limitations, Bridge Analysis, and Open
-   Questions from the main-thread Q&A.
-3. Update `docs/papers/landscape.md`, adding the paper to the best-fitting
-   section without duplicating an existing entry.
-4. Report both updated paths. Do not claim a separate agent memory was updated;
-   durable recall comes from the project files.
+1. Freeze packet and exact text under `docs/papers/artifacts/{short-name}/`,
+   rewrite only its relative `text_path`, then revalidate the archived packet.
+   Copy an accessible source PDF when privacy/licensing permit and record its
+   hash; otherwise retain the locator and explain why raw bytes are absent.
+2. Write `{short-name}-deep-dive.md` with links/hashes, Evidence Ledger,
+   Methodology, assumptions, Bridge Analysis, and Open Questions. A hub instead
+   gets `{short-name}-hub-triage.md`; linked papers remain unread.
+3. Update the landscape only with artifact-supported claims; report all paths.

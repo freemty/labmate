@@ -85,6 +85,8 @@ if rg -n '@(domain-expert|exp-manager|slides-maker|viz-frontend)|Agent tool|Opus
   fail "agent-backed skill still requires a Claude-only agent interface"
 fi
 
+bash "$ROOT/tests/test-read-paper.sh"
+
 mapfile_supported=0
 if type mapfile >/dev/null 2>&1; then
   mapfile_supported=1

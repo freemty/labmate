@@ -10,7 +10,7 @@
 | `/labmate:new-experiment` | Scaffold a new experiment directory |
 | `/labmate:analyze-experiment` | Analyze results from current experiment |
 | `/labmate:update-project-skill` | Refresh project knowledge base |
-| `/labmate:read-paper` | Deep-dive a single paper |
+| `/labmate:read-paper` | Verified full-text deep-dive or literature-hub triage |
 | `/labmate:survey-literature` | Systematic literature survey |
 | `/labmate:visualize` | Build results dashboard for experiment |
 | `/labmate:monitor` | Check experiment status |
@@ -50,7 +50,7 @@ subagent or main-thread fallback.
 | analyze-experiment | After experiment completes |
 | update-project-skill | After major findings or when stale |
 | commit-changelog | Commit with CHANGELOG + weekly progress |
-| read-paper | Deep-dive a single paper with Q&A |
+| read-paper | Verified paper deep-dive or hub triage with Q&A |
 | survey-literature | Systematic literature survey |
 | visualize | Results dashboard, comparison, or project overview |
 | monitor | Check experiment status |

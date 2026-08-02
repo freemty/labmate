@@ -122,28 +122,47 @@ When asked about architecture choices, design patterns, or technical decisions:
 
 ### Mode 4: Paper Deep-Dive (论文精读)
 
-Used by LabMate's `read-paper` skill. Receives paper full text and user research
-context.
+Used by LabMate's `read-paper` skill. Receives a validated paper packet path and
+selected research-context paths. Read those artifacts directly. If the packet
+is not `single_paper` + `full_text`, refuse Mode 4 and return its actual coverage.
 
 #### Output Structure
 
-**1. Methodology Skeleton (方法论骨架)**
+**1. Coverage & Provenance (覆盖与来源)**
+- Report source locator, provenance, completeness, artifact hash, and available
+  anchors from the packet
+- State any unreadable or missing regions before interpreting the paper
+- Never invent a citation anchor. If a requested section/page/equation/figure/table
+  cannot be located, mark it `[Unknown]`
+
+**2. Evidence Ledger (证据账本)**
+- List each important claim with the strongest available paper-local anchor:
+  section/page/equation/figure/table
+- Use only packet anchors whose byte span and `span_sha256` validate against the
+  artifact; include the anchor ID and page in the ledger
+- Label literal paper claims `[Paper]`, analytical explanations
+  `[Interpretation]`, and unresolved points `[Unknown]`
+- Paraphrase by default; use short quotations only when exact wording matters
+
+**3. Methodology Skeleton (方法论骨架)**
 - One-sentence problem statement: what is this paper trying to solve?
 - Core optimization objective / loss function breakdown
-- Key equations explained — not restated, but "what is this doing and why is it designed this way"
+- Key equations explained — not restated, but "what is this doing and why is it designed this way" — with equation or section anchors
 - Algorithm flow as pseudocode or numbered step list
 
-**2. Assumptions & Limitations (假设与局限)**
+**4. Assumptions & Limitations (假设与局限)**
 - Each theorem/proposition's preconditions, listed individually
 - Mark each as **standard** (commonly assumed in the field) or **restrictive** (strong assumption, may not hold generally)
-- Cross-reference with `exp/summary.md`: flag assumptions that may not hold in the user's specific setting
+- Separate what the paper states from your interpretation
 - If no theorems exist, analyze implicit assumptions in the method design
 
-**3. Bridge Analysis (桥接分析)**
-- Read `docs/papers/landscape.md`: where does this paper sit in the user's literature map?
-- Read `exp/summary.md`: which components or insights from this paper can transfer to current experiments?
-- Output concrete "borrowable points" and "differences to be careful about"
-- If landscape.md or exp/summary.md don't exist, note the limitation and provide general bridge analysis
+**5. Bridge Analysis (桥接分析)**
+- Read only the supplied context paths and connect the paper to active
+  experiments, not to an imagined project state
+- Label every connection `[Project Bridge]` and cite the project file path that
+  supports it; keep it distinct from `[Paper]` evidence
+- Output concrete borrowable points, mismatches, and one falsifiable next test
+- If no project context exists, say so and provide only a general implication
 
 Return the structured analysis to the caller. The main thread owns follow-up
 questions and the user's save/archive decision.
@@ -152,6 +171,21 @@ questions and the user's save/archive decision.
 
 Used by LabMate's `survey-literature` skill. Receives a research question and
 user research context.
+
+#### Seed-hub triage
+
+When `read-paper` routes a validated `literature_hub` packet here, do not run a
+single-paper deep-dive and do not imply that linked papers were read. Inspect
+the preserved entries and links, then return:
+
+- the hub's apparent scope and organizing axes
+- candidate papers with their exact listed URLs and a verification status
+- coverage gaps, duplicates, and stale/unresolved links
+- relevance to the supplied active-experiment paths
+- the top three papers worth acquiring for separate full-text deep-dives
+
+Label hub descriptions as hub-provided metadata, not claims verified from the
+linked papers.
 
 #### Pipeline
 
