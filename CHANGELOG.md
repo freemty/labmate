@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.10.0 @freemty - 2026-08-25
 
 ### 新增
 - `init_project.py`, `new_experiment.py`, `todo.py`, and
