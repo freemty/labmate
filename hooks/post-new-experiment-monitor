@@ -1,0 +1,20 @@
+#!/bin/bash
+# Hook: PostToolUse(Write) — suggest monitoring after experiment scaffolding
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "${SCRIPT_DIR}/hook-utils"
+
+INPUT=$(cat)
+
+# Guard: only act on Write to exp/*/README.md
+FILE_PATH=$(printf '%s' "$INPUT" | hook_changed_paths \
+  | grep -E '(^|/)exp/[^/]+/README\.md$' | head -1)
+if [ -z "$FILE_PATH" ]; then exit 0; fi
+
+# Match exp/{id}/README.md pattern
+if ! echo "$FILE_PATH" | grep -qE 'exp/[^/]+/README\.md$'; then exit 0; fi
+
+# Extract experiment ID from path
+EXP_ID=$(basename "$(dirname "$FILE_PATH")")
+
+  emit_hook_context "PostToolUse" \
+  "Experiment ${EXP_ID} scaffolded. After starting the run, use LabMate's monitor skill to check status."

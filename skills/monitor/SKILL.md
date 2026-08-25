@@ -1,6 +1,6 @@
 ---
 name: monitor
-description: Use when checking a running experiment, diagnosing a stalled job, or reviewing failures in an `expNNx` run.
+description: Use when checking a running experiment, diagnosing a stalled job, or reviewing failures in an `expNNx` run. Triggers on "check status", "看看实验", "how's the run", "any failures", "is it done", "monitor experiment", "experiment status".
 disable-model-invocation: true
 ---
 

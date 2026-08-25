@@ -1,6 +1,6 @@
 ---
 name: update-knowhow
-description: Use when the user explicitly asks to archive verified environment, toolchain, debugging, or operational knowledge.
+description: Use when the user explicitly asks to archive verified environment, toolchain, debugging, or operational knowledge. Triggers on "记下来", "归档", "save this", or after a <knowhow-hint> prompt.
 disable-model-invocation: true
 ---
 

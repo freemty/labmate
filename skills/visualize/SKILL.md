@@ -1,6 +1,6 @@
 ---
 name: visualize
-description: Use when experiment results or project state need a dashboard, comparison view, or visual explanation.
+description: Use when experiment results or project state need a dashboard, comparison view, or visual explanation. Triggers on "visualize", "可视化", "show results", "dashboard", "compare experiments", "chart my results", "project overview".
 disable-model-invocation: true
 ---
 

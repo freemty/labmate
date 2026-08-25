@@ -1,0 +1,40 @@
+#!/bin/bash
+# Hook: PostToolUse(Bash) — suggest the next LabMate analysis skill
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "${SCRIPT_DIR}/hook-utils"
+
+INPUT=$(cat)
+
+# Guard: only act on python analyze commands that succeeded
+COMMAND=$(printf '%s' "$INPUT" | hook_command)
+if [ -z "$COMMAND" ]; then exit 0; fi
+
+# Match analyze.py or python.*analyze patterns
+if ! echo "$COMMAND" | grep -qE '(analyze\.py|python.*analyze)'; then exit 0; fi
+
+# Check exit code — only remind on success
+EXIT_CODE=$(printf '%s' "$INPUT" | hook_exit_code)
+if [ "$EXIT_CODE" != "0" ]; then exit 0; fi
+
+# Check pipeline state — only relevant during experiment/monitoring stages
+STATE_FILE=".pipeline-state.json"
+MESSAGE=""
+if [ -f "$STATE_FILE" ]; then
+  STAGE=$(python3 -c "import json; print(json.load(open('$STATE_FILE')).get('stage', ''))" 2>/dev/null)
+  case "$STAGE" in
+    experiment|monitoring)
+      MESSAGE="Analysis script completed successfully. Use LabMate's analyze-experiment skill to process results and update findings."
+      ;;
+    analysis)
+      MESSAGE="Analysis complete. Use LabMate's visualize skill for a dashboard, or use its compare mode for a cross-experiment comparison."
+      ;;
+    *)
+      MESSAGE="Analysis script completed. Consider using LabMate's analyze-experiment skill if this was an experiment run."
+      ;;
+  esac
+else
+  MESSAGE="Analysis script completed. Use LabMate's analyze-experiment skill to process results."
+fi
+
+emit_hook_context "PostToolUse" "$MESSAGE"

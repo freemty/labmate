@@ -1,6 +1,6 @@
 ---
 name: todo
-description: Use when adding, completing, listing, or cleaning project tasks in `docs/TODO.md`.
+description: Use when adding, completing, listing, or cleaning project tasks in `docs/TODO.md`. Triggers on "todo", "记一下", "待办", "回头要", "add a todo".
 disable-model-invocation: true
 ---
 

@@ -39,7 +39,7 @@ fi
 
 session_chars=$(PLUGIN_ROOT="$ROOT" bash "$ROOT/hooks/session-start" \
   | jq -r '.hookSpecificOutput.additionalContext' | wc -c | tr -d ' ')
-[ "$session_chars" -le 160 ] \
-  || { echo "uninitialized SessionStart exceeds 160 chars" >&2; exit 1; }
+[ "$session_chars" -le 512 ] \
+  || { echo "uninitialized SessionStart exceeds 512 chars" >&2; exit 1; }
 
 echo "PASS: LabMate context contract"

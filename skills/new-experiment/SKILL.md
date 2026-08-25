@@ -1,6 +1,6 @@
 ---
 name: new-experiment
-description: Use when starting a new experiment or creating a variant of an existing `expNNx` run.
+description: Use when starting a new experiment or creating a variant of an existing `expNNx` run. Triggers on "new experiment", "新实验", "scaffold exp", "set up experiment", "create experiment".
 disable-model-invocation: true
 ---
 

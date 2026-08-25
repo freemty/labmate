@@ -1,6 +1,6 @@
 ---
 name: commit-changelog
-description: Use when preparing a focused git commit, updating a changelog, or committing nested repositories and their parent gitlinks.
+description: Use when preparing a focused git commit, updating a changelog, or committing nested repositories and their parent gitlinks. Triggers on "commit", "提交", "changelog", "weekly summary", "周报", "write commit message".
 disable-model-invocation: true
 ---
 

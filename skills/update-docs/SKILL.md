@@ -1,6 +1,6 @@
 ---
 name: update-docs
-description: Use when verified knowledge, a design decision, a runbook, or human-facing documentation should be made durable.
+description: Use when verified knowledge, a design decision, a runbook, or human-facing documentation should be made durable. Triggers on "update docs", "更新文档", "写 README", "记下来", "归档", "save this", "update knowhow", or after a <knowhow-hint> prompt.
 ---
 
 # Update Docs

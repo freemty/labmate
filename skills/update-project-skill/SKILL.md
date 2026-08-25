@@ -1,6 +1,6 @@
 ---
 name: update-project-skill
-description: Use when durable project architecture, experiment findings, pitfalls, or active interfaces have materially changed.
+description: Use when durable project architecture, experiment findings, pitfalls, or active interfaces have materially changed. Triggers on "refresh project knowledge", "更新项目知识", stale project skill (>24h), or after major findings.
 disable-model-invocation: true
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: init-project
-description: Use when LabMate is being added to an existing project or `.pipeline-state.json` is missing.
+description: Use when LabMate is being added to an existing project or `.pipeline-state.json` is missing. Triggers on "init project", "初始化项目", "set up labmate", "first time setup", "initialize".
 disable-model-invocation: true
 ---
 

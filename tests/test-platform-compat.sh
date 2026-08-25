@@ -85,6 +85,8 @@ if rg -n '@(domain-expert|exp-manager|slides-maker|viz-frontend)|Agent tool|Opus
   fail "agent-backed skill still requires a Claude-only agent interface"
 fi
 
+bash "$ROOT/tests/test-read-paper.sh"
+
 mapfile_supported=0
 if type mapfile >/dev/null 2>&1; then
   mapfile_supported=1
@@ -106,8 +108,8 @@ else
   )
 fi
 
-[ "${#configured_hooks[@]}" = "3" ] \
-  || fail "expected three configured hook handlers"
+[ "${#configured_hooks[@]}" = "13" ] \
+  || fail "expected thirteen configured hook handlers"
 for hook in "${configured_hooks[@]}"; do
   rg -q "(run_hook|run_hook_env).*${hook}" "$ROOT/tests/test-hooks.sh" \
     || fail "configured hook lacks a direct test: $hook"
