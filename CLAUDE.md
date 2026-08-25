@@ -1,7 +1,7 @@
 # LabMate
 
 Research harness for AI coding agents: 12 portable skills, five Claude named
-agents, shared references/scripts, and three lifecycle hooks.
+agents, shared references/scripts, and thirteen hook handlers across five lifecycle events.
 
 ## Non-obvious boundaries
 
