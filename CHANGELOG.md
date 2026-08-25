@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### 其他
+- docs: correct hook count in CLAUDE.md/AGENTS.md (thirteen handlers, not three)
+
 ## v0.10.0 @freemty - 2026-08-25
 
 ### 新增
