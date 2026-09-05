@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
     paths:
+      - '.github/workflows/sync-marketplace.yml'
       - '.claude-plugin/plugin.json'
       - '.codex-plugin/plugin.json'
       - 'package.json'
@@ -16,6 +17,7 @@ on:
       - 'tests/**'
   pull_request:
     paths:
+      - '.github/workflows/sync-marketplace.yml'
       - '.claude-plugin/plugin.json'
       - '.codex-plugin/plugin.json'
       - 'package.json'
