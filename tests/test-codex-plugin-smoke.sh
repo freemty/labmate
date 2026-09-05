@@ -47,6 +47,9 @@ jq -e '
   fail "Labmate was not installed and enabled exactly once"
 
 installed_path="$(jq -r '.installedPath' <<< "$install_json")"
+expected_version="$(jq -r '.version' "$LABMATE_ROOT/package.json")"
+[ "$(jq -r '.version' "$installed_path/.codex-plugin/plugin.json")" = "$expected_version" ] ||
+  fail "installed manifest version differs from this checkout"
 [ -d "$installed_path/skills" ] ||
   fail "installed Labmate skill directory is missing"
 
@@ -82,4 +85,4 @@ expected_skills="$(
 [ ! -e "$SMOKE_HOME/.agents/skills/read-paper" ] ||
   fail "plugin install unexpectedly created a legacy global skill link"
 
-echo "Codex plugin smoke tests passed"
+echo "Codex plugin smoke tests passed: $expected_version, 12 skills, no legacy links"

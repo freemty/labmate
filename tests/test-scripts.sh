@@ -78,4 +78,15 @@ fi
 grep -qx 'left' "$conflict/.agents/skills/project-skill/SKILL.md"
 grep -qx 'right' "$conflict/.claude/skills/project-skill/SKILL.md"
 
+(cd "$project" && python3 scripts/launch_exp.py --exp exp01a --dry-run) | grep -q 'Launch plan complete'
+if (cd "$project" && python3 scripts/launch_exp.py --exp ../outside --dry-run) >/dev/null 2>&1; then
+  echo "launch helper accepted path traversal" >&2
+  exit 1
+fi
+(cd "$project" && bash scripts/monitor_exp.sh exp01a) | grep -q '0 entries'
+(cd "$project" && bash scripts/monitor_exp.sh exp99a) | grep -q 'No runs.log'
+if (cd "$project" && bash scripts/monitor_exp.sh ../outside) >/dev/null 2>&1; then
+  echo "monitor helper accepted path traversal" >&2
+  exit 1
+fi
 echo "PASS: LabMate deterministic interfaces"
