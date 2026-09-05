@@ -69,7 +69,11 @@ Present the result with its coverage/provenance and invite follow-up questions.
 Answer in the main thread, preserving unresolved questions.
 For hub triage, begin with `input_kind=literature_hub` so the boundary is visible.
 
-Only on explicit “save/archive/store/存档/保存”:
+When “save/archive/store/存档/保存” was requested, including in the original task,
+continue without asking again. Honor an explicit wiki destination using that
+wiki's source/analysis rules; do not also create an unrequested project archive.
+Preserve the validated packet and exact locators in either destination.
+For a project archive:
 
 1. Freeze packet and exact text under `docs/papers/artifacts/{short-name}/`,
    rewrite only its relative `text_path`, then revalidate the archived packet.

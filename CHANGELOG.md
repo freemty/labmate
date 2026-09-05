@@ -3,6 +3,10 @@
 ## [0.11.0] - 2026-09-05
 
 ### Changed
+- Archival workflows preserve user statements, decisions and unresolved
+  investigations without promoting them to verified facts. Existing save
+  authorization carries through paper reading; project docs and personal wiki
+  storage are distinct destinations, with no automatic duplication.
 - Capability-first research routing with optional delegation and a main-thread
   fallback; existing paper packet fields and source-location checks retained.
 - Four default handlers replace thirteen: existing session state, silent
