@@ -39,16 +39,11 @@ if [ -f "CLAUDE.md" ] && [ -f "AGENTS.md" ]; then
       || fail "project-skill CHANGELOG.md differs between .claude and .agents"
   fi
 
-  if [ -d ".claude/agent-memory" ] || [ -d ".agents/agent-memory" ]; then
-    require_dir ".claude/agent-memory"
-    require_dir ".agents/agent-memory"
-    diff -qr ".claude/agent-memory" ".agents/agent-memory" >/dev/null \
-      || fail "agent-memory differs between .claude and .agents"
-  fi
+  # Host-owned persistent agent memory is not portable project knowledge.
 fi
 
 search_paths=()
-for path in CLAUDE.md AGENTS.md .claude .agents docs; do
+for path in CLAUDE.md AGENTS.md .claude/skills/project-skill .agents/skills/project-skill; do
   [ -e "$path" ] && search_paths+=("$path")
 done
 if [ "${#search_paths[@]}" -gt 0 ]; then

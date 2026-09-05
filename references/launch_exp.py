@@ -12,7 +12,7 @@ import sys
 import time
 from pathlib import Path
 
-import yaml
+import re
 
 
 def main() -> None:
@@ -23,6 +23,8 @@ def main() -> None:
     parser.add_argument("--dry-run", action="store_true", help="Print commands without executing")
     args = parser.parse_args()
 
+    if not re.fullmatch(r'exp[0-9]+[a-z]*', args.exp) or args.num_runs < 1 or args.stagger < 0:
+        parser.error('invalid experiment ID, run count or stagger')
     exp_dir = Path(f"exp/{args.exp}")
     config_path = exp_dir / "config.yaml"
     run_script = exp_dir / "run.py"
@@ -35,9 +37,10 @@ def main() -> None:
         print(f"Error: Run script not found: {run_script}", file=sys.stderr)
         sys.exit(1)
 
-    config = yaml.safe_load(config_path.read_text()) if config_path.exists() else {}
+    if not config_path.is_file():
+        parser.error(f"Config not found: {config_path}")
     print(f"Launching {args.num_runs} run(s) for {args.exp}")
-    print(f"Config: {config.get('experiment', {}).get('name', 'unknown')}")
+    print(f"Config: {config_path}")
 
     if args.stagger > 0:
         print(f"Stagger: {args.stagger}s between launches")
@@ -49,13 +52,14 @@ def main() -> None:
             print(f"[DRY RUN] Job {i}: {' '.join(cmd)}")
         else:
             print(f"Launching job {i}...")
-            subprocess.Popen(cmd)
+            process = subprocess.Popen(cmd)
+            print(f"Job {i} PID: {process.pid}; completion not yet verified")
 
         if i < args.num_runs - 1 and args.stagger > 0:
             if not args.dry_run:
                 time.sleep(args.stagger)
 
-    print("All jobs launched.")
+    print("Launch plan complete." if args.dry_run else "Launch requests sent; inspect each run for actual completion.")
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 # LabMate
 
-![version](https://img.shields.io/badge/version-0.10.0-blue)
+![version](https://img.shields.io/badge/version-0.11.0-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
 <!-- TODO: 30s demo GIF — record with VHS or asciinema -->
 
@@ -137,6 +137,11 @@ LabMate does not inject a workflow catalog or cross-sell reminders after every
 tool call. Skill descriptions handle discovery, typed scripts handle mechanical
 state changes, and project files hold durable knowledge.
 
+The four default handlers provide existing project state at SessionStart, silently
+record maintenance candidates after successful code commits, summarize pending
+items once before compaction, and give a scoped Git advisory. They do not require
+initializing ordinary folders or infer that an error was resolved.
+
 ## The full research lifecycle
 
 ```
@@ -181,7 +186,7 @@ are active.
 
 ## Under the hood
 
-LabMate contains 12 portable skills and 3 focused hook handlers across 3
+LabMate contains 12 portable skills and 4 focused hook handlers across 4
 lifecycle events. Claude Code also receives 5 specialized named agents; Codex
 uses the same compact role instructions through skill-level fallback. See
 [CLAUDE.md](CLAUDE.md) and [AGENTS.md](AGENTS.md).
@@ -199,7 +204,7 @@ uses the same compact role instructions through skill-level fallback. See
   title   = {LabMate: Research Harness for AI Coding Agents},
   author  = {freemty},
   year    = {2026},
-  version = {0.10.0},
+  version = {0.11.0},
   url     = {https://github.com/freemty/labmate}
 }
 ```

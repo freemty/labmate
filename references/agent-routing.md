@@ -1,6 +1,8 @@
 # Portable Agent Routing
 
-Use this contract whenever a LabMate skill delegates to one of the roles in
+Apply the requested role in the main thread when that is sufficient. Delegate
+independent, useful work only when appropriate and permitted. Use this contract
+whenever a LabMate skill delegates to one of the roles in
 `<plugin-root>/agents/`.
 
 1. If the host exposes the requested LabMate named agent, delegate to it.
@@ -17,6 +19,7 @@ portable skill instructions.
 For background work, use background execution when the host supports it.
 Otherwise complete the work synchronously before reporting the artifact.
 
-The main thread owns all user interaction, approvals, follow-up questions, and
+Carry forward the user's existing authorization; role handoff is not a new
+approval gate. The main thread owns all user interaction, follow-up questions, and
 archival decisions. Subagents return findings or artifacts to the main thread;
 they do not take over the user conversation.

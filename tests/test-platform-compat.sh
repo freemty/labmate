@@ -108,10 +108,10 @@ else
   )
 fi
 
-[ "${#configured_hooks[@]}" = "13" ] \
-  || fail "expected thirteen configured hook handlers"
+[ "${#configured_hooks[@]}" = "4" ] \
+  || fail "expected four configured hook handlers"
 for hook in "${configured_hooks[@]}"; do
-  rg -q "(run_hook|run_hook_env).*${hook}" "$ROOT/tests/test-hooks.sh" \
+  rg -q "run_hook.*${hook}|${hook}.*run_hook" "$ROOT/tests/test_lifecycle.py" \
     || fail "configured hook lacks a direct test: $hook"
 done
 

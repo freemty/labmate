@@ -146,7 +146,7 @@ def append_gitignore(root: Path, project_type: str, changes: list[dict]) -> None
     if project_type == "research":
         desired = (REFERENCES / "gitignore-rules.md").read_text(encoding="utf-8")
     else:
-        desired = "# labmate rules\n.pipeline-state.json\n.labmate-hook-state.json\n"
+        desired = "# labmate rules\n.pipeline-state.json\n.labmate-hook-state.json\n.labmate-hook-state.lock\n.labmate-state-*\n"
     existing_rules = {
         line.strip()
         for line in existing.splitlines()

@@ -1,6 +1,6 @@
 ---
 name: update-project-skill
-description: Use when durable project architecture, experiment findings, pitfalls, or active interfaces have materially changed. Triggers on "refresh project knowledge", "更新项目知识", stale project skill (>24h), or after major findings.
+description: Use when durable project architecture, experiment findings, pitfalls, or active interfaces have materially changed. Triggers on "refresh project knowledge", "更新项目知识", project-skill drift, or after major findings.
 disable-model-invocation: true
 ---
 
@@ -15,12 +15,13 @@ diary or repository duplicate.
    python3 <plugin-root>/scripts/project_snapshot.py
    ```
 
-2. Read only files needed to validate architecture, findings, active versions,
+2. A bounded read-only scan may use a suitable subagent for high-reasoning
+   analysis when available; otherwise scan directly. Read only files needed to validate architecture, findings, active versions,
    and durable pitfalls.
 3. Propose a focused diff. Preserve append-only lessons unless evidence shows
    they are false.
-4. Apply after approval when semantic. Mechanical mirror synchronization may
-   proceed without another prompt.
+4. Apply the requested knowledge update within the user's authorization. Ask
+   only when conflicting evidence or a new scope choice would change the result.
 5. Keep `.agents/` and `.claude/` mirrors identical when both exist, run the
    parity checker, append the changelog, and update `skill_updated_at`.
 

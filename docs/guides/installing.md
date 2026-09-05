@@ -21,13 +21,11 @@ Then in your research project:
 /labmate:init-project
 ```
 
-### Recommended companions
+### Optional capabilities
 
-```
-/plugin install superpowers
-/plugin install frontend-slides
-/plugin install agent-reach
-```
+LabMate does not require a second workflow framework. Use already available
+readers, browsers, media tools and the requested artifact skill. Install an
+additional dependency only when its capability is missing and setup is in scope.
 
 ### OpenAI Codex
 
@@ -42,7 +40,8 @@ Start a new Codex session after installation. Plugin hooks are not trusted just
 because the plugin is enabled: open `/hooks`, review the LabMate definitions,
 and trust the current hashes before expecting lifecycle context to run.
 
-Use `/skills` or type `$labmate:init-project` to initialize the project.
+When project setup is wanted, use `/skills` or `$labmate:init-project`.
+Ordinary reading and uninitialized directories do not require this setup.
 
 Do not also link LabMate's plugin skills into `~/.agents/skills`; that registers
 the same skill twice. If this repository's legacy installer created those
@@ -104,7 +103,7 @@ bash plugins/labmate/tests/test-codex-plugin-smoke.sh
 ```
 
 Then use `/hooks` in an interactive Codex session and confirm the LabMate
-`PreToolUse`, `PreCompact`, and `SessionStart` commands are trusted.
+`PreToolUse`, `PostToolUse`, `PreCompact`, and `SessionStart` commands are trusted.
 
 ## Troubleshooting
 
@@ -116,18 +115,11 @@ Then use `/hooks` in an interactive Codex session and confirm the LabMate
 ```bash
 grep -A5 "labmate@labmate-marketplace" ~/.claude/plugins/installed_plugins.json
 ```
-If a `project` scope entry has an old version or installPath, update it manually or reinstall:
-```
-/plugin uninstall labmate@labmate-marketplace
-/plugin install labmate@labmate-marketplace
-```
-
-3. Delete stale cache:
-```bash
-ls ~/.claude/plugins/cache/labmate-marketplace/labmate/
-# Should only have the current version. Delete old ones:
-rm -rf ~/.claude/plugins/cache/labmate-marketplace/labmate/<old-version>
-```
+If a project scope still points to an older version, record the exact scope and
+use the host's supported reinstall/update path. Back up local registry metadata
+before a requested migration; do not invent cache paths or rewrite version/SHA
+fields manually. Multiple cached versions alone are not proof of duplicate
+registration. Keep recoverable backups until the new session is verified.
 
 ### Skills not showing up
 
@@ -155,7 +147,9 @@ Then install again.
 
 ### Codex shows each LabMate skill twice
 
-The plugin and legacy global skill links are both active. From the
+Inspect the enabled plugin registry and link targets to confirm whether both
+paths are active. After migration is authorized, back up real directories and
+record symlink targets. From the
 `yuanbo-skills` checkout, run:
 
 ```bash

@@ -1,6 +1,6 @@
 # LabMate
 
-![version](https://img.shields.io/badge/version-0.10.0-blue)
+![version](https://img.shields.io/badge/version-0.11.0-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
 <!-- TODO: 30s demo GIF — record with VHS or asciinema -->
 
@@ -131,6 +131,10 @@ Codex：`$labmate:commit-changelog`
 LabMate 不会在每次工具调用后注入流程目录或交叉推荐。Skill description
 负责发现，typed scripts 负责机械状态修改，项目文件负责持久知识。
 
+四个默认 handler 分别负责：启动时显示已有项目状态、成功代码提交后静默记录
+待维护项、压缩前按 session 汇总一次，以及 Git 操作辅助提示。普通目录不强制
+初始化，失败命令和纯文档提交不产生无关维护推荐。
+
 ## 完整研究生命周期
 
 ```
@@ -171,7 +175,7 @@ LabMate 不会自动创建。
 
 ## 技术架构
 
-LabMate 包含 12 个跨平台 skills，以及分布在 3 类生命周期事件中的 3 个
+LabMate 包含 12 个跨平台 skills，以及分布在 4 类生命周期事件中的 4 个
 focused hook handlers。Claude Code 额外获得 5 个 named agents；Codex
 通过 skill fallback 使用同一套精简角色说明。
 
@@ -188,7 +192,7 @@ focused hook handlers。Claude Code 额外获得 5 个 named agents；Codex
   title   = {LabMate: Research Harness for AI Coding Agents},
   author  = {freemty},
   year    = {2026},
-  version = {0.10.0},
+  version = {0.11.0},
   url     = {https://github.com/freemty/labmate}
 }
 ```

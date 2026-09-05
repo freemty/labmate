@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.11.0] - 2026-09-05
+
+### Changed
+- Capability-first research routing with optional delegation and a main-thread
+  fallback; existing paper packet fields and source-location checks retained.
+- Four default handlers replace thirteen: existing session state, silent
+  successful-commit maintenance, once-per-session pre-compaction summary, and
+  an advisory Git reminder. No arXiv, brainstorm or cross-skill injections.
+- Preserve Claude/Codex payload normalization, dual project knowledge paths,
+  null timestamps and session/transcript/date deduplication. Failed commands
+  and pure documentation commits do not generate unrelated maintenance.
+- HTML slide references no longer impose a personal install path, mandatory
+  palettes, fixed slide counts or third-party framework. Research decks retain
+  the Speculative Decoding default through research-slides.
+- Release script is check-only: no automatic merge, push, registry repair or
+  cache deletion. Installation migration remains separate and recoverable.
+- Public invocation stays Claude `/labmate:<skill>`, Codex
+  `$labmate:<skill>` or the host selector. Plugin and legacy links remain
+  alternatives; existing installations are not changed by this release.
+- Experiment helpers validate IDs, label launch/monitor observations correctly
+  and keep host-owned agent memory outside project-skill parity.
+
+### Verification
+- Nine direct lifecycle fixtures; paper acquisition, platform policies, typed
+  project/experiment/TODO interfaces, release parity and temporary plugin install.
+- Payload fixtures do not establish real host trust or model/media behavior.
+
+
 ## Unreleased
 
 ### 其他

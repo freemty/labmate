@@ -30,6 +30,8 @@ if [ -z "$SERVER" ] || [ -z "$EXP_ID" ]; then
   exit 1
 fi
 
+[[ "$EXP_ID" =~ ^exp[0-9]+[a-z]*$ ]] || { echo "Invalid experiment ID" >&2; exit 2; }
+[[ "$SERVER" != -* && "$SERVER" != *[[:space:]]* ]] || { echo "Invalid server" >&2; exit 2; }
 LOCAL_DIR="exp/${EXP_ID}/results/"
 REMOTE_DIR="${REMOTE_BASE}/${EXP_ID}/results/"
 
@@ -38,7 +40,7 @@ echo "  → ${LOCAL_DIR}"
 
 mkdir -p "$LOCAL_DIR"
 
-rsync -avz --progress \
+rsync -avz --progress --protect-args \
   "${SERVER}:${REMOTE_DIR}" \
   "${LOCAL_DIR}"
 

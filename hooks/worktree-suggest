@@ -1,15 +1,4 @@
-#!/bin/bash
-# Hook: PreToolUse(Bash) — suggest worktree for destructive git ops
-
+#!/usr/bin/env bash
+set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-source "${SCRIPT_DIR}/hook-utils"
-
-INPUT=$(cat)
-
-COMMAND=$(printf '%s' "$INPUT" | hook_command)
-
-if echo "$COMMAND" | grep -qE "git (reset --hard|checkout -- \.|clean -f|clean -fd|branch -D)"; then
-  emit_hook_context "PreToolUse" \
-    "Tip: Consider using 'git worktree' for destructive/exploratory changes.
-Usage: git worktree add ../experiment-branch experiment-branch"
-fi
+exec python3 "$SCRIPT_DIR/../scripts/lifecycle.py" worktree-suggest

@@ -1,13 +1,14 @@
 #!/bin/bash
 # Experiment status monitor — one status-check cycle per invocation
 # Usage: monitor_exp.sh <exp_id>
-# Exit 0 = still running (or no data), Exit 1 = all done
+# Exit 0 = snapshot produced; this script does not establish experiment completion
 #
 # Example: bash scripts/monitor_exp.sh exp01a
 
 set -euo pipefail
 
 EXP_ID="${1:?Usage: monitor_exp.sh <exp_id>}"
+[[ "$EXP_ID" =~ ^exp[0-9]+[a-z]*$ ]] || { echo "Invalid experiment ID" >&2; exit 2; }
 LOG_FILE="exp/${EXP_ID}/results/runs.log"
 
 if [ ! -f "$LOG_FILE" ]; then
@@ -16,7 +17,7 @@ if [ ! -f "$LOG_FILE" ]; then
 fi
 
 # Count entries (lines starting with #, excluding the format header)
-TOTAL=$(grep -c "^# [0-9]" "$LOG_FILE" 2>/dev/null || echo 0)
+TOTAL=$(grep -c "^# [0-9]" "$LOG_FILE" 2>/dev/null || true)
 LAST_ENTRY=$(grep "^# [0-9]" "$LOG_FILE" 2>/dev/null | tail -1 || echo "none")
 LAST_MODIFIED=$(stat -f "%Sm" -t "%Y-%m-%d %H:%M" "$LOG_FILE" 2>/dev/null || stat -c "%y" "$LOG_FILE" 2>/dev/null | cut -d. -f1 || echo "unknown")
 
