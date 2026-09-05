@@ -15,3 +15,10 @@ disable-model-invocation: true
 
 Coverage claims must name the search boundary. Do not call a convenience sample
 systematic or exhaustive.
+
+Use available scholarly integrations, native search/PDF readers and source adapters.
+Record per-source coverage (abstract, full text, figure/table or media interval),
+publication/retrieval dates and locators. A talk or demo may supplement paper
+evidence but cannot replace missing method/results. For close reading, use the
+paper packet acquisition/validation contract in
+`../read-paper/references/paper-acquisition.md`; retain its schema unchanged.

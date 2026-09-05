@@ -111,3 +111,14 @@ re-run the same validator against the archived copy. If the original PDF is
 locally available and privacy/licensing permit, copy it too and record its
 SHA256; otherwise preserve the source locator and state why raw bytes are
 absent. The note must link the frozen packet/artifact and their hashes.
+
+## Supplementary media
+
+Native text/PDF and structured scholarly retrieval are valid acquisition paths;
+no optional CLI is universally required. For figures whose layout matters, inspect
+the actual page/figure rather than relying on caption text alone.
+
+For supplementary talks/demos, keep a separate evidence note with URL, timestamp
+interval, observed modalities and coverage gaps. Captions establish speech only;
+frames/continuous playback are needed for screen/action claims. Do not change the
+paper packet schema or count a video description as paper full text.
